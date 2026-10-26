@@ -2,17 +2,17 @@
 
 Tanggal pemeriksaan: **23 Oktober 2026**. Acuan: PRD v1.1 §11.1 dan [T002](../../tasks/todo.md#t002).
 
-**Hasil awal T002:** verifikasi dokumentasi dan ketersediaan runtime lokal selesai pada 23 Oktober 2026. **Pembaruan T004, 26 Oktober 2026:** runtime Node 24.22.1 portable telah diverifikasi, dependency dan lockfile tersedia, lint/typecheck/build serta browser kerangka lulus. TypeScript disesuaikan ke 5.9.3 untuk kompatibilitas parser. [Laporan T004](../reports/T004.md) menjadi bukti runtime terbaru; tabel kondisi mesin di bawah mempertahankan pengamatan awal. Koneksi database/CMS belum diuji.
+**Hasil awal T002:** verifikasi dokumentasi selesai pada 23 Oktober 2026. **Pembaruan 26 Oktober 2026:** T004 membuktikan Node LTS, kerangka dan tooling; T005 membuktikan koneksi PostgreSQL Supabase, role/schema, TLS client, migration serta transaksi/persistensi. Lihat [T004](../reports/T004.md) dan [T005](../reports/T005.md). TypeScript memakai 5.9.3 sesuai parser. Tabel kondisi mesin di bawah mempertahankan pengamatan awal; adapter Payload/CMS belum diuji.
 
 ## Keputusan terbaru: Supabase
 
-Pada 23 Oktober 2026 pemilik proyek memilih [proyek Supabase lgqnxvldjqzgbfyxqonx](https://supabase.com/dashboard/project/lgqnxvldjqzgbfyxqonx). Keputusan ini menggantikan database Docker lokal dan pin PostgreSQL 17.11 pada pemeriksaan awal. Versi PostgreSQL aktual belum diverifikasi; T005 mencatat hasil `SELECT version()`. Aplikasi/CMS tetap localhost dan membutuhkan internet untuk database hosted. Payload tetap memakai adapter PostgreSQL dan autentikasi CMS; Supabase Auth/Storage tidak ditambahkan.
+Pada 23 Oktober 2026 pemilik proyek memilih [proyek Supabase lgqnxvldjqzgbfyxqonx](https://supabase.com/dashboard/project/lgqnxvldjqzgbfyxqonx). Keputusan ini menggantikan database Docker lokal. T005 memverifikasi PostgreSQL aktual **17.11** melalui `SELECT version()` pada 26 Oktober 2026. Aplikasi/CMS tetap localhost dan membutuhkan internet untuk database hosted. Payload tetap memakai adapter PostgreSQL dan autentikasi CMS; Supabase Auth/Storage tidak ditambahkan.
 
 Ambil connection string dari menu **Connect** dashboard: direct connection jika jaringan mendukung, atau session pooler 5432 untuk jaringan IPv4. Salin host aktual, jangan menebaknya. Transaction pooler 6543 belum dipilih. Simpan `DATABASE_URL` hanya pada environment server yang diabaikan Git; API key bukan pengganti kredensial PostgreSQL. [Panduan koneksi](https://supabase.com/docs/guides/database/connecting-to-postgres).
 
 T003 merancang schema Payload yang tidak diekspos melalui Data API beserta role/grants; verifikasi pengaturan aktual. Tabel yang diekspos memerlukan grants dan RLS sesuai model akses. T005 membuktikan TLS, koneksi, migrasi dan transaksi; T008 menyiapkan target uji terisolasi. Jangan reset proyek bersama atau tabel layanan Supabase. [Keamanan Data API](https://supabase.com/docs/guides/api/securing-your-api).
 
-Dokumentasi dan [changelog](https://supabase.com/changelog) diperiksa pada 23 Oktober 2026, termasuk perubahan default eksposur Data API. Dashboard privat tidak dapat diperiksa melalui alat web dan tidak ada tool Supabase terautentikasi yang tersedia saat ini. Tidak ada query atau perubahan remote dilakukan. User melaporkan Docker sudah terpasang dan sedang diperbarui; Engine/Compose belum diperiksa ulang dan opsional untuk Supabase hosted. T002 tetap selesai secara dokumentasi; T003 kemudian diselesaikan pada tanggal yang sama dan T005 belum dikerjakan.
+Pada T002 belum tersedia akses Supabase terautentikasi dan tidak ada perubahan remote. Pada T005, integrasi Supabase dan koneksi Node lokal berhasil; fondasi privat diterapkan dan dites. Dokumentasi/[changelog](https://supabase.com/changelog) diperiksa ulang 26 Oktober 2026. Schema aplikasi tidak diekspos Data API. Docker tetap opsional. Rincian dua temuan advisor bawaan dan batas TLS internal pooler ada pada laporan T005.
 
 ## Matriks versi yang dipilih
 
@@ -33,7 +33,7 @@ Baris awal diperiksa pada 23 Oktober 2026; perubahan bertanggal T004 diperiksa p
 | PostCSS | **8.5.31** | Memenuhi kebutuhan plugin Tailwind; engine menerima Node target. [Metadata](https://registry.npmjs.org/postcss/8.5.31) |
 | GraphQL, dependency integrasi | **16.14.2** | Memenuhi peer Payload `^16.8.1`. Tag latest saat diperiksa menunjuk 17.0.2 yang tidak cocok, sehingga jangan memakai latest. Memasang dependency ini tidak mengharuskan endpoint GraphQL publik diaktifkan. [Metadata versi](https://registry.npmjs.org/graphql/16.14.2), [peer Payload](https://registry.npmjs.org/payload/3.92.0) |
 | Sharp, untuk turunan gambar | **0.35.5** | Engine `>=20.9.0`; diperlukan untuk manipulasi gambar yang direncanakan. Binary Windows dan proses transformasi belum diuji. [Metadata](https://registry.npmjs.org/sharp/0.35.5), [panduan Payload](https://payloadcms.com/docs/getting-started/installation) |
-| PostgreSQL | **Supabase; versi aktual belum diverifikasi** | Menggantikan pin lokal 17.11 sesuai pilihan pemilik proyek. Versi server dan kompatibilitas adapter diperiksa pada T005. [Koneksi Supabase](https://supabase.com/docs/guides/database/connecting-to-postgres), [adapter Payload](https://payloadcms.com/docs/database/postgres) |
+| PostgreSQL | **Supabase PostgreSQL 17.11** | Versi aktual dan fondasi database dibuktikan pada T005; integrasi adapter tetap T006. Driver verifikasi pg 8.23.1 dan CLI Supabase 2.122.0 dipatok pada lockfile. [Laporan T005](../reports/T005.md), [adapter Payload](https://payloadcms.com/docs/database/postgres) |
 
 Paket internal `@payloadcms/ui`, `@payloadcms/graphql`, dan `@payloadcms/translations` yang ditarik integrasi Next harus mengikuti 3.92.0. Metadata editor juga mencantumkan peer `@faceless-ui/modal` **3.0.0** dan `@faceless-ui/scroll-info` **2.0.0**; metadata kedua peer menerima React 19. Jangan mengabaikan peringatan peer saat T004/T006. [Modal](https://registry.npmjs.org/@faceless-ui%2Fmodal/3.0.0), [scroll-info](https://registry.npmjs.org/@faceless-ui%2Fscroll-info/2.0.0).
 
@@ -71,4 +71,4 @@ Pemeriksaan memakai `Get-Command`, perintah versi, serta pengecekan lokasi insta
 
 Metadata diambil langsung melalui HTTPS dari endpoint registry yang ditautkan di matriks, dengan membaca `version`, `engines`, `peerDependencies`, serta dependency integrasi Next/Tailwind. Versi GraphQL dipilih dari daftar rilis stabil 16.x. Pemeriksaan tidak menjalankan installer atau kode dependency.
 
-Kedua kriteria T002 terpenuhi. T003 selesai melalui [kontrak editorial](editorial-architecture.md) dan [akses media](media-access.md). **Pembaruan 26 Oktober 2026: T004 selesai**, dengan bukti runtime pada [laporan](../reports/T004.md); T005 siap dikerjakan untuk database Supabase.
+Kedua kriteria T002 terpenuhi. T003 selesai melalui [kontrak editorial](editorial-architecture.md) dan [akses media](media-access.md). **Per 26 Oktober 2026, T004 dan T005 selesai**; T006 siap dikerjakan untuk integrasi Payload dan login CMS.

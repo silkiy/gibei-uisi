@@ -1,0 +1,65 @@
+# Setup localhost dan PostgreSQL Supabase
+
+Terakhir diverifikasi: **26 Oktober 2026**. Runtime Node 24.22.1, pnpm 10.24.0; langkah aplikasi ada di [README](../README.md). T005 menyiapkan koneksi dan fondasi database. Integrasi Payload, users dan login mengikuti T006.
+
+## Environment server
+
+Gunakan `.env.local` yang diabaikan Git. `.env.example` hanya template. Jangan menyalin secret ke kode, log, `next.config` bagian env, atau variabel `NEXT_PUBLIC_*`.
+
+| Variabel | Isi |
+|---|---|
+| DATABASE_URL | Connection string role runtime PostgreSQL, bukan URL API HTTPS Supabase. |
+| MIGRATION_DATABASE_URL | Connection string role gibei_migrator; hanya untuk tooling migration. |
+| DATABASE_CA_FILE | `certs/supabase-prod-ca-2021.crt`, path CA publik yang disimpan di repo. |
+| PAYLOAD_SECRET | Secret lokal minimal 32 karakter yang tidak berupa placeholder; digunakan T006. Bukan anon/publishable/service-role API key. |
+
+Pilih **Connect → Session pooler** pada [proyek Supabase](https://supabase.com/dashboard/project/lgqnxvldjqzgbfyxqonx), port 5432. Host harus disalin dari dashboard, tidak ditebak dari region. Username pooler mengikuti `ROLE.PROJECT_REF`; URL meng-encode karakter khusus password. Direct connection juga didukung jika jaringan memiliki IPv6/IPv4 add-on yang sesuai. Transaction pooler 6543 tidak dipakai baseline ini. [Panduan koneksi](https://supabase.com/docs/guides/database/connecting-to-postgres).
+
+Client memakai CA eksplisit dan `rejectUnauthorized: true`; parameter SSL pada URL dihapus agar tidak menimpa pengaturan tersebut. Koneksi gagal jika sertifikat tidak dapat diverifikasi. Jangan memakai `NODE_TLS_REJECT_UNAUTHORIZED=0`. [Perilaku SSL node-postgres](https://node-postgres.com/features/ssl).
+
+CA publik diambil dari URL yang digunakan [konfigurasi resmi Supabase Studio](https://github.com/supabase/supabase/blob/master/apps/studio/hooks/custom-content/custom-content.json): `https://supabase-downloads.s3-ap-southeast-1.amazonaws.com/prod/ssl/prod-ca-2021.crt`. CA berlaku hingga 26 April 2031. Perubahan CA harus diverifikasi dari sumber resmi, bukan diganti otomatis saat koneksi gagal.
+
+## Memeriksa lingkungan yang sudah disiapkan
+
+Aktifkan Node portable jika belum memakai Node target:
+
+```powershell
+$env:Path = "$PWD\.tools\node-v24.22.1;$env:Path"
+pnpm install --frozen-lockfile
+pnpm test:db-config
+pnpm db:check
+pnpm db:verify
+```
+
+`db:check` hanya membaca versi, role, dan status TLS; tidak mencetak connection string/password. Pool maksimal 3 koneksi, connection timeout 12 detik, idle timeout 10 detik, statement timeout 15 detik.
+
+`db:verify` menulis UUID dummy pada tabel khusus `gibei_meta.connection_probe`, memeriksa commit/rollback dan membaca hasil commit dari proses Node baru. Ia juga membuktikan role runtime tidak dapat membuat tabel atau membaca `auth.users`; role migrasi dapat menjalankan DDL yang kemudian di-rollback. Cleanup hanya menghapus UUID milik run tersebut. Tidak ada reset schema/database atau pembacaan data Auth. Tidak boleh diarahkan ke proyek lain; konfigurasi mengunci project ref dan port.
+
+## Fondasi schema dan peran
+
+- `payload`: schema aplikasi privat, awalnya kosong untuk tabel yang akan dibuat Payload.
+- `gibei_meta`: schema privat untuk probe infrastruktur, tanpa konten editorial.
+- `gibei_migrator`: owner kedua schema, dapat membuat/mengubah tabel aplikasi; bukan superuser, tidak memiliki CREATEDB/CREATEROLE/BYPASSRLS.
+- `gibei_runtime`: hanya USAGE schema dan operasi data yang diberi grant; tidak memiliki CREATE schema, kepemilikan tabel atau hak administratif.
+
+Schema tidak diberi USAGE kepada PUBLIC/anon/authenticated/service_role dan tidak tersedia melalui Data API. Probe memakai RLS dengan policy khusus gibei_runtime. Default privileges pada schema payload berlaku untuk tabel yang dibuat **gibei_migrator**; migrasi aplikasi wajib memakai role tersebut. Owner migration mengelola policy/privilege baru; RLS konten tidak otomatis memakai `auth.uid()` karena akun CMS dikelola Payload.
+
+Infrastruktur memakai migration `supabase/migrations/20261026101710_database_foundation.sql`, dicatat di history Supabase. CLI menghasilkan berkas awal; nama diselaraskan dengan version history yang benar-benar diterapkan lewat integrasi. Migrasi ini membutuhkan role administrator pada target kosong karena membuat role dan schema. Jangan menjalankannya ulang pada target yang sudah berisi fondasi. Jangan memakai perintah reset atau db push massal ke proyek ini.
+
+Tabel/collection aplikasi akan dikelola melalui **migration Payload pada T006+**, terpisah dari bootstrap infrastruktur Supabase ini. Saat mengintegrasikan adapter: schemaName=payload, push=false, disableCreateDatabase=true, TLS/connection limit sesuai konfigurasi ini, dan transaksi tetap aktif. Fitur schemaName masih perlu dibuktikan pada adapter Payload; T005 baru membuktikan PostgreSQL/role/schema, belum adapter.
+
+## Bootstrap pada target pengembangan baru
+
+1. Pastikan proyek pengembangan kosong dan diizinkan; periksa schema, tabel dan role sebelum menerapkan migration infrastruktur. Jangan membuat branch/proyek berbayar tanpa persetujuan biaya.
+2. Terapkan SQL infrastruktur melalui mekanisme migration Supabase yang ditinjau. Jangan memasukkan password ke file SQL atau history migration.
+3. Untuk bootstrap pertama saja, isi DATABASE_URL dengan koneksi admin postgres dari Connect, serta DATABASE_CA_FILE. Jalankan `pnpm db:provision` setelah fondasi tersedia.
+4. Tool membuat password acak 32 byte untuk masing-masing role, mengaktifkan LOGIN dan mengganti DATABASE_URL dengan role runtime serta menambah MIGRATION_DATABASE_URL di `.env.local`. Secret tidak dicetak dan URL admin tidak dipertahankan di file baru. Nilai PAYLOAD_SECRET yang sudah ada dipertahankan; jika belum disiapkan, buat secret acak dengan `node:crypto` tanpa mencetaknya ke log bersama.
+5. Jalankan pemeriksaan di atas. `db:provision` menolak role yang sudah diaktifkan dan tidak merotasi password secara diam-diam. Jika pemasangan file gagal setelah commit role, pertahankan `.env.local.pending` untuk dipasang sebagai `.env.local`; jangan membuangnya atau mengulang setup. Pemulihan role dapat dilakukan Admin melalui prosedur terpisah.
+
+Data uji T005 diisolasi secara logis pada schema/tabel privat dalam proyek yang sama, bukan pada branch/instance berbayar terpisah. T008 masih harus menyediakan target fixture penuh yang terisolasi sebelum reset/test editorial. Schema layanan Supabase (`auth`, `storage`, dan lainnya) tidak diubah.
+
+## Batas verifikasi TLS dan advisor
+
+Client localhost → Session pooler terbukti terenkripsi dengan certificate authorized. `pg_stat_ssl` pada backend melaporkan **false** untuk leg internal pooler → PostgreSQL; ini berbeda dari TLS client. Pengaturan SSL enforcement seluruh proyek belum diubah karena dapat memicu reboot database. Jangan mengklaim TLS end-to-end atau readiness produksi dari hasil ini. [SSL enforcement Supabase](https://supabase.com/docs/guides/platform/ssl-enforcement).
+
+Dua warning advisor pada fungsi `public.rls_auto_enable()` sudah ada sebelum T005 dan tetap ada sesudahnya. Fungsi mengembalikan event_trigger; akses EXECUTE yang dilaporkan perlu ditinjau pada audit keamanan T053, tanpa menyimpulkan RPC dapat dieksploitasi atau mengubah fungsi bawaan secara sembarang. [Temuan anon](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable), [temuan authenticated](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).

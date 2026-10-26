@@ -3,7 +3,7 @@
 **Tanggal persetujuan:** 23 Oktober 2026 (Asia/Jakarta)  
 **Pihak penentu:** Pemilik proyek, melalui percakapan proyek ini  
 **Acuan:** [PRD v1.1 §18](PRD-v1.1.md#18-decision-register--open-questions)  
-**Status tugas per 26 Oktober 2026:** T001–T004 selesai; CP-01 ditinjau dan T005 siap dikerjakan berikutnya.
+**Status tugas per 26 Oktober 2026:** T001–T005 selesai; CP-01 ditinjau dan T006 siap dikerjakan berikutnya.
 
 ## Bukti dan cakupan persetujuan
 
@@ -60,4 +60,6 @@ PRD §11, matriks T002 dan T005 diselaraskan. Docker yang dilaporkan sudah terpa
 
 **CP-01 telah ditinjau dan T004 selesai pada 26 Oktober 2026.** [Laporan T004](reports/T004.md) mencatat runtime LTS portable, kerangka, lockfile dan hasil lint/typecheck/build/browser. Penyesuaian pin TypeScript 7.0.2 ke 5.9.3 mengikuti bukti rentang dukungan parser ESLint; kebutuhan produk tidak berubah.
 
-**T005 siap dikerjakan.** Versi/koneksi Supabase masih diperiksa T005. Risiko transaksi/locking, schema adapter experimental, dan gateway file harus dibuktikan sebelum alur artikel T025 dinyatakan selesai.
+**T005 selesai pada 26 Oktober 2026.** [Laporan T005](reports/T005.md) mencatat koneksi PostgreSQL 17.11 dari localhost, TLS client, role/schema privat, migration dan pengujian transaksi/persistensi. Kredensial runtime/migrasi dipisahkan dan hanya disimpan lokal. Batas TLS internal pooler dan dua warning advisor bawaan tetap dicatat untuk audit berikutnya.
+
+**T006 siap dikerjakan:** integrasi adapter Payload dan login CMS. Risiko transaksi workflow/locking, schema adapter experimental dan gateway file masih harus dibuktikan sebelum alur artikel T025 dinyatakan selesai.

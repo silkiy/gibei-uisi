@@ -673,4 +673,4 @@ Setiap tambahan membutuhkan evaluasi manfaat, biaya, keamanan, serta kapasitas p
 
 GIBEI UISI Official Website menjadi pusat informasi dan publikasi yang profesional, kredibel, mudah dikelola, serta dapat diteruskan ke kepengurusan berikutnya.
 
-Prioritasnya adalah website publik berkualitas dengan CMS dan alur persetujuan yang dapat dibuktikan melalui pengujian. Baseline PRD v1.1 telah disetujui pemilik proyek pada 23 Oktober 2026. T001–T004 selesai; kerangka Next.js telah diperiksa pada 26 Oktober 2026, dengan bukti pada [laporan T004](reports/T004.md). Langkah berikutnya T005 untuk koneksi PostgreSQL Supabase dan migrasi; CMS dan workflow editorial belum diimplementasikan.
+Prioritasnya adalah website publik berkualitas dengan CMS dan alur persetujuan yang dapat dibuktikan melalui pengujian. Baseline PRD v1.1 telah disetujui pemilik proyek pada 23 Oktober 2026. T001–T005 selesai; kerangka Next.js dan fondasi PostgreSQL Supabase telah diverifikasi, dengan bukti pada [T004](reports/T004.md) dan [T005](reports/T005.md). Langkah berikutnya T006 untuk integrasi Payload dan login; CMS dan workflow editorial belum diimplementasikan.

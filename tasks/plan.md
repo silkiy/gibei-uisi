@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status per 26 Oktober 2026:** T001–T004 selesai, CP-01 ditinjau dan T005 siap dikerjakan. Kerangka aplikasi telah diverifikasi; database/CMS belum tersedia. Status ada di [todo.md](todo.md), bukti implementasi di [laporan T004](../docs/reports/T004.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
+**Status per 26 Oktober 2026:** T001–T005 selesai, CP-01 ditinjau dan T006 siap dikerjakan. Kerangka aplikasi dan fondasi PostgreSQL Supabase telah diverifikasi; integrasi Payload/CMS belum tersedia. Status ada di [todo.md](todo.md), bukti implementasi di [T004](../docs/reports/T004.md) dan [T005](../docs/reports/T005.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
 
 ## Tujuan dan kondisi awal
 
@@ -19,7 +19,7 @@ Pemeriksaan awal menemukan folder docs berisi PRD; belum ada package.json, folde
 
 ## Keputusan arsitektur yang menjadi dasar perencanaan
 
-1. Target stack mengikuti PRD: Next.js App Router/React/TypeScript, Payload, PostgreSQL, Tailwind. Pilihan versi, sumber resmi, kompatibilitas yang dideklarasikan, dan prasyarat lokal dicatat pada [hasil T002](../docs/technical/stack.md); instalasi/build/database belum diuji.
+1. Target stack mengikuti PRD: Next.js App Router/React/TypeScript, Payload, PostgreSQL, Tailwind. Pilihan versi dan pembaruan verifikasi ada pada [stack](../docs/technical/stack.md); T004 membuktikan kerangka/build, T005 membuktikan fondasi PostgreSQL, sedangkan adapter/CMS dan UI penuh mengikuti tugas berikutnya.
 2. PostgreSQL memakai Supabase proyek `lgqnxvldjqzgbfyxqonx`; aplikasi tetap localhost. T005 memverifikasi koneksi/migrasi dan T008 mengisolasi target uji. Docker lokal opsional. Buktikan **satu alur artikel lengkap** sebelum memperbanyak collection. T025 menjadi dependensi semua modul editorial tambahan.
 3. Versi publik terpisah dari revisi kerja; approval merujuk versi dan aset tertentu. Detail transaksi dan fasilitas CMS dibuktikan pada T003 dan T011–T025, bukan diasumsikan tersedia otomatis.
 4. Media privat dan turunannya melewati pemeriksaan izin; referensi publik/konfigurasi menentukan keterlihatan aset. File terbit tidak ditimpa.
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**T001–T004 selesai; CP-01 ditinjau. Langkah berikutnya T005:** verifikasi koneksi Supabase, schema/role dan migrasi dengan data uji terisolasi. Hasil lint/typecheck/build dan browser kerangka tersedia pada laporan T004; itu belum membuktikan database/CMS berfungsi.
+**T001–T005 selesai; CP-01 ditinjau. Langkah berikutnya T006:** integrasikan Payload dengan schema/role yang disiapkan, buktikan migration adapter dan login CMS. Laporan T005 membuktikan koneksi PostgreSQL/transaksi, bukan workflow CMS.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 

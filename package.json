@@ -3,16 +3,23 @@
   "version": "0.1.0",
   "private": true,
   "packageManager": "pnpm@10.24.0",
-  "engines": { "node": "24.22.1" },
+  "engines": {
+    "node": "24.22.1"
+  },
   "scripts": {
     "dev": "next dev --hostname 127.0.0.1",
     "build": "next build",
     "start": "next start --hostname 127.0.0.1",
     "lint": "eslint . --max-warnings 0",
-    "typecheck": "next typegen && tsc --noEmit"
+    "typecheck": "next typegen && tsc --noEmit",
+    "db:check": "node --env-file=.env.local scripts/database/check.mjs",
+    "db:provision": "node --env-file=.env.local scripts/database/provision.mjs",
+    "db:verify": "node --env-file=.env.local scripts/database/verify.mjs",
+    "test:db-config": "node --test scripts/database/config.test.mjs"
   },
   "dependencies": {
     "next": "16.4.2",
+    "pg": "8.23.1",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },
@@ -22,6 +29,7 @@
     "@types/react-dom": "19.3.0",
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.2",
+    "supabase": "2.122.0",
     "typescript": "5.9.3"
   }
 }

@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status per 26 Oktober 2026:** T001–T004 selesai dan CP-01 ditinjau; T005 siap dikerjakan. Kerangka Next.js sudah berjalan dan diverifikasi; bukti ada di [laporan T004](../docs/reports/T004.md). Database Supabase dan CMS belum diimplementasikan. [Stack](../docs/technical/stack.md) dan kontrak T003 tetap menjadi acuan.
+**Status per 26 Oktober 2026:** T001–T005 selesai dan CP-01 ditinjau; T006 siap dikerjakan. Kerangka Next.js serta fondasi PostgreSQL Supabase telah diverifikasi, dengan bukti [T004](../docs/reports/T004.md) dan [T005](../docs/reports/T005.md). Integrasi Payload/CMS belum diimplementasikan. [Stack](../docs/technical/stack.md) dan kontrak T003 tetap menjadi acuan.
 
 ## Cara menggunakan checklist
 
@@ -109,7 +109,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 ### T005
 
-- [ ] **Hubungkan PostgreSQL Supabase dan migration awal**
+- [x] **Hubungkan PostgreSQL Supabase dan migration awal**
 
 **Hasil:** Hubungkan aplikasi lokal ke PostgreSQL Supabase proyek `lgqnxvldjqzgbfyxqonx` melalui environment server dengan schema/role yang melindungi data CMS.
 
@@ -120,12 +120,12 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Kriteria selesai:**
 
-- [ ] Koneksi Supabase berhasil; versi PostgreSQL aktual, TLS, mode koneksi, role/schema dan proteksi Data API dicatat tanpa membocorkan kredensial.
-- [ ] Migration awal dapat diterapkan pada target pengembangan kosong yang terisolasi; transaksi terbukti dan data uji bertahan setelah restart aplikasi/reconnect.
+- [x] Koneksi Supabase berhasil; versi PostgreSQL aktual, TLS, mode koneksi, role/schema dan proteksi Data API dicatat tanpa membocorkan kredensial.
+- [x] Migration awal dapat diterapkan pada target pengembangan kosong yang terisolasi; transaksi terbukti dan data uji bertahan setelah restart aplikasi/reconnect.
 
-**Verifikasi:** Uji query koneksi/versi, migration, commit/rollback, restart aplikasi/reconnect, lalu baca kembali data uji. Pastikan target terisolasi sebelum penulisan; jangan reset proyek bersama atau tabel layanan Supabase. Akses/koneksi proyek belum diverifikasi; Docker lokal bukan prasyarat.
+**Verifikasi:** Uji query koneksi/versi, migration, commit/rollback, restart aplikasi/reconnect, lalu baca kembali data uji. Pastikan target terisolasi sebelum penulisan; jangan reset proyek bersama atau tabel layanan Supabase. Docker lokal bukan prasyarat.
 
-**Bukti/status:** Siap dikerjakan setelah T004 selesai pada 26 Oktober 2026. Koneksi/versi Supabase, konfigurasi schema/role dan migration belum diuji; tidak ada perubahan remote dari T004.
+**Bukti/status:** Selesai 26 Oktober 2026, dengan pecahan T005.1 (akses/koneksi/TLS), T005.2 (fondasi/migration/role), T005.3 (transaksi/persistensi/regresi) karena lingkup melampaui lima berkas. [Laporan T005](../docs/reports/T005.md) mencatat PostgreSQL 17.11, Session pooler, TLS client authorized, role terpisah, migration 20261026101710, proteksi Data API, commit/rollback dan pembacaan dari proses baru. Fixture dibersihkan; tabel layanan Supabase tidak diubah. Batas TLS internal pooler dan dua warning advisor bawaan dicatat; adapter Payload belum diuji.
 
 ### T006
 
@@ -145,7 +145,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Verifikasi:** Login/logout dari browser dan request langsung; uji first-user/bootstrap setelah akun Admin sudah ada.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Siap dikerjakan setelah T005 selesai pada 26 Oktober 2026. Gunakan role runtime/migration, CA dan schema privat dari [setup](../docs/setup.md); buktikan adapter Payload serta login pada tugas ini. Kriteria T006 belum dikerjakan.
 
 #### CP-02 — setelah T006
 

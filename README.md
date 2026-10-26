@@ -1,6 +1,6 @@
 # GIBEI UISI
 
-Kerangka website localhost dengan Next.js App Router dan TypeScript. Halaman awal adalah penanda pengembangan; CMS dan koneksi database mengikuti T005–T006. Kebutuhan produk: [PRD](docs/PRD-v1.1.md). Status: [backlog](tasks/todo.md).
+Kerangka website localhost dengan Next.js App Router dan TypeScript. Halaman awal adalah penanda pengembangan. Fondasi PostgreSQL Supabase sudah diverifikasi; integrasi Payload/CMS mengikuti T006. Kebutuhan produk: [PRD](docs/PRD-v1.1.md). Status: [backlog](tasks/todo.md).
 
 ## Menjalankan
 
@@ -33,6 +33,6 @@ pnpm start
 - `docs/technical/`: stack dan kontrak editorial/media.
 - `.env.example`: placeholder server untuk tahap database/CMS. Kerangka saat ini berjalan tanpa secret atau koneksi database.
 
-Saat T005, salin `.env.example` menjadi `.env.local` dan isi connection string PostgreSQL dari menu Connect Supabase; jangan menaruh kredensial di variabel `NEXT_PUBLIC_*`. Jangan commit `.env.local`. T006 menambahkan Payload dan secret acak yang valid. File upload, runtime portable, dependency dan output build diabaikan Git.
+Ikuti [panduan database](docs/setup.md) untuk `.env.local`, koneksi Session pooler, CA TLS, role runtime/migrasi dan bootstrap target baru. Jalankan `pnpm db:check`, `pnpm db:verify` serta `pnpm test:db-config` untuk verifikasi. Jangan menaruh kredensial di `NEXT_PUBLIC_*` atau commit `.env.local`. T006 menambahkan Payload; PAYLOAD_SECRET tetap hanya di environment server. File upload, runtime portable, dependency dan output build diabaikan Git.
 
 CSS awal sengaja sederhana; Tailwind dan fondasi visual dibangun pada T009. Robot metadata disetel noindex/nofollow untuk pratinjau. Situs belum diterbitkan ke internet.
