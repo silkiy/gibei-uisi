@@ -1,0 +1,16 @@
+node_modules/
+.next/
+out/
+dist/
+coverage/
+.tools/
+.pnpm-store/
+.env*
+!.env.example
+media/
+storage/
+*.tsbuildinfo
+*.log
+*.pem
+.obsidian/
+artifacts/
