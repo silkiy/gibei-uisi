@@ -73,4 +73,4 @@ Pemeriksaan memakai `Get-Command`, perintah versi, serta pengecekan lokasi insta
 
 Metadata diambil langsung melalui HTTPS dari endpoint registry yang ditautkan di matriks, dengan membaca `version`, `engines`, `peerDependencies`, serta dependency integrasi Next/Tailwind. Versi GraphQL dipilih dari daftar rilis stabil 16.x. Pemeriksaan tidak menjalankan installer atau kode dependency.
 
-Kedua kriteria T002 terpenuhi. T003 selesai melalui [kontrak editorial](editorial-architecture.md) dan [akses media](media-access.md). **Per 30 Oktober 2026, T001–T006 selesai**; T007 siap dikerjakan untuk kontrol akun dan sesi lengkap.
+Kedua kriteria T002 terpenuhi. T003 selesai melalui [kontrak editorial](editorial-architecture.md) dan [akses media](media-access.md). **Per 30 Oktober 2026, T001–T007 selesai**; kontrol akun/sesi dan audit terverifikasi pada [laporan T007](../reports/T007.md). T008 siap dikerjakan untuk harness uji umum.

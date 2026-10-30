@@ -17,10 +17,11 @@
     "db:provision": "node --env-file=.env.local scripts/database/provision.mjs",
     "db:verify": "node --env-file=.env.local scripts/database/verify.mjs",
     "test:db-config": "node --test scripts/database/config.test.mjs",
-    "test:auth-policy": "node --test src/auth/policy.test.mjs",
+    "test:auth-policy": "node --test src/auth/policy.test.mjs src/auth/account-policy.test.mjs",
     "payload": "node scripts/payload.mjs",
     "bootstrap:admin": "node scripts/payload.mjs run scripts/bootstrap-admin.ts",
-    "test:cms": "node --env-file=.env.local scripts/verify-cms.mjs"
+    "test:cms": "node --env-file=.env.local scripts/verify-cms.mjs",
+    "test:accounts": "node --env-file=.env.local scripts/verify-accounts.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.92.0",

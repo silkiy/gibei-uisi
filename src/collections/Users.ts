@@ -1,9 +1,15 @@
-import { Forbidden, type CollectionConfig } from 'payload';
-import { canCreateAccount, isActiveAdmin, isActiveUser } from '../auth/policy';
+import { type CollectionConfig } from 'payload';
+import { isActiveAdmin, isActiveUser } from '../auth/policy';
+import { accountHooks } from '../auth/account-hooks';
 
 export const Users: CollectionConfig = {
   slug: 'users',
   admin: { useAsTitle: 'name' },
+  disableBulkEdit: true,
+  disableDuplicate: true,
+  // Account writes are serialized by accountHooks; Payload's document lock reads
+  // outside the active transaction and can exhaust the deliberately small pool.
+  lockDocuments: false,
   auth: {
     useSessions: true,
     tokenExpiration: 7200,
@@ -16,19 +22,11 @@ export const Users: CollectionConfig = {
     admin: ({ req }) => isActiveUser(req.user),
     create: ({ req }) => isActiveAdmin(req.user),
     read: ({ req }) => isActiveAdmin(req.user) || (isActiveUser(req.user) ? { id: { equals: req.user!.id } } : false),
-    update: () => false,
+    update: ({ req }) => isActiveAdmin(req.user),
     delete: () => false,
-    unlock: ({ req }) => isActiveAdmin(req.user),
+    unlock: () => false,
   },
-  hooks: {
-    beforeChange: [({ operation, req, data }) => {
-      if (operation === 'create' && !canCreateAccount(req.user, req.context)) throw new Forbidden();
-      return data;
-    }],
-    beforeLogin: [({ user }) => {
-      if (!isActiveUser(user)) throw new Forbidden();
-    }],
-  },
+  hooks: accountHooks,
   fields: [
     { name: 'name', type: 'text', required: true },
     { name: 'role', type: 'select', required: true, defaultValue: 'media', options: ['admin', 'media'], saveToJWT: true },

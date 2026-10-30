@@ -64,4 +64,4 @@ PRD §11, matriks T002 dan T005 diselaraskan. Docker yang dilaporkan sudah terpa
 
 **T006 selesai pada 30 Oktober 2026.** [Laporan T006](reports/T006.md) membuktikan adapter/schema privat, migration, bootstrap satu Admin demo, login/logout API/browser serta penolakan akses anonim. DOMPurify dipatok ke patch aman 3.4.17 setelah audit; GraphQL tetap tidak diaktifkan. Akun demo tidak dianggap identitas Admin resmi organisasi.
 
-**T007 siap dikerjakan.** CP-02 ditinjau. Kontrol akun/sesi lengkap dan audit perubahan akun masih T007; transaksi workflow/locking serta gateway file tetap dibuktikan sebelum T025. Temuan dependency tersisa, advisor bawaan dan TLS internal provider tidak dinyatakan telah selesai diaudit.
+**T007 selesai pada 30 Oktober 2026; T008 siap dikerjakan.** [Laporan T007](reports/T007.md) membuktikan kontrol akun/sesi, Admin terakhir pada request bersamaan, reset lokal dan audit atomik. Penghapusan akun tetap ditutup sesuai MVP. CP-02 ditinjau; transaksi workflow/locking serta gateway file tetap dibuktikan sebelum T025. Temuan dependency tersisa, advisor bawaan dan TLS internal provider tidak dinyatakan telah selesai diaudit.

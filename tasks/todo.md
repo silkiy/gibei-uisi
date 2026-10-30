@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status per 30 Oktober 2026:** T001–T006 selesai; CP-01 dan CP-02 ditinjau. Payload, bootstrap Admin dan login/logout localhost telah diverifikasi pada [laporan T006](../docs/reports/T006.md). T007 siap dikerjakan untuk kontrol akun/sesi lengkap. Workflow editorial belum diimplementasikan.
+**Status per 30 Oktober 2026:** T001–T007 selesai; CP-01 dan CP-02 ditinjau. Kontrol akun/sesi, Admin terakhir, reset lokal dan audit terverifikasi pada [laporan T007](../docs/reports/T007.md). T008 siap dikerjakan untuk harness uji umum. Workflow editorial belum diimplementasikan.
 
 ## Cara menggunakan checklist
 
@@ -157,7 +157,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 ### T007
 
-- [ ] **Batasi pengelolaan akun dan sesi**
+- [x] **Batasi pengelolaan akun dan sesi**
 
 **Hasil:** Terapkan kontrol role/status akun, perlindungan Admin terakhir, serta reset password lokal oleh Admin.
 
@@ -168,13 +168,13 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Kriteria selesai:**
 
-- [ ] Hanya Admin dapat membuat akun, mengubah role/status, atau melakukan reset lokal.
-- [ ] Akun nonaktif ditolak pada request berikutnya termasuk sesi lama; Admin aktif terakhir tidak dapat dihapus/diturunkan/nonaktif.
-- [ ] Perubahan akun diaudit tanpa password/token.
+- [x] Hanya Admin dapat membuat akun, mengubah role/status, atau melakukan reset lokal.
+- [x] Akun nonaktif ditolak pada request berikutnya termasuk sesi lama; Admin aktif terakhir tidak dapat dihapus/diturunkan/nonaktif.
+- [x] Perubahan akun diaudit tanpa password/token.
 
 **Verifikasi:** Uji API sebagai pengunjung, Media, dan Admin; uji dua perubahan Admin bersamaan dan sesi yang sudah login.
 
-**Bukti/status:** Siap dikerjakan setelah T006 dan CP-02 selesai pada 30 Oktober 2026. Update/delete akun masih ditutup; pembukaan operasi wajib disertai aturan Admin terakhir, akun nonaktif, reset lokal dan audit sesuai kriteria di atas.
+**Bukti/status:** Selesai 30 Oktober 2026 melalui T007.1 (kebijakan/transaksi), T007.2 (audit/migration) dan T007.3 (verifikasi/dokumentasi). [Laporan T007](../docs/reports/T007.md) mencatat API dan Local API, sesi nonaktif/lama, reset lokal, race Admin 200/409, rollback saat audit gagal, izin append-only database, serta browser dan pemeriksaan statis/build. Akun pengembangan tetap satu Admin aktif; schema uji dibersihkan. Penghapusan permanen tetap ditolak sesuai PRD. T008 siap dikerjakan.
 
 ### T008
 
@@ -194,7 +194,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Verifikasi:** Jalankan satu tes bermakna di tiap lapisan dan pastikan target database terisolasi sebelum cleanup.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Siap dikerjakan setelah T007 selesai pada 30 Oktober 2026. Suite akun terarah T007 sudah tersedia; harness umum unit/integration/e2e dan fixture dua Media tetap perlu diselesaikan pada tugas ini.
 
 ### T009
 

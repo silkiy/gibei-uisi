@@ -85,4 +85,28 @@ Runner resmi Payload dipakai untuk bootstrap agar koneksi heartbeat adapter sele
 
 Config memakai schemaName=payload, push=false, transaksi aktif, dan disableCreateDatabase=true. Aplikasi memakai CA publik pada path statis `certs/supabase-prod-ca-2021.crt` agar build hanya menelusuri berkas tersebut; tooling pemeriksaan database tetap mendukung DATABASE_CA_FILE. Jangan mengganti CA untuk menghindari error verifikasi.
 
-Pendaftaran first-user web dan endpoint email recovery sengaja ditutup. Email adapter tidak mengirim maupun mencetak reset token. Login memakai cookie HttpOnly/SameSite Lax, sesi database 7200 detik dan maksimal lima login salah sebelum lock 15 menit. Token tidak dikembalikan lewat JSON. Update/delete users sementara ditolak sampai T007 menyediakan kontrol Admin terakhir, reset lokal dan audit. GraphQL tidak diaktifkan; temuan dependency yang tersisa dijelaskan pada [laporan T006](reports/T006.md).
+Pendaftaran first-user web dan endpoint email recovery sengaja ditutup. Email adapter tidak mengirim maupun mencetak reset token. Login memakai cookie HttpOnly/SameSite Lax, sesi database 7200 detik dan maksimal lima login salah sebelum lock 15 menit. Token tidak dikembalikan lewat JSON. T007 membuka pengelolaan akun sesuai prosedur berikut. GraphQL tidak diaktifkan; temuan dependency yang tersisa dijelaskan pada [laporan T006](reports/T006.md).
+
+## Akun, reset lokal dan pengujian — T007
+
+Masuk sebagai Admin aktif → Users → Create New untuk menambahkan akun. Pada akun yang ada, ubah role/status/nama/email sesuai kebutuhan. Untuk reset lokal, gunakan Change Password di form akun, isi password baru 16–256 karakter beserta konfirmasi, lalu simpan. Password diserahkan melalui saluran pribadi. Tidak ada pengiriman email pemulihan. Akun terkunci login perlu menunggu lock 15 menit berakhir; manual unlock bawaan ditutup.
+
+Perubahan role/status/email/password mencabut semua sesi target; login ulang diperlukan. Jika mereset password Admin bootstrap, perbarui BOOTSTRAP_ADMIN_PASSWORD lokal untuk menjalankan `test:cms`; bootstrap tidak menyinkronkan atau menimpa password yang sudah ada. Jangan menonaktifkan/menurunkan Admin aktif terakhir: server menolak dengan 409. Akun tidak dihapus permanen pada MVP; gunakan status inactive. Media tidak dapat mengubah akun/password sendiri. Riwayat tersedia untuk Admin di Account Audit dan tidak dapat diedit/dihapus.
+
+`pnpm test:accounts` adalah suite T007 terarah pada schema sementara, port 3200. Hentikan dev server proyek sebelum menjalankannya karena menggunakan direktori build dev yang sama. Jangan hentikan proses milik aplikasi lain.
+
+Operator database menyediakan **schema baru kosong** berformat `payload_test_t007_<12 hex>` dengan owner gibei_migrator, melalui koneksi operator/integrasi Supabase. Contoh SQL berikut hanya template; ganti suffix dengan 12 digit hex baru, lalu gunakan nama persis yang dibuat. Jangan memakai schema yang telah berisi data.
+
+```sql
+CREATE SCHEMA payload_test_t007_012345abcdef AUTHORIZATION gibei_migrator;
+REVOKE ALL ON SCHEMA payload_test_t007_012345abcdef FROM PUBLIC, anon, authenticated;
+```
+
+```powershell
+$env:T007_TEST_SCHEMA = 'payload_test_t007_012345abcdef'
+pnpm test:accounts
+Remove-Item Env:T007_TEST_SCHEMA
+pnpm dev
+```
+
+Suite memeriksa nama, ownership dan tabel kosong, menjalankan fixture terisolasi dan menghapus schema tersebut pada cleanup. Buat schema baru lagi untuk menjalankan ulang; gibei_migrator sengaja tidak diberi CREATE pada database. Jangan simpan CMS_TEST_SCHEMA di `.env.local`; runner meneruskannya hanya ke child test dan config menolak override ini pada mode produksi. Wrapper CLI mengizinkan `verify-account-local.ts` hanya pada schema uji tersebut. T008 tetap menyediakan harness umum unit/integration/e2e dan fixture editorial.
