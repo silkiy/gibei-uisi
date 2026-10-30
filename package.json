@@ -2,6 +2,7 @@
   "name": "gibei-uisi",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "packageManager": "pnpm@10.24.0",
   "engines": {
     "node": "24.22.1"
@@ -15,13 +16,25 @@
     "db:check": "node --env-file=.env.local scripts/database/check.mjs",
     "db:provision": "node --env-file=.env.local scripts/database/provision.mjs",
     "db:verify": "node --env-file=.env.local scripts/database/verify.mjs",
-    "test:db-config": "node --test scripts/database/config.test.mjs"
+    "test:db-config": "node --test scripts/database/config.test.mjs",
+    "test:auth-policy": "node --test src/auth/policy.test.mjs",
+    "payload": "node scripts/payload.mjs",
+    "bootstrap:admin": "node scripts/payload.mjs run scripts/bootstrap-admin.ts",
+    "test:cms": "node --env-file=.env.local scripts/verify-cms.mjs"
   },
   "dependencies": {
+    "@payloadcms/db-postgres": "3.92.0",
+    "@payloadcms/next": "3.92.0",
+    "graphql": "16.14.2",
     "next": "16.4.2",
+    "payload": "3.92.0",
     "pg": "8.23.1",
     "react": "19.3.1",
-    "react-dom": "19.3.1"
+    "react-dom": "19.3.1",
+    "sharp": "0.35.5"
+  },
+  "pnpm": {
+    "overrides": { "dompurify": "3.4.17" }
   },
   "devDependencies": {
     "@types/node": "24.10.1",
@@ -30,6 +43,7 @@
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.2",
     "supabase": "2.122.0",
+    "tsx": "4.23.15",
     "typescript": "5.9.3"
   }
 }

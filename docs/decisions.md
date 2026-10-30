@@ -3,7 +3,7 @@
 **Tanggal persetujuan:** 23 Oktober 2026 (Asia/Jakarta)  
 **Pihak penentu:** Pemilik proyek, melalui percakapan proyek ini  
 **Acuan:** [PRD v1.1 §18](PRD-v1.1.md#18-decision-register--open-questions)  
-**Status tugas per 26 Oktober 2026:** T001–T005 selesai; CP-01 ditinjau dan T006 siap dikerjakan berikutnya.
+**Status tugas per 30 Oktober 2026:** T001–T006 selesai; CP-01/CP-02 ditinjau dan T007 siap dikerjakan berikutnya.
 
 ## Bukti dan cakupan persetujuan
 
@@ -62,4 +62,6 @@ PRD §11, matriks T002 dan T005 diselaraskan. Docker yang dilaporkan sudah terpa
 
 **T005 selesai pada 26 Oktober 2026.** [Laporan T005](reports/T005.md) mencatat koneksi PostgreSQL 17.11 dari localhost, TLS client, role/schema privat, migration dan pengujian transaksi/persistensi. Kredensial runtime/migrasi dipisahkan dan hanya disimpan lokal. Batas TLS internal pooler dan dua warning advisor bawaan tetap dicatat untuk audit berikutnya.
 
-**T006 siap dikerjakan:** integrasi adapter Payload dan login CMS. Risiko transaksi workflow/locking, schema adapter experimental dan gateway file masih harus dibuktikan sebelum alur artikel T025 dinyatakan selesai.
+**T006 selesai pada 30 Oktober 2026.** [Laporan T006](reports/T006.md) membuktikan adapter/schema privat, migration, bootstrap satu Admin demo, login/logout API/browser serta penolakan akses anonim. DOMPurify dipatok ke patch aman 3.4.17 setelah audit; GraphQL tetap tidak diaktifkan. Akun demo tidak dianggap identitas Admin resmi organisasi.
+
+**T007 siap dikerjakan.** CP-02 ditinjau. Kontrol akun/sesi lengkap dan audit perubahan akun masih T007; transaksi workflow/locking serta gateway file tetap dibuktikan sebelum T025. Temuan dependency tersisa, advisor bawaan dan TLS internal provider tidak dinyatakan telah selesai diaudit.

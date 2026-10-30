@@ -1,0 +1,33 @@
+import assert from 'node:assert/strict';
+
+const base = process.env.SERVER_URL || 'http://127.0.0.1:3000';
+const headers = { 'Content-Type': 'application/json', Origin: base };
+const credentials = { email: process.env.BOOTSTRAP_ADMIN_EMAIL, password: process.env.BOOTSTRAP_ADMIN_PASSWORD };
+assert.ok(credentials.email && credentials.password, 'Local bootstrap credentials required');
+const request = (path, options = {}) => fetch(base + path, { ...options, headers: { ...headers, ...options.headers } });
+
+assert.equal((await request('/api/users')).status, 403);
+assert.equal((await request('/api/users/first-register', { method: 'POST', body: JSON.stringify(credentials) })).status, 403);
+const wrong = await request('/api/users/login', { method: 'POST', body: JSON.stringify({ ...credentials, password: 'incorrect-test-password' }) });
+assert.equal(wrong.status, 401);
+const login = await request('/api/users/login', { method: 'POST', body: JSON.stringify(credentials) });
+assert.equal(login.status, 200);
+const result = await login.json();
+assert.equal(result.user.role, 'admin');
+assert.ok(result.token === undefined, 'Token must not be returned in JSON');
+for (const field of ['hash', 'salt', 'password', 'resetPasswordToken']) assert.ok(result.user[field] === undefined, 'Sensitive user field must not be returned');
+const cookieHeader = login.headers.getSetCookie().find(value => value.startsWith('payload-token='));
+assert.ok(cookieHeader?.includes('HttpOnly'));
+assert.ok(/SameSite=Lax/i.test(cookieHeader), 'Cookie must use SameSite Lax');
+const cookie = cookieHeader.split(';')[0];
+const users = await request('/api/users', { headers: { Cookie: cookie } });
+assert.equal(users.status, 200);
+const usersResult = await users.json();
+assert.ok(usersResult.totalDocs >= 1 && usersResult.docs.some(user => user.id === result.user.id), 'Authenticated Admin must be present in permitted account list');
+assert.equal((await request('/api/users/logout', { method: 'POST', headers: { Cookie: cookie, Origin: 'https://attacker.invalid' } })).status, 403);
+const logout = await request('/api/users/logout', { method: 'POST', headers: { Cookie: cookie } });
+assert.equal(logout.status, 200);
+assert.equal((await request('/api/users', { headers: { Cookie: cookie } })).status, 403);
+assert.equal((await request('/admin/create-first-user')).status, 404);
+assert.equal((await request('/api/graphql', { method: 'POST', body: JSON.stringify({ query: '{__schema{types{name}}}' }) })).status, 404);
+console.log(JSON.stringify({ status: 'passed', login: true, logout: true, revokedSessionRejected: true, httpOnly: true, sameSite: 'Lax', tokenInJson: false, crossOriginDenied: true, anonymousUsersDenied: true, firstRegisterDenied: true, graphQLDisabled: true, accountCount: usersResult.totalDocs }));

@@ -1,6 +1,6 @@
 # Setup localhost dan PostgreSQL Supabase
 
-Terakhir diverifikasi: **26 Oktober 2026**. Runtime Node 24.22.1, pnpm 10.24.0; langkah aplikasi ada di [README](../README.md). T005 menyiapkan koneksi dan fondasi database. Integrasi Payload, users dan login mengikuti T006.
+Terakhir diverifikasi: **30 Oktober 2026**. Runtime Node 24.22.1, pnpm 10.24.0; langkah aplikasi ada di [README](../README.md). Fondasi database T005 serta integrasi Payload/login T006 sudah diverifikasi. Pengelolaan akun lengkap mengikuti T007.
 
 ## Environment server
 
@@ -63,3 +63,26 @@ Data uji T005 diisolasi secara logis pada schema/tabel privat dalam proyek yang 
 Client localhost → Session pooler terbukti terenkripsi dengan certificate authorized. `pg_stat_ssl` pada backend melaporkan **false** untuk leg internal pooler → PostgreSQL; ini berbeda dari TLS client. Pengaturan SSL enforcement seluruh proyek belum diubah karena dapat memicu reboot database. Jangan mengklaim TLS end-to-end atau readiness produksi dari hasil ini. [SSL enforcement Supabase](https://supabase.com/docs/guides/platform/ssl-enforcement).
 
 Dua warning advisor pada fungsi `public.rls_auto_enable()` sudah ada sebelum T005 dan tetap ada sesudahnya. Fungsi mengembalikan event_trigger; akses EXECUTE yang dilaporkan perlu ditinjau pada audit keamanan T053, tanpa menyimpulkan RPC dapat dieksploitasi atau mengubah fungsi bawaan secara sembarang. [Temuan anon](https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable), [temuan authenticated](https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable).
+
+## Payload dan Admin localhost — T006
+
+Gunakan `http://127.0.0.1:3000/admin`. SERVER_URL harus sama dengan origin browser; default 127.0.0.1:3000. Jika mengganti hostname/port, isi SERVER_URL di `.env.local` dan restart server. Origin asing ditolak pada mutasi. HTTP hanya untuk loopback; non-local CMS membutuhkan HTTPS dan cookie Secure.
+
+```powershell
+pnpm payload generate:types
+pnpm payload generate:importmap
+pnpm payload migrate:status
+pnpm bootstrap:admin
+pnpm test:auth-policy
+pnpm test:cms
+```
+
+Untuk target baru sesudah fondasi T005 tersedia, jalankan `pnpm payload migrate` sebelum bootstrap. Command migration memakai role gibei_migrator; web server dan bootstrap memakai gibei_runtime. Migration Payload berada di `src/migrations` dan dicatat di payload.payload_migrations, terpisah dari bootstrap Supabase di `supabase/migrations`. Jangan menerapkan SQL migration Payload sekali lagi melalui Supabase CLI/MCP, atau memakai reset/down/fresh pada target ini. Wrapper hanya menyediakan command yang ditinjau serta satu skrip bootstrap lokal.
+
+Admin demo pertama telah dibuat. Kredensial ada pada BOOTSTRAP_ADMIN_EMAIL dan BOOTSTRAP_ADMIN_PASSWORD dalam `.env.local`; password acak tidak dicetak ke terminal/chat. Pada checkout baru, siapkan credential lokal dengan password acak minimal 16 karakter, tanpa mengubah akun yang sudah ada. `bootstrap:admin` menggunakan lock PostgreSQL dan hanya create jika belum ada akun; rerun tidak mereset password/role. Jika environment credential tidak lagi sesuai akun, jangan memaksa bootstrap; pemulihan dilakukan melalui prosedur Admin T007.
+
+Runner resmi Payload dipakai untuk bootstrap agar koneksi heartbeat adapter selesai bersama proses CLI. Kegagalan melempar error tersanitasi dan menghasilkan exit nonzero. Jalankan melalui script package, bukan memanggil file TypeScript bootstrap langsung dengan Node.
+
+Config memakai schemaName=payload, push=false, transaksi aktif, dan disableCreateDatabase=true. Aplikasi memakai CA publik pada path statis `certs/supabase-prod-ca-2021.crt` agar build hanya menelusuri berkas tersebut; tooling pemeriksaan database tetap mendukung DATABASE_CA_FILE. Jangan mengganti CA untuk menghindari error verifikasi.
+
+Pendaftaran first-user web dan endpoint email recovery sengaja ditutup. Email adapter tidak mengirim maupun mencetak reset token. Login memakai cookie HttpOnly/SameSite Lax, sesi database 7200 detik dan maksimal lima login salah sebelum lock 15 menit. Token tidak dikembalikan lewat JSON. Update/delete users sementara ditolak sampai T007 menyediakan kontrol Admin terakhir, reset lokal dan audit. GraphQL tidak diaktifkan; temuan dependency yang tersisa dijelaskan pada [laporan T006](reports/T006.md).

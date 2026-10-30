@@ -1,6 +1,6 @@
 # GIBEI UISI
 
-Kerangka website localhost dengan Next.js App Router dan TypeScript. Halaman awal adalah penanda pengembangan. Fondasi PostgreSQL Supabase sudah diverifikasi; integrasi Payload/CMS mengikuti T006. Kebutuhan produk: [PRD](docs/PRD-v1.1.md). Status: [backlog](tasks/todo.md).
+Website localhost dengan Next.js App Router, TypeScript dan Payload. Halaman publik masih penanda pengembangan; bootstrap Admin/login CMS sudah diverifikasi pada T006. Kebutuhan produk: [PRD](docs/PRD-v1.1.md). Status: [backlog](tasks/todo.md).
 
 ## Menjalankan
 
@@ -33,6 +33,8 @@ pnpm start
 - `docs/technical/`: stack dan kontrak editorial/media.
 - `.env.example`: placeholder server untuk tahap database/CMS. Kerangka saat ini berjalan tanpa secret atau koneksi database.
 
-Ikuti [panduan database](docs/setup.md) untuk `.env.local`, koneksi Session pooler, CA TLS, role runtime/migrasi dan bootstrap target baru. Jalankan `pnpm db:check`, `pnpm db:verify` serta `pnpm test:db-config` untuk verifikasi. Jangan menaruh kredensial di `NEXT_PUBLIC_*` atau commit `.env.local`. T006 menambahkan Payload; PAYLOAD_SECRET tetap hanya di environment server. File upload, runtime portable, dependency dan output build diabaikan Git.
+Ikuti [panduan setup](docs/setup.md) untuk database, migration Payload dan bootstrap Admin. CMS: `http://127.0.0.1:3000/admin`; gunakan kredensial BOOTSTRAP_ADMIN_EMAIL/BOOTSTRAP_ADMIN_PASSWORD pada `.env.local`. Jangan membagikan nilainya di chat atau Git. `pnpm bootstrap:admin` tidak menimpa akun yang sudah ada; `pnpm test:cms` memeriksa login/logout pada server berjalan. Pengelolaan akun lengkap mengikuti T007.
+
+Jalankan `pnpm db:check`, `pnpm db:verify`, `pnpm test:db-config` dan `pnpm test:auth-policy` untuk pemeriksaan terkait. Jangan menaruh kredensial di `NEXT_PUBLIC_*`; PAYLOAD_SECRET hanya di environment server. File upload, runtime portable, dependency dan output build diabaikan Git. Temuan audit yang tersisa dan batas verifikasi tercatat pada [laporan T006](docs/reports/T006.md).
 
 CSS awal sengaja sederhana; Tailwind dan fondasi visual dibangun pada T009. Robot metadata disetel noindex/nofollow untuk pratinjau. Situs belum diterbitkan ke internet.

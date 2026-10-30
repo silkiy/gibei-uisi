@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status per 26 Oktober 2026:** T001–T005 selesai dan CP-01 ditinjau; T006 siap dikerjakan. Kerangka Next.js serta fondasi PostgreSQL Supabase telah diverifikasi, dengan bukti [T004](../docs/reports/T004.md) dan [T005](../docs/reports/T005.md). Integrasi Payload/CMS belum diimplementasikan. [Stack](../docs/technical/stack.md) dan kontrak T003 tetap menjadi acuan.
+**Status per 30 Oktober 2026:** T001–T006 selesai; CP-01 dan CP-02 ditinjau. Payload, bootstrap Admin dan login/logout localhost telah diverifikasi pada [laporan T006](../docs/reports/T006.md). T007 siap dikerjakan untuk kontrol akun/sesi lengkap. Workflow editorial belum diimplementasikan.
 
 ## Cara menggunakan checklist
 
@@ -129,7 +129,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 ### T006
 
-- [ ] **Aktifkan Payload dan login CMS**
+- [x] **Aktifkan Payload dan login CMS**
 
 **Hasil:** Pasang Payload dalam aplikasi dan buat users dengan role admin/media serta bootstrap Admin yang terlindungi.
 
@@ -140,18 +140,20 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Kriteria selesai:**
 
-- [ ] Admin awal dibuat lewat prosedur lokal aman tanpa password tetap atau pendaftaran publik bebas.
-- [ ] Login/logout bekerja; pengunjung tanpa login tidak mendapat akses CMS privat.
+- [x] Admin awal dibuat lewat prosedur lokal aman tanpa password tetap atau pendaftaran publik bebas.
+- [x] Login/logout bekerja; pengunjung tanpa login tidak mendapat akses CMS privat.
 
 **Verifikasi:** Login/logout dari browser dan request langsung; uji first-user/bootstrap setelah akun Admin sudah ada.
 
-**Bukti/status:** Siap dikerjakan setelah T005 selesai pada 26 Oktober 2026. Gunakan role runtime/migration, CA dan schema privat dari [setup](../docs/setup.md); buktikan adapter Payload serta login pada tugas ini. Kriteria T006 belum dikerjakan.
+**Bukti/status:** Selesai 30 Oktober 2026. T006.1 (integrasi/migration), T006.2 (bootstrap/auth) dan T006.3 (verifikasi) dipisahkan karena lingkup melampaui lima berkas. [Laporan T006](../docs/reports/T006.md) mencatat schema privat, migration Payload, satu Admin demo, bootstrap ulang skip, request anonim ditolak, login/logout API/browser, cookie/sesi, Data API 406 serta lint/typecheck/build. Audit: DOMPurify dipatch; GraphQL high yang tersisa dibatasi oleh GraphQL nonaktif, temuan lain dicatat untuk T053. Bukan kesiapan produksi.
 
 #### CP-02 — setelah T006
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+
+**Bukti CP-02 — 30 Oktober 2026:** laporan T004/T005/T006 tersedia. Regresi database, kebijakan akun dan konfigurasi lulus; API/browser dev serta hasil produksi lulus; halaman publik tetap berjalan. T007 (kontrol akun lengkap), T008 (harness/fixture) dan T053 (audit menyeluruh) tetap belum selesai. Batas TLS internal serta warning advisor T005 dipertahankan; perubahan whitespace pengguna pada migration T005 tidak ikut pekerjaan ini.
 
 ### T007
 
@@ -172,7 +174,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Verifikasi:** Uji API sebagai pengunjung, Media, dan Admin; uji dua perubahan Admin bersamaan dan sesi yang sudah login.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Siap dikerjakan setelah T006 dan CP-02 selesai pada 30 Oktober 2026. Update/delete akun masih ditutup; pembukaan operasi wajib disertai aturan Admin terakhir, akun nonaktif, reset lokal dan audit sesuai kriteria di atas.
 
 ### T008
 

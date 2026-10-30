@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status per 26 Oktober 2026:** T001–T005 selesai, CP-01 ditinjau dan T006 siap dikerjakan. Kerangka aplikasi dan fondasi PostgreSQL Supabase telah diverifikasi; integrasi Payload/CMS belum tersedia. Status ada di [todo.md](todo.md), bukti implementasi di [T004](../docs/reports/T004.md) dan [T005](../docs/reports/T005.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
+**Status per 30 Oktober 2026:** T001–T006 selesai, CP-01/CP-02 ditinjau dan T007 siap dikerjakan. Payload, bootstrap Admin dan login/logout sudah diverifikasi; workflow editorial belum tersedia. Status ada di [todo.md](todo.md), bukti terbaru di [laporan T006](../docs/reports/T006.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
 
 ## Tujuan dan kondisi awal
 
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**T001–T005 selesai; CP-01 ditinjau. Langkah berikutnya T006:** integrasikan Payload dengan schema/role yang disiapkan, buktikan migration adapter dan login CMS. Laporan T005 membuktikan koneksi PostgreSQL/transaksi, bukan workflow CMS.
+**T001–T006 selesai; CP-01/CP-02 ditinjau. Langkah berikutnya T007:** lengkapi kontrol akun/sesi, Admin terakhir, reset lokal dan audit. Login CMS yang lulus pada T006 belum membuktikan workflow editorial atau kesiapan produksi.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 
