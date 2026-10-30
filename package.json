@@ -21,7 +21,11 @@
     "payload": "node scripts/payload.mjs",
     "bootstrap:admin": "node scripts/payload.mjs run scripts/bootstrap-admin.ts",
     "test:cms": "node --env-file=.env.local scripts/verify-cms.mjs",
-    "test:accounts": "node --env-file=.env.local scripts/verify-accounts.mjs"
+    "test:accounts": "node --env-file=.env.local scripts/verify-accounts.mjs",
+    "test:unit": "node --test src/auth/*.test.mjs scripts/database/config.test.mjs tests/unit/*.test.mjs",
+    "test:integration": "node scripts/run-tests.mjs integration",
+    "test:e2e": "node scripts/run-tests.mjs e2e",
+    "test:all": "pnpm test:unit && node scripts/run-tests.mjs all"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.92.0",
@@ -35,9 +39,12 @@
     "sharp": "0.35.5"
   },
   "pnpm": {
-    "overrides": { "dompurify": "3.4.17" }
+    "overrides": {
+      "dompurify": "3.4.17"
+    }
   },
   "devDependencies": {
+    "@playwright/test": "1.64.1",
     "@types/node": "24.10.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",

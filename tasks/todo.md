@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status per 30 Oktober 2026:** T001–T007 selesai; CP-01 dan CP-02 ditinjau. Kontrol akun/sesi, Admin terakhir, reset lokal dan audit terverifikasi pada [laporan T007](../docs/reports/T007.md). T008 siap dikerjakan untuk harness uji umum. Workflow editorial belum diimplementasikan.
+**Status per 30 Oktober 2026:** T001–T008 selesai; CP-01 dan CP-02 ditinjau. Harness unit/integration/e2e, fixture Admin/dua Media serta database lokal terpisah terverifikasi pada [laporan T008](../docs/reports/T008.md). T009 siap dikerjakan untuk fondasi visual. Workflow editorial belum diimplementasikan.
 
 ## Cara menggunakan checklist
 
@@ -178,7 +178,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 ### T008
 
-- [ ] **Siapkan harness uji izin dan browser**
+- [x] **Siapkan harness uji izin dan browser**
 
 **Hasil:** Buat fixture Admin, dua Media, database uji terpisah, dan browser runner untuk membuktikan aturan berikutnya.
 
@@ -189,12 +189,12 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Kriteria selesai:**
 
-- [ ] Scripts test:unit, test:integration, dan test:e2e tersedia dengan isolasi data uji.
-- [ ] Ada smoke test login serta fixture request terautentikasi dan anonim; reset data tidak menyentuh database non-uji.
+- [x] Scripts test:unit, test:integration, dan test:e2e tersedia dengan isolasi data uji.
+- [x] Ada smoke test login serta fixture request terautentikasi dan anonim; reset data tidak menyentuh database non-uji.
 
 **Verifikasi:** Jalankan satu tes bermakna di tiap lapisan dan pastikan target database terisolasi sebelum cleanup.
 
-**Bukti/status:** Siap dikerjakan setelah T007 selesai pada 30 Oktober 2026. Suite akun terarah T007 sudah tersedia; harness umum unit/integration/e2e dan fixture dua Media tetap perlu diselesaikan pada tugas ini.
+**Bukti/status:** Selesai 30 Oktober 2026 melalui T008.1 (runner/unit/guard), T008.2 (database/fixture API), T008.3 (browser/verifikasi/dokumentasi). [Laporan T008](../docs/reports/T008.md) mencatat 10 unit, 3 integration dan 3 e2e lulus pada database PostgreSQL 17.11 lokal baru dengan fixture Admin/dua Media. Guard reset dan cleanup lulus; akun pengembangan Supabase tidak berubah. Docker engine belum aktif; backend native portable yang diverifikasi dipakai. [Panduan pengujian](../docs/testing.md) memuat cara menjalankan. T009 siap dikerjakan.
 
 ### T009
 
@@ -214,7 +214,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Verifikasi:** Periksa di browser pada 320/375/1024 px, keyboard, dan reduced motion; build aplikasi.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Siap dikerjakan setelah T008 selesai pada 30 Oktober 2026. Fondasi warna/font, layout, navigasi dan verifikasi responsif/keyboard tetap dalam lingkup tugas ini.
 
 #### CP-03 — setelah T009
 

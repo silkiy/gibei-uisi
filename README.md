@@ -1,6 +1,6 @@
 # GIBEI UISI
 
-Website localhost dengan Next.js App Router, TypeScript dan Payload. Halaman publik masih penanda pengembangan; login CMS serta kontrol akun/sesi dan audit sudah diverifikasi sampai T007. Kebutuhan produk: [PRD](docs/PRD-v1.1.md). Status: [backlog](tasks/todo.md).
+Website localhost dengan Next.js App Router, TypeScript dan Payload. Halaman publik masih penanda pengembangan; CMS dan harness uji terisolasi sudah diverifikasi sampai T008. Kebutuhan produk: [PRD](docs/PRD-v1.1.md). Status: [backlog](tasks/todo.md).
 
 ## Menjalankan
 
@@ -25,7 +25,9 @@ pnpm build
 pnpm start
 ```
 
-`start` menjalankan hasil build produksi, bukan dev server. Hentikan server sebelumnya atau gunakan `pnpm start --port 3200`. `typecheck` menghasilkan tipe route terlebih dahulu sehingga dapat dijalankan sebelum build. Skrip pengujian unit/integration/e2e ditambahkan pada T008.
+`start` menjalankan hasil build produksi, bukan dev server. Hentikan server sebelumnya atau gunakan `pnpm start --port 3200`. `typecheck` menghasilkan tipe route terlebih dahulu sehingga dapat dijalankan sebelum build.
+
+Pengujian: `pnpm test:unit`, `pnpm test:integration`, `pnpm test:e2e`, atau `pnpm test:all`. Fixture mencakup Admin dan dua Media pada database lokal baru yang dihapus setelah tes. Lihat [panduan pengujian](docs/testing.md) untuk Docker/PostgreSQL portable dan pemasangan Chromium. Harness memakai port acak dan `.next-test`, sehingga server utama dapat tetap berjalan.
 
 ## Struktur dan environment
 
@@ -33,7 +35,7 @@ pnpm start
 - `docs/technical/`: stack dan kontrak editorial/media.
 - `.env.example`: placeholder konfigurasi server; aplikasi/CMS memerlukan `.env.local`, secret dan koneksi database.
 
-Ikuti [panduan setup](docs/setup.md) untuk database, migration Payload dan bootstrap Admin. CMS: `http://127.0.0.1:3000/admin`; gunakan kredensial BOOTSTRAP_ADMIN_EMAIL/BOOTSTRAP_ADMIN_PASSWORD pada `.env.local`. Jangan membagikan nilainya di chat atau Git. `pnpm bootstrap:admin` tidak menimpa akun yang sudah ada; `pnpm test:cms` memeriksa login/logout pada server berjalan. Admin mengelola akun/reset lokal lewat Users; perubahan role/status/email/password memerlukan login ulang target. Audit tersedia di Account Audit. [Laporan T007](docs/reports/T007.md) memuat bukti dan batasnya. T008 siap dikerjakan.
+Ikuti [panduan setup](docs/setup.md) untuk database, migration Payload dan bootstrap Admin. CMS: `http://127.0.0.1:3000/admin`; gunakan kredensial BOOTSTRAP_ADMIN_EMAIL/BOOTSTRAP_ADMIN_PASSWORD pada `.env.local`. Jangan membagikan nilainya di chat atau Git. `pnpm bootstrap:admin` tidak menimpa akun yang sudah ada; `pnpm test:cms` memeriksa login/logout pada server berjalan. Admin mengelola akun/reset lokal lewat Users; perubahan role/status/email/password memerlukan login ulang target. Audit tersedia di Account Audit. [Laporan T007](docs/reports/T007.md) dan [T008](docs/reports/T008.md) memuat bukti dan batasnya. T009 siap dikerjakan.
 
 Jalankan `pnpm db:check`, `pnpm db:verify`, `pnpm test:db-config` dan `pnpm test:auth-policy` untuk pemeriksaan terkait. Jangan menaruh kredensial di `NEXT_PUBLIC_*`; PAYLOAD_SECRET hanya di environment server. File upload, runtime portable, dependency dan output build diabaikan Git. Temuan audit yang tersisa dan batas verifikasi tercatat pada [laporan T006](docs/reports/T006.md).
 

@@ -8,6 +8,7 @@ import { Users } from './collections/Users';
 import { AccountAudit } from './audit/accounts';
 import { isActiveUser } from './auth/policy';
 import { connectionConfig } from '../scripts/database/config.mjs';
+import { localTestConnection } from '../scripts/database/test-config.mjs';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const serverURL = process.env.SERVER_URL || 'http://127.0.0.1:3000';
@@ -45,7 +46,7 @@ export default buildConfig({
   }),
   graphQL: { disable: true },
   db: postgresAdapter({
-    pool: connectionConfig(process.env.DATABASE_URL, ca),
+    pool: process.env.GIBEI_TEST_RUN_ID ? localTestConnection(process.env) : connectionConfig(process.env.DATABASE_URL, ca),
     schemaName: testSchema || 'payload',
     push: false,
     disableCreateDatabase: true,

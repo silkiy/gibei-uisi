@@ -21,7 +21,7 @@ try {
       context: { [bootstrapCapability]: true },
       data: { email, password, name: 'Admin Demo Lokal', role: 'admin', status: 'active' },
     });
-    console.log('Local demo Admin created; credentials remain in .env.local');
+    console.log(process.env.GIBEI_TEST_RUN_ID ? 'Test Admin created; credentials are scoped to this test run' : 'Local demo Admin created; credentials remain in .env.local');
   }
 } catch {
   throw new Error('Admin bootstrap failed; credentials and database details omitted');

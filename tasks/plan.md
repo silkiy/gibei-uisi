@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status per 30 Oktober 2026:** T001–T007 selesai, CP-01/CP-02 ditinjau dan T008 siap dikerjakan. Payload, login serta kontrol akun/sesi dan audit sudah diverifikasi; workflow editorial belum tersedia. Status ada di [todo.md](todo.md), bukti terbaru di [laporan T007](../docs/reports/T007.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
+**Status per 30 Oktober 2026:** T001–T008 selesai, CP-01/CP-02 ditinjau dan T009 siap dikerjakan. Payload, kontrol akun/sesi dan harness uji terisolasi sudah diverifikasi; workflow editorial belum tersedia. Status ada di [todo.md](todo.md), bukti terbaru di [laporan T008](../docs/reports/T008.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
 
 ## Tujuan dan kondisi awal
 
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**T001–T007 selesai; CP-01/CP-02 ditinjau. Langkah berikutnya T008:** siapkan harness uji umum dan fixture Admin/dua Media yang terisolasi. Bukti akun T007 belum membuktikan workflow editorial atau kesiapan produksi.
+**T001–T008 selesai; CP-01/CP-02 ditinjau. Langkah berikutnya T009:** buat fondasi visual dan layout publik, lalu verifikasi responsif/keyboard. Harness T008 belum membuktikan workflow editorial atau kesiapan produksi.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 

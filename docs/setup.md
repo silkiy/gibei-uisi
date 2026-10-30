@@ -109,4 +109,8 @@ Remove-Item Env:T007_TEST_SCHEMA
 pnpm dev
 ```
 
-Suite memeriksa nama, ownership dan tabel kosong, menjalankan fixture terisolasi dan menghapus schema tersebut pada cleanup. Buat schema baru lagi untuk menjalankan ulang; gibei_migrator sengaja tidak diberi CREATE pada database. Jangan simpan CMS_TEST_SCHEMA di `.env.local`; runner meneruskannya hanya ke child test dan config menolak override ini pada mode produksi. Wrapper CLI mengizinkan `verify-account-local.ts` hanya pada schema uji tersebut. T008 tetap menyediakan harness umum unit/integration/e2e dan fixture editorial.
+Suite memeriksa nama, ownership dan tabel kosong, menjalankan fixture terisolasi dan menghapus schema tersebut pada cleanup. Buat schema baru lagi untuk menjalankan ulang; gibei_migrator sengaja tidak diberi CREATE pada database. Jangan simpan CMS_TEST_SCHEMA di `.env.local`; runner meneruskannya hanya ke child test dan config menolak override ini pada mode produksi. Wrapper CLI mengizinkan `verify-account-local.ts` hanya pada schema uji tersebut.
+
+## Harness umum — T008
+
+Untuk pengujian berikutnya gunakan `pnpm test:unit`, `pnpm test:integration`, dan `pnpm test:e2e`. [Panduan pengujian](testing.md) menjelaskan fixture Admin/dua Media, pilihan backend, guard reset, log dan isolasi browser. Harness baru menggunakan database lokal yang terpisah sepenuhnya dari Supabase, bukan schema sementara T007. Backend native portable telah disiapkan pada `.env.test.local`; file ini hanya memilih direktori binary dan tidak berisi kredensial pengembangan.

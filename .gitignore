@@ -1,5 +1,8 @@
 node_modules/
 .next/
+.next-test/
+test-results/
+playwright-report/
 out/
 dist/
 coverage/
@@ -7,6 +10,7 @@ coverage/
 .pnpm-store/
 .env*
 !.env.example
+!.env.test.example
 media/
 storage/
 *.tsbuildinfo

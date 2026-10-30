@@ -1,5 +1,6 @@
 import { readFileSync } from 'node:fs';
 import pg from 'pg';
+import { localTestConnection } from './test-config.mjs';
 
 export const projectRef = 'lgqnxvldjqzgbfyxqonx';
 
@@ -26,6 +27,7 @@ export function connectionConfig(raw, ca) {
 }
 
 export function createPool(key = 'DATABASE_URL') {
+  if (process.env.GIBEI_TEST_RUN_ID) return new pg.Pool(localTestConnection(process.env, process.env[key]));
   const ca = process.env.DATABASE_CA_FILE ? readFileSync(process.env.DATABASE_CA_FILE, 'utf8') : undefined;
   return new pg.Pool(connectionConfig(process.env[key], ca));
 }
