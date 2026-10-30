@@ -28,6 +28,7 @@
     "test:all": "pnpm test:unit && node scripts/run-tests.mjs all"
   },
   "dependencies": {
+    "@fontsource-variable/manrope": "5.3.0",
     "@payloadcms/db-postgres": "3.92.0",
     "@payloadcms/next": "3.92.0",
     "graphql": "16.14.2",
@@ -44,13 +45,17 @@
     }
   },
   "devDependencies": {
+    "@axe-core/playwright": "4.14.0",
     "@playwright/test": "1.64.1",
+    "@tailwindcss/postcss": "4.3.3",
     "@types/node": "24.10.1",
     "@types/react": "19.3.0",
     "@types/react-dom": "19.3.0",
     "eslint": "9.39.5",
     "eslint-config-next": "16.4.2",
+    "postcss": "8.5.28",
     "supabase": "2.122.0",
+    "tailwindcss": "4.3.3",
     "tsx": "4.23.15",
     "typescript": "5.9.3"
   }

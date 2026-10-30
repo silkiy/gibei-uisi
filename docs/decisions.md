@@ -3,7 +3,7 @@
 **Tanggal persetujuan:** 23 Oktober 2026 (Asia/Jakarta)  
 **Pihak penentu:** Pemilik proyek, melalui percakapan proyek ini  
 **Acuan:** [PRD v1.1 §18](PRD-v1.1.md#18-decision-register--open-questions)  
-**Status tugas per 30 Oktober 2026:** T001–T006 selesai; CP-01/CP-02 ditinjau dan T007 siap dikerjakan berikutnya.
+**Status tugas terbaru — T009:** T001–T009 selesai; CP-01/CP-02/CP-03 ditinjau dan T010 siap dikerjakan berikutnya.
 
 ## Bukti dan cakupan persetujuan
 
@@ -65,3 +65,5 @@ PRD §11, matriks T002 dan T005 diselaraskan. Docker yang dilaporkan sudah terpa
 **T006 selesai pada 30 Oktober 2026.** [Laporan T006](reports/T006.md) membuktikan adapter/schema privat, migration, bootstrap satu Admin demo, login/logout API/browser serta penolakan akses anonim. DOMPurify dipatok ke patch aman 3.4.17 setelah audit; GraphQL tetap tidak diaktifkan. Akun demo tidak dianggap identitas Admin resmi organisasi.
 
 **T007–T008 selesai pada 30 Oktober 2026; T009 siap dikerjakan.** [Laporan T007](reports/T007.md) membuktikan kontrol akun/sesi dan audit; [T008](reports/T008.md) membuktikan harness dengan database lokal baru serta fixture Admin/dua Media. Pengembangan tetap Supabase, backend test native menjadi alternatif saat Docker engine belum aktif. Penghapusan akun tetap ditutup sesuai MVP. CP-02 ditinjau; transaksi workflow/locking serta gateway file tetap dibuktikan sebelum T025. Temuan dependency tersisa, advisor bawaan dan TLS internal provider tidak dinyatakan telah selesai diaudit.
+
+**Pembaruan T009:** fondasi visual dan navigasi publik telah diverifikasi; CP-03 ditinjau, T010 siap. [Panduan desain](design.md) mencatat token dan wordmark sementara, ilustrasi konseptual serta aset/kontak yang belum final. [Laporan T009](reports/T009.md) memuat verifikasi responsif/keyboard, regresi dan audit axe terarah. Tidak ada persetujuan identitas final atau deployment yang ditambahkan oleh langkah ini.

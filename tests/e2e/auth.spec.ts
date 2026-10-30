@@ -3,7 +3,8 @@ import { test, expect } from './fixtures';
 test('anonymous visitor sees public page and is redirected from CMS to login', async ({ page }) => {
   const response = await page.goto('/');
   expect(response?.status()).toBe(200);
-  await expect(page.getByRole('heading', { level: 1 })).toContainText('GIBEI UISI');
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('Belajar pasar modal.');
+  await expect(page.getByRole('link', { name: /GIBEI.*UISI.*Galeri Investasi.*Beranda/ })).toBeVisible();
   await page.goto('/admin');
   await expect(page.getByLabel(/Email/i)).toBeVisible();
   await expect(page).toHaveURL(/\/admin\/login/);

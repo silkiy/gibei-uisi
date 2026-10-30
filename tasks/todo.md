@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status per 30 Oktober 2026:** T001–T008 selesai; CP-01 dan CP-02 ditinjau. Harness unit/integration/e2e, fixture Admin/dua Media serta database lokal terpisah terverifikasi pada [laporan T008](../docs/reports/T008.md). T009 siap dikerjakan untuk fondasi visual. Workflow editorial belum diimplementasikan.
+**Status terbaru — T009:** T001–T009 selesai; CP-01, CP-02 dan CP-03 ditinjau. Fondasi visual publik, navigasi responsif/keyboard serta audit aksesibilitas terarah terverifikasi pada [laporan T009](../docs/reports/T009.md). T010 siap dikerjakan untuk draft artikel dengan ownership. Workflow editorial belum diimplementasikan.
 
 ## Cara menggunakan checklist
 
@@ -198,7 +198,7 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 ### T009
 
-- [ ] **Buat fondasi visual dan layout publik**
+- [x] **Buat fondasi visual dan layout publik**
 
 **Hasil:** Tetapkan token warna/font sementara, layout, navigasi dasar, footer, dan komponen status minimum.
 
@@ -209,18 +209,20 @@ Keputusan, rancangan, runtime lokal, CMS login, dan fondasi UI tersedia.
 
 **Kriteria selesai:**
 
-- [ ] Layout bekerja pada 320 px dan desktop, dengan fokus terlihat serta menu keyboard.
-- [ ] Identitas sementara dan aset contoh dilabeli; kontak/mitra fiktif tidak ditampilkan sebagai resmi.
+- [x] Layout bekerja pada 320 px dan desktop, dengan fokus terlihat serta menu keyboard.
+- [x] Identitas sementara dan aset contoh dilabeli; kontak/mitra fiktif tidak ditampilkan sebagai resmi.
 
 **Verifikasi:** Periksa di browser pada 320/375/1024 px, keyboard, dan reduced motion; build aplikasi.
 
-**Bukti/status:** Siap dikerjakan setelah T008 selesai pada 30 Oktober 2026. Fondasi warna/font, layout, navigasi dan verifikasi responsif/keyboard tetap dalam lingkup tugas ini.
+**Bukti/status:** Selesai melalui T009.1 (token/font/tooling), T009.2 (layout/navigasi/status), T009.3 (verifikasi/dokumentasi). [Laporan T009](../docs/reports/T009.md) dan [panduan desain](../docs/design.md) memuat palet/font sementara, ilustrasi konseptual, status kosong serta batas CMS. Verifikasi 320/375/768/1024/1440px, keyboard, reduced motion, ukuran teks 200%, 13 e2e dan audit axe terarah lulus. PostCSS dipatch; kontak/mitra tidak dikarang. T010 siap dikerjakan.
 
 #### CP-03 — setelah T009
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+
+**Bukti CP-03:** laporan T007/T008/T009 tersedia. Kontrol akun, harness terisolasi dan fondasi publik telah diverifikasi. Regresi 10 unit, 3 integration dan 13 e2e serta lint/typecheck/build lulus; audit axe desktop/mobile tidak menemukan pelanggaran otomatis dalam aturan yang diuji. Aset resmi, konten organisasi dan kesiapan produksi tetap terbuka. Database test memakai backend native karena Docker engine belum aktif. T010–T063 belum dianggap selesai dan workflow editorial tetap menunggu implementasi.
 
 ## Fase B — Satu alur artikel lengkap
 
@@ -245,7 +247,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Verifikasi:** Tes integrasi dua Media termasuk ID draft yang ditebak, assignment, dan duplikasi slug.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Siap dikerjakan setelah T009/CP-03; dependensi T007 dan T008 selesai. Ownership, kategori artikel, spoofing relasi dan akses dua Media tetap harus dibuktikan pada implementasi tugas ini.
 
 ### T011
 

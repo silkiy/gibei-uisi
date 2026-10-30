@@ -37,6 +37,8 @@ Backend native membuat cluster baru di `.tools/test-databases/<run-id>`, memakai
 
 Tambahkan tes fungsi murni di `tests/unit/*.test.mjs`. Tambahkan pengujian API pada `tests/integration/` dan masukkan berkasnya ke daftar runner saat menambah suite. Tambahkan flow browser pada `tests/e2e/*.spec.ts`; Playwright menemukannya secara otomatis. Jangan menambah retry otomatis untuk menutupi kegagalan izin/race.
 
+T009 menambah `public-shell.spec.ts`: lima ukuran layar, target anchor, keyboard/Escape/fokus, reduced motion, reflow/ukuran teks 200% serta dua scan axe untuk aturan WCAG A/AA terarah. Audit otomatis melengkapi pengujian keyboard dan inspeksi visual; tidak membuktikan seluruh kriteria WCAG telah terpenuhi.
+
 ## Bukti dan diagnosis
 
 Ringkasan lulus/gagal muncul di terminal. Log migration/build/test ada di `artifacts/test-run.log`, screenshot yang dibuat eksplisit di `test-results/`; semuanya diabaikan Git. Trace/video/storageState dimatikan agar kredensial/cookie tidak tersimpan dalam rekaman jaringan. Hindari membagikan log mentah sebelum memeriksa isinya. Kegagalan proses menghasilkan exit nonzero; tidak ada tes yang dilewati karena database/browser belum tersedia.
