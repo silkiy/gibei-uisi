@@ -1,6 +1,6 @@
 # GIBEI UISI
 
-Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T026 selesai:** alur artikel CMS/API/publik dan media privat sudah terbukti; T026 menambahkan Pages homepage/about dengan review, versi terbit terpisah, blok isi terstruktur, SEO dan preview privat. Rendering Pages pada website publik masih menunggu T028/T042, Site Settings menunggu T027. Daftar artikel tersedia di `/publikasi/artikel`; semua konten masih pratinjau berlabel. Kebutuhan: [PRD](docs/PRD-v1.1.md). Status: [backlog](tasks/todo.md), [laporan T026](docs/reports/T026.md).
+Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T030 selesai:** artikel/media dan Pages memiliki review; Site Settings diaudit, Tentang/header/footer memakai CMS, periode serta delapan profil divisi memiliki alur editorial dan reader publik. Konten resmi belum diisi; fixture contoh hanya dipakai dalam pengujian. Halaman: `/tentang`, `/tentang/divisi`, `/publikasi/artikel`. T031 pengurus menjadi tugas berikutnya; periode aktif T032 dan homepage agregasi T042 belum dikerjakan. Acuan: [PRD](docs/PRD-v1.1.md), [backlog](tasks/todo.md), [laporan batch](docs/reports/T030.md).
 
 ## Menjalankan
 

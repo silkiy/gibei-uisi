@@ -77,6 +77,13 @@ export interface Config {
     'page-revisions': PageRevision;
     'page-reviews': PageReview;
     'page-audit': PageAudit;
+    'settings-audit': SettingsAudit;
+    'organizational-periods': OrganizationalPeriod;
+    'period-revisions': PeriodRevision;
+    divisions: Division;
+    'division-revisions': DivisionRevision;
+    'organization-reviews': OrganizationReview;
+    'organization-audit': OrganizationAudit;
     media: Media;
     'media-audit': MediaAudit;
     'content-reviews': ContentReview;
@@ -97,6 +104,13 @@ export interface Config {
     'page-revisions': PageRevisionsSelect<false> | PageRevisionsSelect<true>;
     'page-reviews': PageReviewsSelect<false> | PageReviewsSelect<true>;
     'page-audit': PageAuditSelect<false> | PageAuditSelect<true>;
+    'settings-audit': SettingsAuditSelect<false> | SettingsAuditSelect<true>;
+    'organizational-periods': OrganizationalPeriodsSelect<false> | OrganizationalPeriodsSelect<true>;
+    'period-revisions': PeriodRevisionsSelect<false> | PeriodRevisionsSelect<true>;
+    divisions: DivisionsSelect<false> | DivisionsSelect<true>;
+    'division-revisions': DivisionRevisionsSelect<false> | DivisionRevisionsSelect<true>;
+    'organization-reviews': OrganizationReviewsSelect<false> | OrganizationReviewsSelect<true>;
+    'organization-audit': OrganizationAuditSelect<false> | OrganizationAuditSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'media-audit': MediaAuditSelect<false> | MediaAuditSelect<true>;
     'content-reviews': ContentReviewsSelect<false> | ContentReviewsSelect<true>;
@@ -109,8 +123,12 @@ export interface Config {
     defaultIDType: number;
   };
   fallbackLocale: null;
-  globals: {};
-  globalsSelect: {};
+  globals: {
+    'site-settings': SiteSetting;
+  };
+  globalsSelect: {
+    'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+  };
   locale: null;
   widgets: {
     collections: CollectionsWidget;
@@ -589,6 +607,199 @@ export interface PageAudit {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings-audit".
+ */
+export interface SettingsAudit {
+  id: number;
+  actorId: number;
+  version: number;
+  before:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  after:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  correlationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizational-periods".
+ */
+export interface OrganizationalPeriod {
+  id: number;
+  label: string;
+  /**
+   * Tanggal kalender YYYY-MM-DD, tanpa konversi zona waktu.
+   */
+  startDate?: string | null;
+  /**
+   * Tanggal kalender YYYY-MM-DD, tanpa konversi zona waktu.
+   */
+  endDate?: string | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | PeriodRevision;
+  publicRevision?: (number | null) | PeriodRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "period-revisions".
+ */
+export interface PeriodRevision {
+  id: number;
+  entity: number | OrganizationalPeriod;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  /**
+   * Tanggal kalender YYYY-MM-DD, tanpa konversi zona waktu.
+   */
+  startDate?: string | null;
+  /**
+   * Tanggal kalender YYYY-MM-DD, tanpa konversi zona waktu.
+   */
+  endDate?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "divisions".
+ */
+export interface Division {
+  id: number;
+  slug:
+    | 'secretary'
+    | 'treasurer'
+    | 'strategy'
+    | 'research'
+    | 'human-resource'
+    | 'partnership'
+    | 'event-organizer'
+    | 'media-communication';
+  description?: string | null;
+  workPrograms?: string | null;
+  displayOrder?: number | null;
+  example?: boolean | null;
+  period?: (number | null) | OrganizationalPeriod;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | DivisionRevision;
+  publicRevision?: (number | null) | DivisionRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "division-revisions".
+ */
+export interface DivisionRevision {
+  id: number;
+  entity: number | Division;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  description?: string | null;
+  workPrograms?: string | null;
+  displayOrder?: number | null;
+  example?: boolean | null;
+  period?: (number | null) | OrganizationalPeriod;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organization-reviews".
+ */
+export interface OrganizationReview {
+  id: number;
+  kind: 'periods' | 'divisions';
+  entityId: number;
+  revisionId: number;
+  period?: (number | null) | OrganizationalPeriod;
+  division?: (number | null) | Division;
+  editVersion: number;
+  manifest:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  manifestDigest: string;
+  status: 'pending' | 'approved' | 'changes_requested' | 'cancelled';
+  submittedBy: number;
+  reviewerId?: number | null;
+  note?: string | null;
+  resolvedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organization-audit".
+ */
+export interface OrganizationAudit {
+  id: number;
+  kind: 'periods' | 'divisions';
+  entityId: number;
+  revisionId: number;
+  actorId: number;
+  action: string;
+  before:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  after:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  correlationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media-audit".
  */
 export interface MediaAudit {
@@ -1007,6 +1218,132 @@ export interface PageAuditSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "settings-audit_select".
+ */
+export interface SettingsAuditSelect<T extends boolean = true> {
+  actorId?: T;
+  version?: T;
+  before?: T;
+  after?: T;
+  correlationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organizational-periods_select".
+ */
+export interface OrganizationalPeriodsSelect<T extends boolean = true> {
+  label?: T;
+  startDate?: T;
+  endDate?: T;
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "period-revisions_select".
+ */
+export interface PeriodRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  startDate?: T;
+  endDate?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "divisions_select".
+ */
+export interface DivisionsSelect<T extends boolean = true> {
+  slug?: T;
+  description?: T;
+  workPrograms?: T;
+  displayOrder?: T;
+  example?: T;
+  period?: T;
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "division-revisions_select".
+ */
+export interface DivisionRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  description?: T;
+  workPrograms?: T;
+  displayOrder?: T;
+  example?: T;
+  period?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organization-reviews_select".
+ */
+export interface OrganizationReviewsSelect<T extends boolean = true> {
+  kind?: T;
+  entityId?: T;
+  revisionId?: T;
+  period?: T;
+  division?: T;
+  editVersion?: T;
+  manifest?: T;
+  manifestDigest?: T;
+  status?: T;
+  submittedBy?: T;
+  reviewerId?: T;
+  note?: T;
+  resolvedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organization-audit_select".
+ */
+export interface OrganizationAuditSelect<T extends boolean = true> {
+  kind?: T;
+  entityId?: T;
+  revisionId?: T;
+  actorId?: T;
+  action?: T;
+  before?: T;
+  after?: T;
+  correlationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
@@ -1099,6 +1436,84 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   batch?: T;
   updatedAt?: T;
   createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings".
+ */
+export interface SiteSetting {
+  id: number;
+  siteName: string;
+  seoDescription?: string | null;
+  logo?: (number | null) | Media;
+  favicon?: (number | null) | Media;
+  email?: string | null;
+  emailConfirmed?: boolean | null;
+  location?: string | null;
+  locationConfirmed?: boolean | null;
+  socials?:
+    | {
+        label: string;
+        url: string;
+        confirmed?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
+  navigation?:
+    | {
+        label: string;
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
+  footerText?: string | null;
+  configVersion?: number | null;
+  logoVersion?: string | null;
+  logoChecksum?: string | null;
+  faviconVersion?: string | null;
+  faviconChecksum?: string | null;
+  expectedVersion?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "site-settings_select".
+ */
+export interface SiteSettingsSelect<T extends boolean = true> {
+  siteName?: T;
+  seoDescription?: T;
+  logo?: T;
+  favicon?: T;
+  email?: T;
+  emailConfirmed?: T;
+  location?: T;
+  locationConfirmed?: T;
+  socials?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        confirmed?: T;
+        id?: T;
+      };
+  navigation?:
+    | T
+    | {
+        label?: T;
+        url?: T;
+        id?: T;
+      };
+  footerText?: T;
+  configVersion?: T;
+  logoVersion?: T;
+  logoChecksum?: T;
+  faviconVersion?: T;
+  faviconChecksum?: T;
+  expectedVersion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema

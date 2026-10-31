@@ -13,6 +13,9 @@ import { Pages } from './collections/Pages';
 import { PageRevisions } from './collections/PageRevisions';
 import { PageReviews } from './collections/PageReviews';
 import { PageAudit } from './collections/PageAudit';
+import { SettingsAudit } from './collections/SettingsAudit';
+import { SiteSettings } from './globals/SiteSettings';
+import { organizationCollections, OrganizationReviews, OrganizationAudit } from './collections/Organization';
 import { EditorialAudit } from './collections/EditorialAudit';
 import { Media, MediaAudit } from './collections/Media';
 import { ContentReviews } from './collections/ContentReviews';
@@ -37,7 +40,8 @@ export default buildConfig({
   cors: [serverURL],
   csrf: [serverURL],
   admin: { user: 'users', importMap: { baseDir: dirname } },
-  collections: [Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit, Pages, PageRevisions, PageReviews, PageAudit, Media, MediaAudit, ContentReviews, AssetConfigReferences],
+  collections: [Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit, Pages, PageRevisions, PageReviews, PageAudit, SettingsAudit, ...organizationCollections('periods'), ...organizationCollections('divisions'), OrganizationReviews, OrganizationAudit, Media, MediaAudit, ContentReviews, AssetConfigReferences],
+  globals: [SiteSettings],
   onInit: async payload => {
     // Payload JWT resolves the current user and session from the database on every request.
     // Reject inactive accounts before any CMS/API authorization or /me response.

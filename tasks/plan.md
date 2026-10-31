@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — T026 / awal Fase C:** T001–T026 selesai; CP-01–CP-09 telah ditinjau pada akhir Fase B. Pages homepage/about memiliki identitas tetap, review, versi terbit terpisah, blok dan SEO; T027 Site Settings serta T028/T042 rendering publik belum dikerjakan. Bukti: [T025](../docs/reports/T025.md), [T026](../docs/reports/T026.md).
+**Status terbaru — T030 / Fase C:** T001–T030 selesai; CP-01–CP-11 ditinjau. Site Settings diaudit, Tentang/layout memakai CMS, periode/divisi mengikuti review dan approved snapshot. [Bukti T027–T030](../docs/reports/T030.md). T031 belum dimulai; konten resmi, periode aktif, homepage agregasi dan kelulusan MVP tetap mengikuti backlog.
 
 ## Tujuan dan kondisi awal
 
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**T001–T026 selesai; CP-01–CP-09 ditinjau pada akhir Fase B:** irisan artikel/media mencakup API, CMS dan halaman publik, sedangkan Pages T026 sudah memiliki review/CMS/preview privat. Site Settings T027 dan rendering halaman publik T028/T042 belum dikerjakan; kelulusan MVP/produksi tetap mengikuti backlog.
+**Status terbaru — T030 / Fase C:** T001–T030 selesai; CP-01–CP-11 ditinjau. Site Settings diaudit, Tentang/layout memakai CMS, periode/divisi mengikuti review dan approved snapshot. [Bukti T027–T030](../docs/reports/T030.md). T031 belum dimulai; konten resmi, periode aktif, homepage agregasi dan kelulusan MVP tetap mengikuti backlog.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 

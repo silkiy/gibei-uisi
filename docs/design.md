@@ -47,3 +47,7 @@ Sumber: [Tailwind PostCSS](https://tailwindcss.com/docs/installation/using-postc
 Daftar memakai baris editorial dengan kategori/tanggal di sisi kiri pada desktop dan susunan vertikal pada mobile. Form pencarian, kategori dan ukuran halaman adalah GET sehingga URL dapat disalin tanpa token; pagination mempertahankan filter. Detail dibatasi 52rem agar body nyaman dibaca, dengan penulis/tanggal, label pratinjau, caption, sumber dan catatan edukasi. Tautan fokus terlihat; gambar tetap melewati gateway izin dan menyimpan proporsi asal. Link internal tidak melakukan prefetch konten editorial.
 
 Screenshot fixture desktop 1440px/mobile 375px di `artifacts/T023-*.png` dan `T024-*.png` telah diinspeksi. Gambar blok warna adalah fixture uji berlabel, bukan foto organisasi. Axe terarah/keyboard/reflow melengkapi pemeriksaan visual; audit menyeluruh tetap T056. CMS memakai komponen Payload, sementara CSS publik tetap terpisah.
+
+## Tentang dan divisi — T028/T030
+
+Halaman memakai tipografi dan warna kerangka yang sama, dengan kolom baca 64rem, pemisah antarbagiannya dan paragraf yang mempertahankan baris baru. About menyajikan profil/sejarah/visi/misi dari snapshot terbit; divisi menampilkan label contoh, profil dan program kerja tanpa syarat rekrutmen. Header/footer memakai satu sumber identitas, navigasi dan kontak terkonfirmasi. Screenshot About 375px dan divisi 375px/1440px telah diinspeksi pada `artifacts/T028-mobile.png` dan `T030-*.png`. Tidak ada aset/kontak/pengurus contoh yang dianggap resmi.

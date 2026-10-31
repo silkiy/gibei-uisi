@@ -2,7 +2,7 @@ import type { CollectionConfig } from 'payload';
 import { isActiveAdmin } from '../auth/policy';
 import { internalHooks } from '../editorial/internal';
 
-// Retention only. T027 must maintain this ledger atomically with versioned Site Settings.
+// Retention only. Site Settings maintains this ledger atomically with its version/audit.
 // A row never grants public byte access by itself.
 export const AssetConfigReferences: CollectionConfig = {
   slug: 'asset-config-references', lockDocuments: false, admin: { hidden: true }, hooks: internalHooks,

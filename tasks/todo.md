@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — T026 / awal Fase C:** T001–T026 selesai; CP-01–CP-09 tetap menjadi checkpoint Fase B. Pages homepage/about kini memiliki draft, review, publikasi, revisi, blok terstruktur dan preview privat; situs publik belum mengonsumsi Pages (T028/T042), Site Settings menunggu T027. [Bukti T026](../docs/reports/T026.md). Modul lain dan kelulusan MVP tetap terbuka.
+**Status terbaru — T030 / Fase C:** T001–T030 selesai; CP-01–CP-11 ditinjau. Site Settings diaudit, Tentang/layout memakai CMS, periode dan delapan profil divisi memiliki review serta reader publik. [Bukti batch T027–T030](../docs/reports/T030.md). Konten resmi belum diisi; T031 menjadi tugas berikutnya. Modul lanjutan dan kelulusan MVP tetap terbuka.
 
 ## Cara menggunakan checklist
 
@@ -627,7 +627,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T027
 
-- [ ] **Kelola Site Settings oleh Admin**
+- [x] **Kelola Site Settings oleh Admin**
 
 **Hasil:** Bangun global identitas, kontak terkonfirmasi, sosial, navigasi, dan footer yang langsung diaudit.
 
@@ -638,23 +638,23 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Media ditolak melalui UI/API; perubahan Admin mencatat audit tanpa menggandakan isi Pages.
-- [ ] Logo/favicon privat memperoleh izin publik hanya lewat penyimpanan konfigurasi Admin yang sah.
-- [ ] URL internal/HTTPS/email tervalidasi; kontak kosong/tidak terkonfirmasi tidak diperlakukan resmi.
+- [x] Media ditolak melalui UI/API; perubahan Admin mencatat audit tanpa menggandakan isi Pages.
+- [x] Logo/favicon privat memperoleh izin publik hanya lewat penyimpanan konfigurasi Admin yang sah.
+- [x] URL internal/HTTPS/email tervalidasi; kontak kosong/tidak terkonfirmasi tidak diperlakukan resmi.
 
 **Verifikasi:** Uji request role, spoofing konfirmasi, pergantian logo, dan referensi media konfigurasi terhadap penghapusan/pencabutan.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T027](../docs/reports/T027.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. T031 belum dimulai.
 
 #### CP-10 — setelah T027
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T028
 
-- [ ] **Tampilkan Tentang dan layout dari CMS**
+- [x] **Tampilkan Tentang dan layout dari CMS**
 
 **Hasil:** Hubungkan About, header, navigasi, footer, dan kontak bersama ke versi publik/konfigurasi.
 
@@ -665,17 +665,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] /tentang menampilkan profil/sejarah/visi/misi dari CMS tanpa login.
-- [ ] Header/footer mengambil kontak dan navigasi yang sama; menu tetap dapat dioperasikan pada mobile/keyboard.
-- [ ] Revisi About belum disetujui tidak mengubah publik; bagian kosong memiliki fallback.
+- [x] /tentang menampilkan profil/sejarah/visi/misi dari CMS tanpa login.
+- [x] Header/footer mengambil kontak dan navigasi yang sama; menu tetap dapat dioperasikan pada mobile/keyboard.
+- [x] Revisi About belum disetujui tidak mengubah publik; bagian kosong memiliki fallback.
 
 **Verifikasi:** Ubah Pages dan settings melalui kedua role, bandingkan hasil publik serta menu pada mobile.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T028](../docs/reports/T028.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. T031 belum dimulai.
 
 ### T029
 
-- [ ] **Kelola periode organisasi melalui review**
+- [x] **Kelola periode organisasi melalui review**
 
 **Hasil:** Tambahkan periode dengan label/tanggal dan riwayat terbit, tanpa menyamakan isi editorial dengan pilihan aktif.
 
@@ -686,17 +686,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Label periode unik; rentang tanggal valid dan tanggal kalender tidak bergeser hari.
-- [ ] Periode mengikuti ownership/review/publikasi yang sama; draft tidak tersedia ke publik.
-- [ ] Riwayat versi/periode tersimpan; penghapusan periode yang dirujuk ditolak.
+- [x] Label periode unik; rentang tanggal valid dan tanggal kalender tidak bergeser hari.
+- [x] Periode mengikuti ownership/review/publikasi yang sama; draft tidak tersedia ke publik.
+- [x] Riwayat versi/periode tersimpan; penghapusan periode yang dirujuk ditolak.
 
 **Verifikasi:** Tes CRUD berizin, review, tanggal, dan referensi periode dengan fixture dependen.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T029](../docs/reports/T029.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. T031 belum dimulai.
 
 ### T030
 
-- [ ] **Publikasikan delapan profil divisi**
+- [x] **Publikasikan delapan profil divisi**
 
 **Hasil:** Tambahkan divisi dan halaman daftar/detail dengan deskripsi serta program kerja yang bisa direview.
 
@@ -707,19 +707,19 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Seluruh delapan nama divisi PRD dapat dikelola dan diurutkan; contoh diberi label.
-- [ ] /tentang/divisi dan /tentang/divisi/[slug] membaca hanya profil terbit.
-- [ ] Media dapat mengedit divisi yang ditugaskan tanpa menerbitkan sendiri; syarat rekrutmen tidak dipaksakan ke profil.
+- [x] Seluruh delapan nama divisi PRD dapat dikelola dan diurutkan; contoh diberi label.
+- [x] /tentang/divisi dan /tentang/divisi/[slug] membaca hanya profil terbit.
+- [x] Media dapat mengedit divisi yang ditugaskan tanpa menerbitkan sendiri; syarat rekrutmen tidak dipaksakan ke profil.
 
 **Verifikasi:** Tes review satu divisi dan browser daftar/detail; fixture meliputi delapan divisi tanpa mengklaim data pengurus resmi.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T030](../docs/reports/T030.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. T031 belum dimulai.
 
 #### CP-11 — setelah T030
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T031
 

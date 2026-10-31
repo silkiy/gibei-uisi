@@ -7,6 +7,8 @@ import * as migration_20261031_061247_public_relations from './20261031_061247_p
 import * as migration_20261031_063346_working_revision_guard from './20261031_063346_working_revision_guard';
 import * as migration_20261031_070403_safe_deletion from './20261031_070403_safe_deletion';
 import * as migration_20261031_112626_pages_editorial from './20261031_112626_pages_editorial';
+import * as migration_20261031_154513_site_settings from './20261031_154513_site_settings';
+import * as migration_20261031_155431_organization_profiles from './20261031_155431_organization_profiles';
 
 export const migrations = [
   {
@@ -52,6 +54,16 @@ export const migrations = [
   {
     up: migration_20261031_112626_pages_editorial.up,
     down: migration_20261031_112626_pages_editorial.down,
-    name: '20261031_112626_pages_editorial'
+    name: '20261031_112626_pages_editorial',
+  },
+  {
+    up: migration_20261031_154513_site_settings.up,
+    down: migration_20261031_154513_site_settings.down,
+    name: '20261031_154513_site_settings',
+  },
+  {
+    up: migration_20261031_155431_organization_profiles.up,
+    down: migration_20261031_155431_organization_profiles.down,
+    name: '20261031_155431_organization_profiles'
   },
 ];
