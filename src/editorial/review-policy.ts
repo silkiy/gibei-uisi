@@ -1,6 +1,10 @@
 import { createHash } from 'node:crypto';
 
 type CompleteInput = { title?: string | null; excerpt?: string | null; category?: unknown; publicAuthor?: string | null; body?: unknown; assets?: { alt?: string | null }[] | null; sources?: { url?: string | null }[] | null };
+export function revisionNote(value: unknown) {
+  if (typeof value !== 'string' || !value.trim() || value.length > 2000) throw Error('Catatan wajib diisi (maksimal 2000 karakter)');
+  return value.trim();
+}
 export function validateComplete(revision: CompleteInput) {
   const hasText = (node: unknown): boolean => {
     if (!node || typeof node !== 'object') return false;

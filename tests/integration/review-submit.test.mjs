@@ -43,8 +43,33 @@ test('save/submit reject foreign assets and incomplete content', async () => {
   assert.equal(doc.assets[0].fileVersion, asset.fileVersion);
   assert.equal((await command(b, doc, 'submit', { reviewerId: admin.user.id })).status, 400);
   const submitted = await command(b, doc, 'submit'); assert.equal(submitted.status, 200);
-  const snapshot = (await submitted.json()).submission.manifest;
+  const result = await submitted.json();
+  assert.equal(result.doc.assets[0].fileVersion, asset.fileVersion);
+  const snapshot = result.submission.manifest;
   assert.equal(snapshot.assets[0].alt, 'Snapshot alt');
   const incomplete = await a.request('/api/articles', { method: 'POST', data: { slug: 'incomplete-review' } });
   assert.equal(incomplete.status, 201); assert.equal((await command(a, (await incomplete.json()).doc, 'submit')).status, 400);
+});
+
+test('Admin requests revision with a private mandatory note; owner can edit and resubmit', async () => {
+  const doc = await create(a, 'revision-note-private');
+  const submitted = await (await command(a, doc, 'submit')).json();
+  const extra = { submissionId: submitted.submission.id, note: 'Tambahkan konteks sumber.' };
+  assert.equal((await command(a, submitted.doc, 'request-revision', extra)).status, 403);
+  assert.equal((await command(admin, submitted.doc, 'request-revision', { ...extra, note: '' })).status, 400);
+  const requested = await command(admin, submitted.doc, 'request-revision', extra);
+  assert.equal(requested.status, 200); const result = await requested.json();
+  assert.equal(result.doc.state, 'revision_required');
+  assert.equal(result.submission.status, 'changes_requested');
+  assert.equal(result.submission.reviewerId, admin.user.id);
+  const own = await a.request(`/api/content-reviews/${result.submission.id}`);
+  assert.equal(own.status, 200); assert.equal((await own.json()).note, extra.note);
+  assert.equal((await b.request(`/api/content-reviews/${result.submission.id}`)).status, 404);
+  assert.equal((await admin.request(`/api/content-reviews/${result.submission.id}`, { method: 'PATCH', data: { reviewerId: a.user.id, status: 'approved' } })).status, 403);
+  const edited = await a.request(`/api/articles/${doc.id}`, { method: 'PATCH', data: { expectedLockVersion: result.doc.lockVersion, title: 'Artikel diperbaiki' } });
+  assert.equal(edited.status, 200); const updated = (await edited.json()).doc; assert.equal(updated.state, 'revision_required');
+  const resubmitted = await command(a, updated, 'submit'); assert.equal(resubmitted.status, 200);
+  assert.notEqual((await resubmitted.json()).submission.id, result.submission.id);
+  const history = await a.request('/api/editorial-audit'); assert.equal(history.status, 200);
+  assert.ok((await history.json()).docs.some(entry => entry.article === doc.id && entry.action === 'revision_requested'));
 });

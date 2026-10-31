@@ -1,10 +1,10 @@
 import type { CollectionConfig } from 'payload';
 import { internalHooks } from '../editorial/internal';
-import { isActiveAdmin } from '../auth/policy';
+import { reviewAccess } from './ContentReviews';
 
 export const EditorialAudit: CollectionConfig = {
   slug: 'editorial-audit', lockDocuments: false, admin: { useAsTitle: 'action' },
-  access: { create: () => false, read: ({ req }) => isActiveAdmin(req.user), update: () => false, delete: () => false },
+  access: { create: () => false, read: reviewAccess, update: () => false, delete: () => false },
   hooks: internalHooks,
   fields: [
     { name: 'actorId', type: 'number', required: true },

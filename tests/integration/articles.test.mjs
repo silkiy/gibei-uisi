@@ -65,9 +65,12 @@ test('direct requests cannot spoof ownership, publish or modify internal revisio
   await patch(a, doc, { sources: [{ url: 'javascript:alert(1)' }] }, 400);
   await patch(a, doc, { body: { root: { type: 'root', children: [{ type: 'upload', value: 99 }] } } }, 400);
   for (const collection of ['article-revisions', 'editorial-audit']) {
-    assert.equal((await a.request(`/api/${collection}`)).status, 403);
+    if (collection === 'article-revisions') assert.equal((await a.request(`/api/${collection}`)).status, 403);
     assert.equal((await admin.request(`/api/${collection}`, { method: 'POST', data: { article: doc.id, state: 'published', context: { editorialWrite: true } } })).status, 403);
   }
+  const history = await a.request('/api/editorial-audit'); assert.equal(history.status, 200);
+  const visible = new Set((await (await a.request('/api/articles?pagination=false')).json()).docs.map(article => article.id));
+  assert.ok((await history.json()).docs.every(entry => visible.has(entry.article)));
   assert.equal((await admin.request(`/api/articles/${doc.id}`, { method: 'DELETE' })).status, 403);
 });
 

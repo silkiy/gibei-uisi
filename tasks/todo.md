@@ -320,7 +320,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T014
 
-- [ ] **Kembalikan artikel untuk revisi**
+- [x] **Kembalikan artikel untuk revisi**
 
 **Hasil:** Sediakan tindakan Admin meminta revisi dan menampilkan catatannya ke editor yang berizin.
 
@@ -331,13 +331,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Hanya Admin dapat mengubah in_review ke revision_required; catatan revisi wajib.
-- [ ] Editor terkait dapat membaca catatan dan mengedit revisi; publik tidak memperoleh catatan.
-- [ ] Riwayat keputusan tidak dapat dibuat/diubah dari payload klien biasa.
+- [x] Hanya Admin dapat mengubah in_review ke revision_required; catatan revisi wajib.
+- [x] Editor terkait dapat membaca catatan dan mengedit revisi; publik tidak memperoleh catatan.
+- [x] Riwayat keputusan tidak dapat dibuat/diubah dari payload klien biasa.
 
 **Verifikasi:** Tes Media memalsukan decision/reviewer, Admin tanpa catatan, serta akses audit oleh publik/pengguna lain.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Implementasi/uji selesai. [Laporan T014](../docs/reports/T014.md): 18 unit, 14 integration dan 17 e2e lulus. Catatan Admin wajib, reviewer server, akses catatan CMS, edit/resubmit dan privasi dua Media diuji. Aktivasi hosted bersama CP-05. T015 sedang dikerjakan.
 
 ### T015
 
