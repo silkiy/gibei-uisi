@@ -24,6 +24,8 @@ export async function isAssetPublic(req: PayloadRequest, asset: Media) {
     JOIN ${schema}.article_revisions_assets usage ON usage._parent_id = r.id
     WHERE r.state = 'published' AND usage.asset_id = ${asset.id}
       AND usage.file_version = ${asset.fileVersion} AND usage.checksum = ${asset.checksum}
+      AND EXISTS (SELECT 1 FROM ${schema}.content_reviews approved WHERE approved.revision_id = r.id
+        AND approved.status = 'approved' AND approved.edit_version = r.edit_version AND approved.resolved_at IS NOT NULL)
   ) AS allowed`);
   return result.rows[0]?.allowed === true;
 }

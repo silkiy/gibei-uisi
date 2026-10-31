@@ -22,7 +22,9 @@ export async function normalizeAssets(req: PayloadRequest, rows: ArticleRevision
 }
 export async function verifyReferencedFiles(req: PayloadRequest, revision: ArticleRevision) {
   for (const reference of revision.assets || []) {
-    const asset = await referencedAsset(req, Number(relationId(reference.asset)));
+    let asset: Media;
+    try { asset = await referencedAsset(req, Number(relationId(reference.asset))); }
+    catch (error) { if (error instanceof NotFound) throw new APIError('Referenced asset is unavailable', 409); throw error; }
     if (asset.fileVersion !== reference.fileVersion || asset.checksum !== reference.checksum) throw new APIError('Asset version changed', 409);
     try {
       if (digest(await readAsset(asset.key, 'original')) !== asset.checksum) throw Error('Original checksum');

@@ -437,7 +437,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T019
 
-- [ ] **Kelola akses aset yang digunakan ulang**
+- [x] **Kelola akses aset yang digunakan ulang**
 
 **Hasil:** Hitung penggunaan aset pada versi publik/konfigurasi dan cabut akses setelah referensi publik terakhir hilang.
 
@@ -448,13 +448,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Aset publik dapat digunakan ulang tanpa meminjam izin aset privat.
-- [ ] Menarik satu dari dua konten tidak menutup aset; penarikan referensi terakhir menutup asli dan seluruh turunan/cache.
-- [ ] Aset yang dicabut setelah submit membuat persetujuan baru ditolak sampai referensi diperbaiki.
+- [x] Aset publik dapat digunakan ulang tanpa meminjam izin aset privat.
+- [x] Menarik satu dari dua konten tidak menutup aset; penarikan referensi terakhir menutup asli dan seluruh turunan/cache.
+- [x] Aset yang dicabut setelah submit membuat persetujuan baru ditolak sampai referensi diperbaiki.
 
 **Verifikasi:** Tes dua artikel berbagi gambar/PDF dan akses langsung setelah masing-masing ditarik.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T019](../docs/reports/T019.md): 25 integration dan Local API lulus; reuse dua artikel/gambar/PDF, last-reference withdrawal dan revoke setelah submit terbukti. T020 sedang dikerjakan.
 
 ### T020
 
