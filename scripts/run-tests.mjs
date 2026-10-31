@@ -63,6 +63,16 @@ async function assertTarget() {
   assertOwnedTestTarget(runId, result.rows[0]);
 }
 
+async function startTestServer() {
+  server = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1', '--port', new URL(env.SERVER_URL).port], { env, stdio: ['ignore', log, log], windowsHide: true });
+  for (let attempt = 0; attempt < 60; attempt++) {
+    if (server.exitCode !== null) throw new Error('Run-owned server stopped');
+    try { if ((await fetch(`${env.SERVER_URL}/api/users`, { signal: AbortSignal.timeout(2000) })).status === 403) return; } catch { /* Starting */ }
+    await delay(1000);
+  }
+  throw new Error('Test application must become ready');
+}
+
 async function resetApplicationData() {
   await assertTarget();
   const client = await migration.connect();
@@ -138,16 +148,7 @@ try {
   console.log('Building isolated production server');
   env.NODE_ENV = 'production';
   await child(['node_modules/next/dist/bin/next', 'build'], 'Isolated production build');
-  const serverPort = new URL(env.SERVER_URL).port;
-  server = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1', '--port', serverPort], { env, stdio: ['ignore', log, log], windowsHide: true });
-  let ready = false;
-  for (let attempt = 0; attempt < 60; attempt++) {
-    if (server.exitCode !== null) throw new Error('Run-owned server stopped');
-    try { ready = (await fetch(`${env.SERVER_URL}/api/users`, { signal: AbortSignal.timeout(2000) })).status === 403; } catch { /* Starting */ }
-    if (ready) break;
-    await delay(1000);
-  }
-  assert.ok(ready, 'Test application must become ready');
+  await startTestServer();
   // Verify the actual server identity via the unique generated credential, then seed Media through its API.
   const admin = await authenticate(accounts.admin, env.SERVER_URL);
   for (const key of ['mediaA', 'mediaB']) {
@@ -160,8 +161,16 @@ try {
   await assertTarget();
   if (mode !== 'e2e') {
     console.log('Running integration smoke tests with Admin and two Media');
-    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs'], 'Integration tests');
+    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs'], 'Integration tests');
     await child(['scripts/payload.mjs', 'run', 'scripts/verify-editorial-local.ts'], 'Local editorial boundary tests');
+    const beforeRestart = (await migration.query('SELECT * FROM payload.editorial_audit ORDER BY id')).rows;
+    assert.ok(beforeRestart.length > 0);
+    stop(server); await startTestServer();
+    const restartedAdmin = await authenticate(accounts.admin, env.SERVER_URL);
+    const audit = await restartedAdmin.request('/api/editorial-audit?limit=1');
+    assert.equal(audit.status, 200); assert.equal((await audit.json()).totalDocs, beforeRestart.length);
+    assert.deepEqual((await migration.query('SELECT * FROM payload.editorial_audit ORDER BY id')).rows, beforeRestart);
+    console.log('Editorial audit persistence verified after production-server restart');
   }
   if (mode !== 'integration') {
     console.log('Running isolated Chromium browser tests');

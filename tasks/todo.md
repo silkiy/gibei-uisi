@@ -479,7 +479,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T021
 
-- [ ] **Tolak konflik review dan kunci audit**
+- [x] **Tolak konflik review dan kunci audit**
 
 **Hasil:** Lengkapi kontrol keputusan bersamaan dan histori audit append-only.
 
@@ -490,19 +490,19 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Dua keputusan atas versi yang sama tidak sama-sama berhasil; persetujuan usang ditolak.
-- [ ] Edit bersamaan tidak menimpa perubahan tanpa pemberitahuan konflik.
-- [ ] Riwayat menyimpan actor/waktu/versi/status/alasan; edit/hapus audit lewat CMS/API ditolak bahkan bagi Admin.
+- [x] Dua keputusan atas versi yang sama tidak sama-sama berhasil; persetujuan usang ditolak.
+- [x] Edit bersamaan tidak menimpa perubahan tanpa pemberitahuan konflik.
+- [x] Riwayat menyimpan actor/waktu/versi/status/alasan; edit/hapus audit lewat CMS/API ditolak bahkan bagi Admin.
 
 **Verifikasi:** Tes paralel terkoordinasi, rollback, audit setelah restart, dan manipulasi request audit.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T021/CP-07](../docs/reports/T021.md): 33 integration, barrier PostgreSQL, Local API, persistensi audit setelah restart dan build terisolasi lulus. CP-07 ditinjau; T022 sedang dikerjakan.
 
 #### CP-07 — setelah T021
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T022
 
