@@ -1,6 +1,7 @@
 import * as migration_20261030_093751_cms_auth from './20261030_093751_cms_auth';
 import * as migration_20261030_153435_account_controls from './20261030_153435_account_controls';
 import * as migration_20261030_180255_article_drafts from './20261030_180255_article_drafts';
+import * as migration_20261031_021413_private_media from './20261031_021413_private_media';
 
 export const migrations = [
   {
@@ -16,6 +17,11 @@ export const migrations = [
   {
     up: migration_20261030_180255_article_drafts.up,
     down: migration_20261030_180255_article_drafts.down,
-    name: '20261030_180255_article_drafts'
+    name: '20261030_180255_article_drafts',
+  },
+  {
+    up: migration_20261031_021413_private_media.up,
+    down: migration_20261031_021413_private_media.down,
+    name: '20261031_021413_private_media'
   },
 ];

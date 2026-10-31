@@ -251,7 +251,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T011
 
-- [ ] **Terima upload privat yang tervalidasi**
+- [x] **Terima upload privat yang tervalidasi**
 
 **Hasil:** Implementasikan media privat dengan pemeriksaan ukuran, format, signature, dimensi, nama penyimpanan, dan alt.
 
@@ -262,13 +262,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] JPEG/PNG/WebP/PDF valid diterima sesuai batas yang disetujui; SVG/HTML/executable/MIME palsu ditolak.
-- [ ] File gagal tidak menjadi aset publik atau path arbitrer; file tidak disimpan dalam direktori publik bebas.
-- [ ] Metadata privat hanya terbaca pemilik/assignee atau Admin.
+- [x] JPEG/PNG/WebP/PDF valid diterima sesuai batas yang disetujui; SVG/HTML/executable/MIME palsu ditolak.
+- [x] File gagal tidak menjadi aset publik atau path arbitrer; file tidak disimpan dalam direktori publik bebas.
+- [x] Metadata privat hanya terbaca pemilik/assignee atau Admin.
 
 **Verifikasi:** Uji file valid, oversized, gambar berdimensi besar, signature palsu, dan nama file berbahaya melalui API.
 
-**Bukti/status:** Siap dikerjakan setelah T010; dependensi T008 dan T010 selesai. Upload privat dan validasi file belum diimplementasikan.
+**Bukti/status:** Implementasi/uji selesai. [Laporan T011](../docs/reports/T011.md): 16 unit, 9 integration dan 16 e2e lulus, termasuk upload CMS dan file palsu/berbahaya. Aktivasi migrasi Supabase mengikuti CP-04. T012 sedang dikerjakan.
 
 ### T012
 

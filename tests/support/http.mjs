@@ -9,11 +9,11 @@ export function fixtureAccounts(env = process.env) {
 export function httpClient(baseURL, cookie) {
   const base = new URL(baseURL);
   assert.equal(base.hostname, '127.0.0.1');
-  return async (path, { method = 'GET', data, headers = {} } = {}) => {
+  return async (path, { method = 'GET', data, bytes, headers = {} } = {}) => {
     assert.ok(path.startsWith('/') && !path.startsWith('//'), 'Only relative application paths allowed');
     return fetch(new URL(path, base), { method, redirect: 'error', signal: AbortSignal.timeout(20000),
       headers: { 'Content-Type': 'application/json', Origin: base.origin, ...(cookie ? { Cookie: cookie } : {}), ...headers },
-      ...(data === undefined ? {} : { body: JSON.stringify(data) }) });
+      ...(data === undefined ? (bytes === undefined ? {} : { body: bytes }) : { body: JSON.stringify(data) }) });
   };
 }
 

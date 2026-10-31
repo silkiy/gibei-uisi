@@ -10,6 +10,7 @@ import { Articles } from './collections/Articles';
 import { Categories } from './collections/Categories';
 import { ArticleRevisions } from './collections/ArticleRevisions';
 import { EditorialAudit } from './collections/EditorialAudit';
+import { Media, MediaAudit } from './collections/Media';
 import { isActiveUser } from './auth/policy';
 import { connectionConfig } from '../scripts/database/config.mjs';
 import { localTestConnection } from '../scripts/database/test-config.mjs';
@@ -30,7 +31,7 @@ export default buildConfig({
   cors: [serverURL],
   csrf: [serverURL],
   admin: { user: 'users', importMap: { baseDir: dirname } },
-  collections: [Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit],
+  collections: [Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit, Media, MediaAudit],
   onInit: async payload => {
     // Payload JWT resolves the current user and session from the database on every request.
     // Reject inactive accounts before any CMS/API authorization or /me response.

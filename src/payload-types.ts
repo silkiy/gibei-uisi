@@ -73,6 +73,8 @@ export interface Config {
     articles: Article;
     'article-revisions': ArticleRevision;
     'editorial-audit': EditorialAudit;
+    media: Media;
+    'media-audit': MediaAudit;
     'payload-kv': PayloadKv;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -85,6 +87,8 @@ export interface Config {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'article-revisions': ArticleRevisionsSelect<false> | ArticleRevisionsSelect<true>;
     'editorial-audit': EditorialAuditSelect<false> | EditorialAuditSelect<true>;
+    media: MediaSelect<false> | MediaSelect<true>;
+    'media-audit': MediaAuditSelect<false> | MediaAuditSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -320,6 +324,53 @@ export interface EditorialAudit {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  key: string;
+  name: string;
+  alt: string;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  state: 'ready' | 'revoked' | 'deleted';
+  fileVersion: string;
+  checksum: string;
+  mime: string;
+  extension: string;
+  size: number;
+  width?: number | null;
+  height?: number | null;
+  hasThumbnail: boolean;
+  thumbnailChecksum?: string | null;
+  revokedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-audit".
+ */
+export interface MediaAudit {
+  id: number;
+  assetId: number;
+  actorId: number;
+  action: string;
+  details:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  correlationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -483,6 +534,43 @@ export interface EditorialAuditSelect<T extends boolean = true> {
   action?: T;
   before?: T;
   after?: T;
+  correlationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media_select".
+ */
+export interface MediaSelect<T extends boolean = true> {
+  key?: T;
+  name?: T;
+  alt?: T;
+  owner?: T;
+  assignedTo?: T;
+  state?: T;
+  fileVersion?: T;
+  checksum?: T;
+  mime?: T;
+  extension?: T;
+  size?: T;
+  width?: T;
+  height?: T;
+  hasThumbnail?: T;
+  thumbnailChecksum?: T;
+  revokedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media-audit_select".
+ */
+export interface MediaAuditSelect<T extends boolean = true> {
+  assetId?: T;
+  actorId?: T;
+  action?: T;
+  details?: T;
   correlationId?: T;
   updatedAt?: T;
   createdAt?: T;
