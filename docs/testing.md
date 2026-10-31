@@ -51,6 +51,16 @@ Request API Playwright di luar browser harus menyertakan Origin dari baseURL tes
 
 ## Bukti dan diagnosis
 
+**Hasil akhir Fase B/T025:** 23 unit, 36 integration dan 22 e2e lulus, termasuk seluruh transisi CMS melalui Admin/dua Media/pengunjung, HTTP negatif, audit restart dan cleanup. [Laporan T025](reports/T025.md), [matriks skenario](qa/article-slice.md). Nomor hasil batch T011–T020 di atas adalah catatan historis. CP-01–CP-09 ditinjau; T026 belum dimulai.
+
+Untuk mempersempit kegagalan browser tanpa melewati isolasi/guard, launcher menerima satu spec yang berada di `tests/e2e`:
+
+```powershell
+node scripts/run-tests.mjs e2e tests/e2e/article-workflow.spec.ts
+```
+
+Mode normal tetap menjalankan seluruh spec. Opsi ini hanya berlaku untuk e2e dan menolak path di luar folder/format yang diizinkan. Tidak ada reuse database/server pengembangan atau retry otomatis. Perhatikan bahwa dropdown kategori CMS memuat pilihan bertahap; gunakan pencarian nama agar fixture tidak bergantung pada sepuluh pilihan awal. Locator konflik dibatasi ke region editorial dan locator jumlah kosong dibedakan dari status empty-state/announcer Next.
+
 Ringkasan lulus/gagal muncul di terminal. Log migration/build/test ada di `artifacts/test-run.log`, screenshot yang dibuat eksplisit di `test-results/`; semuanya diabaikan Git. Trace/video/storageState dimatikan agar kredensial/cookie tidak tersimpan dalam rekaman jaringan. Hindari membagikan log mentah sebelum memeriksa isinya. Kegagalan proses menghasilkan exit nonzero; tidak ada tes yang dilewati karena database/browser belum tersedia.
 
 Sumber workflow: [Node test runner](https://nodejs.org/docs/latest-v24.x/api/test.html), [Playwright fixtures](https://playwright.dev/docs/test-fixtures), [isolasi browser](https://playwright.dev/docs/browser-contexts), [initdb](https://www.postgresql.org/docs/17/app-initdb.html), [pg_ctl](https://www.postgresql.org/docs/17/app-pg-ctl.html), serta guide Playwright/distDir Next 16.4.2 yang terpasang.

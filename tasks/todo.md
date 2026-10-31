@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — T020:** T001–T020 selesai; CP-01–CP-06 ditinjau. Batch T011–T020 lulus 20 unit, 30 integration dan 18 e2e, lint/TypeScript/build, migrasi Supabase dan probe CMS lokal. [Laporan akhir batch](../docs/reports/T020.md). Berikutnya **T021**, konflik review dan audit. UI antrean, halaman artikel dan alur lengkap tetap T022–T025; MVP belum selesai.
+**Status terbaru — T025 / akhir Fase B:** T001–T025 selesai; CP-01–CP-09 ditinjau. 23 unit, 36 integration dan 22 e2e, lint/TypeScript/build, audit restart serta probe CMS/reader lokal lulus. [Laporan T025](../docs/reports/T025.md), [matriks bukti](../docs/qa/article-slice.md). Berhenti sebelum **T026**, tugas pertama Fase C; dependensinya selesai, implementasi belum dimulai. Modul lain dan kelulusan MVP tetap terbuka.
 
 ## Cara menggunakan checklist
 
@@ -575,7 +575,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T025
 
-- [ ] **Buktikan alur artikel lengkap**
+- [x] **Buktikan alur artikel lengkap**
 
 **Hasil:** Jalankan skenario Admin/dua Media/pengunjung sebelum memperluas pola ke modul lain.
 
@@ -586,19 +586,19 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Draft→review→revisi→publish→revisi baru→withdraw terbukti pada UI serta request langsung.
-- [ ] Tes negatif akses konten/file, konflik, dan kegagalan publish lulus; hasil dicatat.
-- [ ] Jika bukti versi/media gagal, perbaiki arsitektur sebelum modul berikutnya; jangan mengganti dengan status field saja.
+- [x] Draft→review→revisi→publish→revisi baru→withdraw terbukti pada UI serta request langsung.
+- [x] Tes negatif akses konten/file, konflik, dan kegagalan publish lulus; hasil dicatat.
+- [x] Jika bukti versi/media gagal, perbaiki arsitektur sebelum modul berikutnya; jangan mengganti dengan status field saja.
 
 **Verifikasi:** Jalankan suite integrasi editorial dan E2E artikel pada build production lokal; simpan hasil dan batasan.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T025/CP-09](../docs/reports/T025.md) dan [matriks bukti](../docs/qa/article-slice.md): 23 unit, 36 integration dan 22 e2e, seluruh transisi UI lintas peran, konflik/rollback/akses/media, audit restart, lint/TypeScript/build dan probe lokal lulus. CP-09 ditinjau; Fase B selesai. Berhenti sebelum T026.
 
 #### CP-09 — setelah T025
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ## Fase C — Modul publik P0 lainnya
 
@@ -623,7 +623,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes Pages draft/publish/revisi dan duplikasi pageKey; belum wajib melengkapi homepage agregasi.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Siap dimulai: dependensi T025 dan CP-09 selesai. Belum diimplementasikan; pengerjaan dihentikan sebelum T026 sesuai batas batch pengguna.
 
 ### T027
 

@@ -41,3 +41,9 @@ Tautan navigasi sementara menunjuk anchor yang benar-benar tersedia: Tentang, Pu
 Pratinjau tidak menyatakan kepatuhan WCAG penuh hanya dari tes otomatis. Verifikasi runtime, ukuran layar dan temuan audit dicatat pada [laporan T009](reports/T009.md); audit menyeluruh sebelum rilis tetap mengikuti backlog.
 
 Sumber: [Tailwind PostCSS](https://tailwindcss.com/docs/installation/using-postcss), [Fontsource Manrope](https://fontsource.org/fonts/manrope), guide CSS/Link/Font Next 16.4.2 yang terpasang, dan [Playwright accessibility testing](https://playwright.dev/docs/accessibility-testing).
+
+## Perluasan artikel — T023/T024
+
+Daftar memakai baris editorial dengan kategori/tanggal di sisi kiri pada desktop dan susunan vertikal pada mobile. Form pencarian, kategori dan ukuran halaman adalah GET sehingga URL dapat disalin tanpa token; pagination mempertahankan filter. Detail dibatasi 52rem agar body nyaman dibaca, dengan penulis/tanggal, label pratinjau, caption, sumber dan catatan edukasi. Tautan fokus terlihat; gambar tetap melewati gateway izin dan menyimpan proporsi asal. Link internal tidak melakukan prefetch konten editorial.
+
+Screenshot fixture desktop 1440px/mobile 375px di `artifacts/T023-*.png` dan `T024-*.png` telah diinspeksi. Gambar blok warna adalah fixture uji berlabel, bukan foto organisasi. Axe terarah/keyboard/reflow melengkapi pemeriksaan visual; audit menyeluruh tetap T056. CMS memakai komponen Payload, sementara CSS publik tetap terpisah.

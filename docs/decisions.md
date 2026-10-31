@@ -56,7 +56,7 @@ PRD §11, matriks T002 dan T005 diselaraskan. Docker yang dilaporkan sudah terpa
 
 ## Langkah berikutnya
 
-**Status terkini 31 Oktober 2026:** T001–T020 selesai, CP-01–CP-06 ditinjau. [Laporan T020](reports/T020.md) mencatat lifecycle artikel/media, 20 unit/30 integration/18 e2e, aktivasi Supabase dan batas UI/modul berikutnya. T021 siap untuk konflik keputusan review/audit. Catatan bertanggal di bawah adalah riwayat keputusan; tidak menggantikan status terkini ini.
+**Status terkini 31 Oktober 2026:** T001–T025 selesai, CP-01–CP-09 ditinjau dan Fase B selesai. [Laporan T025](reports/T025.md) mencatat 23 unit/36 integration/22 e2e, pembuktian lintas UI/API/publik dan batas berikutnya. Berhenti sebelum T026 sesuai permintaan; T026 siap sebagai awal Fase C, belum diimplementasikan. Normalisasi pagination T023 mengikuti PRD 12/48/default/empty state; tidak mengubah baseline produk. Catatan bertanggal di bawah adalah riwayat keputusan dan tidak menggantikan status terkini ini.
 
 **T002 selesai pada 23 Oktober 2026.** [Matriks stack](technical/stack.md) memuat pemeriksaan sumber resmi, metadata engine/peer dependency, runtime lokal, serta batas verifikasi. Ini merupakan hasil pemeriksaan teknis tersendiri setelah persetujuan T001, tanpa instalasi atau pengujian aplikasi.
 

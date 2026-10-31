@@ -1,6 +1,6 @@
 # Setup localhost dan PostgreSQL Supabase
 
-Terakhir diverifikasi: **31 Oktober 2026**, sampai T020. Runtime Node 24.22.1, pnpm 10.24.0; langkah aplikasi ada di [README](../README.md). Database, CMS, akun dan backend workflow artikel/media telah diuji. [Laporan T020](reports/T020.md) mencatat batas implementasi dan hasil akhir batch.
+Terakhir diverifikasi: **31 Oktober 2026**, sampai T025/akhir Fase B. Runtime Node 24.22.1, pnpm 10.24.0; langkah aplikasi ada di [README](../README.md). API, CMS dan halaman artikel publik telah diuji bersama. [Laporan T025](reports/T025.md) mencatat bukti dan batas implementasi. T026 siap dan belum dimulai.
 
 ## Environment server
 
@@ -123,7 +123,7 @@ Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menja
 
 Upload melalui formulir pada daftar Media menyimpan gambar/PDF ke `storage/private`, di luar public/static. Setiap upload membuat key dan versi baru. Reader file adalah `/api/media/:key/original` atau `/thumbnail`; URL lama tetap memakai pengecekan izin saat request. Jangan menyalin file tersebut ke public/CDN atau memakai optimizer.
 
-Layanan domain tersedia sebelum UI antrean/aksi lengkap T022. Semua POST memakai cookie login, header Origin yang sama dengan SERVER_URL dan JSON terbatas; jangan meletakkan cookie/token pada command atau dokumen yang dibagikan.
+UI antrean dan aksi editorial tersedia pada Articles sejak T022. Semua POST memakai cookie login, header Origin yang sama dengan SERVER_URL dan JSON terbatas; jangan meletakkan cookie/token pada command atau dokumen yang dibagikan.
 
 | Endpoint | Kontrak |
 |---|---|
@@ -135,3 +135,15 @@ Layanan domain tersedia sebelum UI antrean/aksi lengkap T022. Semua POST memakai
 Jika delete mengembalikan `cleanupPending:true`, file sudah ditutup aksesnya tetapi pembersihan disk gagal. Periksa warning dengan assetId dan ulangi aksi delete setelah kendala storage selesai; jangan menghapus path yang belum diverifikasi. Draft dihapus secara logis sehingga audit/riwayat tetap tersedia untuk Admin. Ledger konfigurasi hanya melindungi retensi; Site Settings dan izin publik konfigurasinya tetap T027.
 
 Verifikasi akhir berlangsung pada produksi lokal `http://127.0.0.1:3200` dengan SERVER_URL khusus proses, sementara dev server pengguna 3000 dipertahankan. Gunakan origin yang sama saat menjalankan `pnpm test:cms` pada port alternatif.
+
+## Menggunakan alur artikel melalui CMS
+
+1. Media membuat artikel melalui Articles, mengisi judul/ringkasan/body/penulis publik dan menyimpan. Admin menetapkan kategori. Pada dropdown kategori yang memiliki banyak pilihan, ketik namanya untuk mencari.
+2. Simpan perubahan sebelum memakai panel **Alur editorial**. **Preview privat** memerlukan login/izin dan menampilkan versi tersimpan. Klik **Ajukan review** untuk mengunci snapshot.
+3. Admin membuka **Antrean review** pada daftar Articles, meninjau preview, lalu mengisi alasan untuk **Minta revisi** atau memilih **Terbitkan**. Media melihat catatan, memperbaiki, menyimpan dan mengajukan ulang.
+4. Artikel terbit muncul pada `/publikasi/artikel` dan detailnya. Untuk mengeditnya, gunakan **Buat revisi baru** terlebih dahulu; versi publik tetap tampil selama draft/review berikutnya.
+5. **Tarik publikasi** memerlukan alasan Admin. Pengajuan pending dibatalkan dan revisi kerjanya tetap tersimpan. Jika terjadi konflik, baca pesan, muat ulang dan tinjau kembali versi/referensi sebelum mencoba ulang.
+
+Untuk gambar/PDF, upload dahulu melalui Media, pilih pada Assets revisi dan simpan. Link editor mendukung HTTPS atau link internal ke Media yang sama dengan manifest Assets. File yang tidak diposisikan inline tampil sebagai lampiran. Alt/caption yang disetujui mengikuti snapshot, bukan perubahan metadata library. PDF dilayani sebagai attachment; optimizer gambar tetap nonaktif.
+
+Daftar artikel mengikuti PRD: default 12/maksimum 48, pencarian case-insensitive, kategori tak dikenal kosong, pagination numerik tidak valid memakai default dan halaman valid di luar rentang menampilkan empty state. Parameter API di luar allowlist tetap 400. Label pratinjau selalu terlihat; artikel fixture pengujian tidak dimasukkan ke Supabase pengembangan.

@@ -12,6 +12,8 @@ import { startNativePostgres } from '../tests/support/native-postgres.mjs';
 
 const mode = process.argv[2];
 assert.ok(['integration', 'e2e', 'all'].includes(mode), 'Choose integration, e2e or all');
+const browserSpec = process.argv[3];
+if (browserSpec) assert.ok(mode === 'e2e' && /^tests\/e2e\/[a-z-]+\.spec\.ts$/.test(browserSpec) && existsSync(browserSpec), 'Choose an existing browser spec within tests/e2e');
 if (existsSync('.env.test.local')) loadEnvFile('.env.test.local');
 const runId = randomBytes(6).toString('hex');
 const name = `gibei-test-${runId}`;
@@ -174,7 +176,7 @@ try {
   }
   if (mode !== 'integration') {
     console.log('Running isolated Chromium browser tests');
-    await child(['node_modules/@playwright/test/cli.js', 'test'], 'E2E tests');
+    await child(['node_modules/@playwright/test/cli.js', 'test', ...(browserSpec ? [browserSpec] : [])], 'E2E tests');
   }
   stop(server);
   await resetApplicationData();
