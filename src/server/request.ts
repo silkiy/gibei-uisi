@@ -30,5 +30,7 @@ export async function readJSON(request: Request, limit = 16384): Promise<Record<
 export function failure(error: unknown) {
   const status = error instanceof APIError ? error.status : 500;
   const message = status < 500 && error instanceof Error ? error.message : 'Operation failed';
-  return Response.json({ errors: [{ message }] }, { status, headers: { 'Cache-Control': 'private, no-store' } });
+  const data = error instanceof APIError ? error.data : null;
+  const references = data && typeof data === 'object' && 'references' in data && Array.isArray(data.references) ? data.references : undefined;
+  return Response.json({ errors: [{ message }], ...(references ? { references } : {}) }, { status, headers: { 'Cache-Control': 'private, no-store' } });
 }

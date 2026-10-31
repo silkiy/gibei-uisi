@@ -1,0 +1,46 @@
+import assert from 'node:assert/strict';
+import { before, test } from 'node:test';
+import { editorialFixture } from '../support/editorial.mjs';
+let s;
+before(async () => { s = await editorialFixture('withdraw'); });
+test('withdrawal closes warm public representations and cancels pending review without losing the draft', async () => {
+  const image = await s.upload(s.a);
+  const published = await s.publish(await s.submit(s.a, await s.draft(s.a, 'withdraw-main', { assets: [{ asset: image.id, alt: 'Published alt' }] })));
+  const publicURL = `/api/public/articles/${published.slug}`;
+  for (let i = 0; i < 2; i++) assert.equal((await s.anonymous.request(publicURL)).status, 200);
+  assert.equal((await s.anonymous.request(`/api/media/${image.key}/original`)).status, 200);
+  const created = await s.command(s.a, published, 'create-revision'); assert.equal(created.status, 200); const working = (await created.json()).doc;
+  const pending = await s.submit(s.a, working);
+  assert.equal((await s.command(s.a, pending.doc, 'withdraw-publication', { note: 'Not permitted' })).status, 403);
+  assert.equal((await s.command(s.admin, pending.doc, 'withdraw-publication', { note: '' })).status, 400);
+  const result = await s.command(s.admin, pending.doc, 'withdraw-publication', { note: 'Konten ditinjau ulang.' });
+  assert.equal(result.status, 200); const withdrawn = (await result.json()).doc;
+  assert.equal(withdrawn.publicRevision, null); assert.equal(withdrawn.workingRevision, working.workingRevision); assert.equal(withdrawn.state, 'draft');
+  assert.equal((await s.anonymous.request(publicURL, { headers: { 'If-None-Match': '*' } })).status, 404);
+  assert.equal((await (await s.anonymous.request('/api/public/articles?q=withdraw-main')).json()).totalDocs, 0);
+  assert.equal((await s.anonymous.request(`/api/media/${image.key}/original`, { headers: { Range: 'bytes=0-7' } })).status, 404);
+  assert.equal((await (await s.admin.request(`/api/content-reviews/${pending.submission.id}`)).json()).status, 'cancelled');
+  assert.equal((await s.command(s.admin, withdrawn, 'publish', { submissionId: pending.submission.id })).status, 409);
+  const fresh = await s.submit(s.a, withdrawn); assert.notEqual(fresh.submission.id, pending.submission.id); await s.publish(fresh);
+  assert.equal((await s.anonymous.request(publicURL)).status, 200);
+});
+test('required public dependents block withdrawal while optional targets disappear safely', async () => {
+  const target = await s.publish(await s.submit(s.a, await s.draft(s.a, 'withdraw-related-target')));
+  const required = await s.publish(await s.submit(s.a, await s.draft(s.a, 'withdraw-required-source', { related: [{ target: target.id, required: true }] })));
+  const optional = await s.publish(await s.submit(s.a, await s.draft(s.a, 'withdraw-optional-source', { related: [{ target: target.id, required: false }] })));
+  const denied = await s.command(s.admin, target, 'withdraw-publication', { note: 'Target withdrawal' });
+  assert.equal(denied.status, 409); assert.ok((await denied.json()).references.some(ref => ref.id === required.id));
+  assert.equal((await s.command(s.admin, required, 'withdraw-publication', { note: 'Remove dependent first' })).status, 200);
+  assert.equal((await s.command(s.admin, target, 'withdraw-publication', { note: 'No required dependent remains' })).status, 200);
+  const visible = await s.anonymous.request(`/api/public/articles/${optional.slug}`); assert.equal(visible.status, 200); assert.deepEqual((await visible.json()).related, []);
+});
+test('archived publication restarts as a new draft and cannot bypass a fresh review', async () => {
+  const published = await s.publish(await s.submit(s.a, await s.draft(s.a, 'withdraw-restart')));
+  const response = await s.command(s.admin, published, 'withdraw-publication', { note: 'Restart example' }); assert.equal(response.status, 200); const archived = (await response.json()).doc;
+  assert.equal((await s.command(s.a, archived, 'restart-archived')).status, 403);
+  const restarted = await s.command(s.admin, archived, 'restart-archived'); assert.equal(restarted.status, 200); const draft = (await restarted.json()).doc;
+  assert.equal(draft.state, 'draft'); assert.equal(draft.publicRevision, null); assert.notEqual(draft.workingRevision, published.publicRevision);
+  assert.equal((await s.anonymous.request(`/api/public/articles/${published.slug}`)).status, 404);
+  await s.publish(await s.submit(s.a, draft));
+  assert.equal((await s.anonymous.request(`/api/public/articles/${published.slug}`)).status, 200);
+});

@@ -410,7 +410,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T018
 
-- [ ] **Tarik publikasi dan bersihkan cache**
+- [x] **Tarik publikasi dan bersihkan cache**
 
 **Hasil:** Tambahkan penarikan publikasi dengan alasan, pembatalan review tertunda, dan invalidasi representasi publik.
 
@@ -421,19 +421,19 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Hanya Admin menarik; detail menjadi 404 dan daftar/hitungan/metadata/cache tidak lagi menampilkan konten.
-- [ ] Pengajuan revisi tertunda dibatalkan; penerbitan ulang harus melalui pengajuan baru.
-- [ ] Target relasi wajib yang masih dipakai tidak dapat ditarik; dependensi ditampilkan dan relasi opsional ke target yang ditarik disembunyikan.
+- [x] Hanya Admin menarik; detail menjadi 404 dan daftar/hitungan/metadata/cache tidak lagi menampilkan konten.
+- [x] Pengajuan revisi tertunda dibatalkan; penerbitan ulang harus melalui pengajuan baru.
+- [x] Target relasi wajib yang masih dipakai tidak dapat ditarik; dependensi ditampilkan dan relasi opsional ke target yang ditarik disembunyikan.
 
 **Verifikasi:** Panaskan cache lalu tarik artikel; tes audit, revisi tertunda, serta fixture relasi wajib/opsional. Ulangi setelah sitemap tersedia.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T018/CP-06](../docs/reports/T018.md): 23 integration dan 18 e2e lulus, termasuk browser cache, dependency wajib/opsional, review cancellation dan restart fresh review. Migrasi, lint/build/TypeScript dan probe produksi localhost 3200 lulus. CP-06 ditinjau. T019 sedang dikerjakan.
 
 #### CP-06 — setelah T018
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T019
 

@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — T015 / CP-05:** T001–T015 selesai, CP-04/CP-05 ditinjau. Batch T011–T020 diotorisasi dan sedang berjalan; berikutnya T016. Upload, gateway dan review/publish atomik telah diuji serta aktif di localhost/Supabase. Bukti: [T015](../docs/reports/T015.md). Reader publik, revisi, penarikan dan pencabutan batch ini masih dikerjakan.
+**Status terbaru — T018 / CP-06:** T001–T018 selesai; CP-04/CP-05/CP-06 ditinjau. Batch T011–T020 masih berjalan, berikutnya T019/T020. Reader publik, revisi dan withdrawal teruji; produksi lokal 3200 diverifikasi sambil mempertahankan dev server pengguna 3000. Bukti: [T018](../docs/reports/T018.md).
 
 ## Tujuan dan kondisi awal
 
