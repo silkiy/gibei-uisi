@@ -115,8 +115,9 @@ export const articleHooks: CollectionConfig['hooks'] = {
   }],
   afterRead: [async ({ doc, req }) => {
     if (!canEditDraft(req.user, doc)) throw new NotFound();
-    if (!doc.workingRevision) return doc;
-    const revision = await readRevision(req, doc.workingRevision);
+    const pointer = doc.workingRevision || doc.publicRevision;
+    if (!pointer) return doc;
+    const revision = await readRevision(req, pointer);
     return { ...doc, ...Object.fromEntries(keys.map(key => [key, revision[key]])), state: revision.state, expectedLockVersion: doc.lockVersion };
   }],
   beforeDelete: [() => { throw new Forbidden(); }],

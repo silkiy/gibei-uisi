@@ -15,6 +15,8 @@ export async function transaction(req: PayloadRequest) {
 }
 export async function currentActor(req: PayloadRequest) {
   if (!req.user) throw new Forbidden();
+  // Account changes hold the exclusive counterpart, keeping role/status current until commit.
+  await (await transaction(req)).execute(sql`SELECT pg_advisory_xact_lock_shared(697815, 7)`);
   const actor = await req.payload.findByID({ collection: 'users', id: req.user.id, req, overrideAccess: true, depth: 0 });
   if (!isActiveUser(actor)) throw new Forbidden();
   req.user = { ...req.user, ...actor, collection: 'users' };

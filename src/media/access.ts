@@ -16,3 +16,14 @@ export async function loadAsset(req: PayloadRequest, key: string): Promise<Media
   return asset as Media;
 }
 export const privatelyAllowed = (req: PayloadRequest, asset: Media) => canEditDraft(req.user, asset);
+export async function isAssetPublic(req: PayloadRequest, asset: Media) {
+  const schema = sql.identifier(req.payload.db.schemaName || 'payload');
+  const result = await (await transaction(req)).execute<{ allowed: boolean }>(sql`SELECT EXISTS (
+    SELECT 1 FROM ${schema}.articles a
+    JOIN ${schema}.article_revisions r ON a.public_revision_id = r.id AND r.article_id = a.id
+    JOIN ${schema}.article_revisions_assets usage ON usage._parent_id = r.id
+    WHERE r.state = 'published' AND usage.asset_id = ${asset.id}
+      AND usage.file_version = ${asset.fileVersion} AND usage.checksum = ${asset.checksum}
+  ) AS allowed`);
+  return result.rows[0]?.allowed === true;
+}

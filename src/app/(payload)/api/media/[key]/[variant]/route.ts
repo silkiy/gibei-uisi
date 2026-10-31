@@ -1,6 +1,6 @@
 import { NotFound } from 'payload';
 import { atomic, requestContext } from '../../../../../../server/request';
-import { loadAsset, privatelyAllowed, editorialLock } from '../../../../../../media/access';
+import { loadAsset, privatelyAllowed, editorialLock, isAssetPublic } from '../../../../../../media/access';
 import { readAsset, digest } from '../../../../../../media/storage';
 
 type Context = { params: Promise<{ key: string; variant: string }> };
@@ -13,7 +13,7 @@ async function serve(request: Request, context: Context) {
     return await atomic(req, async () => {
       await editorialLock(req, true);
       const asset = await loadAsset(req, key);
-      if (asset.state !== 'ready' || !privatelyAllowed(req, asset) || (variant === 'thumbnail' && !asset.hasThumbnail)) throw new NotFound();
+      if (asset.state !== 'ready' || (!privatelyAllowed(req, asset) && !await isAssetPublic(req, asset)) || (variant === 'thumbnail' && !asset.hasThumbnail)) throw new NotFound();
       const bytes = await readAsset(key, variant as 'original' | 'thumbnail');
       if (digest(bytes) !== (variant === 'original' ? asset.checksum : asset.thumbnailChecksum)) throw new NotFound();
       const headers = new Headers({ ...baseHeaders, 'Content-Type': variant === 'thumbnail' ? 'image/webp' : asset.mime,

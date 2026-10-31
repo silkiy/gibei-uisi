@@ -1,13 +1,13 @@
 import { APIError, NotFound, type PayloadRequest } from 'payload';
 import type { ArticleRevision, Media } from '../payload-types';
 import { relationId } from '../editorial/policy';
-import { privatelyAllowed } from './access';
+import { privatelyAllowed, isAssetPublic } from './access';
 import { digest, readAsset } from './storage';
 
 export async function referencedAsset(req: PayloadRequest, id: number) {
   if (!Number.isSafeInteger(id) || id < 1) throw new NotFound();
   const asset = await req.payload.db.findOne({ collection: 'media', where: { id: { equals: id } }, req }) as Media | null;
-  if (!asset || asset.state !== 'ready' || !privatelyAllowed(req, asset)) throw new NotFound();
+  if (!asset || asset.state !== 'ready' || (!privatelyAllowed(req, asset) && !await isAssetPublic(req, asset))) throw new NotFound();
   return asset;
 }
 export async function normalizeAssets(req: PayloadRequest, rows: ArticleRevision['assets']) {

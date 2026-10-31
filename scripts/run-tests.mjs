@@ -160,7 +160,7 @@ try {
   await assertTarget();
   if (mode !== 'e2e') {
     console.log('Running integration smoke tests with Admin and two Media');
-    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/review-submit.test.mjs'], 'Integration tests');
+    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs'], 'Integration tests');
     await child(['scripts/payload.mjs', 'run', 'scripts/verify-editorial-local.ts'], 'Local editorial boundary tests');
   }
   if (mode !== 'integration') {

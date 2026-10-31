@@ -23,13 +23,13 @@ export async function advanceArticle(req: PayloadRequest, article: Article, data
   await req.payload.db.updateOne({ collection: 'articles', id: article.id, req, data: { ...data, lockVersion: article.lockVersion + 1, updatedAt: new Date().toISOString() } });
 }
 export async function articleCommand(req: PayloadRequest, id: number, action: string, input: Record<string, unknown>) {
-  if (!['submit', 'withdraw-submission', 'request-revision'].includes(action)) throw new APIError('Unknown editorial action', 400);
+  if (!['submit', 'withdraw-submission', 'request-revision', 'publish'].includes(action)) throw new APIError('Unknown editorial action', 400);
   const allowed = ['expectedLockVersion', 'expectedRevisionId', 'submissionId', ...(action === 'request-revision' ? ['note'] : [])];
   if (Object.keys(input).some(key => !allowed.includes(key))) throw new APIError('Unsupported command field', 400);
   if (!Number.isSafeInteger(id) || !Number.isSafeInteger(input.expectedLockVersion) || !Number.isSafeInteger(input.expectedRevisionId)) throw new APIError('Revision and lock version required', 400);
   try { return await atomic(req, async () => {
     await editorialLock(req); await currentActor(req); await articleLock(req, id);
-    if (action === 'request-revision' && !isActiveAdmin(req.user)) throw new Forbidden();
+    if (['request-revision', 'publish'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
     const article = await req.payload.db.findOne({ collection: 'articles', where: { id: { equals: id } }, req }) as Article | null;
     if (!article || !canEditDraft(req.user, article)) throw new NotFound();
     if (article.lockVersion !== input.expectedLockVersion || relationId(article.workingRevision) !== input.expectedRevisionId) throw new APIError('Article changed; reload before continuing', 409);
@@ -37,6 +37,7 @@ export async function articleCommand(req: PayloadRequest, id: number, action: st
     if (relationId(revision.article) !== article.id) throw new Forbidden();
     const pending = (await req.payload.find({ collection: 'content-reviews', req, overrideAccess: true, depth: 0, limit: 1, pagination: false, where: { and: [{ article: { equals: id } }, { status: { equals: 'pending' } }] } })).docs[0];
     let submission;
+    let articleChanges: Partial<Article> = {};
     if (action === 'submit') {
       if (pending || !['draft', 'revision_required'].includes(revision.state)) throw new APIError('Revision cannot be submitted', 409);
       try { validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
@@ -51,14 +52,27 @@ export async function articleCommand(req: PayloadRequest, id: number, action: st
         submission = await req.payload.update({ collection: 'content-reviews', id: pending.id, ...internalOptions(req), data: { status: 'cancelled', resolvedAt: new Date().toISOString() } });
         await req.payload.update({ collection: 'article-revisions', id: revision.id, ...internalOptions(req), data: { state: 'draft' } });
         await auditCommand(req, article, revision, 'submission_withdrawn', 'in_review', 'draft', { submissionId: submission.id });
-      } else {
+      } else if (action === 'request-revision') {
         let note: string; try { note = revisionNote(input.note); } catch (error) { throw new APIError((error as Error).message, 400); }
         submission = await req.payload.update({ collection: 'content-reviews', id: pending.id, ...internalOptions(req), data: { status: 'changes_requested', reviewerId: req.user!.id, note, resolvedAt: new Date().toISOString() } });
         await req.payload.update({ collection: 'article-revisions', id: revision.id, ...internalOptions(req), data: { state: 'revision_required' } });
         await auditCommand(req, article, revision, 'revision_requested', 'in_review', 'revision_required', { submissionId: submission.id, note });
+      } else {
+        try { validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
+        await verifyReferencedFiles(req, revision);
+        const previousId = relationId(article.publicRevision);
+        if (previousId) {
+          const previous = await req.payload.findByID({ collection: 'article-revisions', id: previousId, req, overrideAccess: true, depth: 0 });
+          if (relationId(previous.article) !== article.id || previous.state !== 'published') throw new APIError('Public revision changed', 409);
+          await req.payload.update({ collection: 'article-revisions', id: previous.id, ...internalOptions(req), data: { state: 'archived' } });
+        }
+        await req.payload.update({ collection: 'article-revisions', id: revision.id, ...internalOptions(req), data: { state: 'published' } });
+        submission = await req.payload.update({ collection: 'content-reviews', id: pending.id, ...internalOptions(req), data: { status: 'approved', reviewerId: req.user!.id, resolvedAt: new Date().toISOString() } });
+        articleChanges = { publicRevision: revision.id, workingRevision: null };
+        await auditCommand(req, article, revision, 'published', 'in_review', 'published', { submissionId: submission.id, replacedRevisionId: previousId ?? null });
       }
     }
-    await advanceArticle(req, article);
+    await advanceArticle(req, article, articleChanges);
     return { doc: await req.payload.findByID({ collection: 'articles', id, req, overrideAccess: true, depth: 0 }), submission };
   }); } finally { Reflect.deleteProperty(req.context, editorialWrite); }
 }

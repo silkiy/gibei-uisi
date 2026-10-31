@@ -341,7 +341,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T015
 
-- [ ] **Terbitkan versi artikel yang disetujui**
+- [x] **Terbitkan versi artikel yang disetujui**
 
 **Hasil:** Bangun satu operasi persetujuan Admin yang menerbitkan versi beserta referensi aset dan auditnya.
 
@@ -352,19 +352,19 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Hanya Admin menyetujui versi in_review yang masih cocok; field status/publish tidak dapat dibypass lewat API.
-- [ ] Versi publik, izin aset, dan audit konsisten; kegagalan storage/database tidak menghasilkan publikasi parsial.
-- [ ] File yang disetujui tidak dapat ditimpa; alt/caption publik berasal dari versi yang disetujui.
+- [x] Hanya Admin menyetujui versi in_review yang masih cocok; field status/publish tidak dapat dibypass lewat API.
+- [x] Versi publik, izin aset, dan audit konsisten; kegagalan storage/database tidak menghasilkan publikasi parsial.
+- [x] File yang disetujui tidak dapat ditimpa; alt/caption publik berasal dari versi yang disetujui.
 
 **Verifikasi:** Tes sukses dan rollback dengan fault injection; tes bypass REST serta jalur internal/GraphQL jika diekspos.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T015/CP-05](../docs/reports/T015.md): 16 integration, 17 e2e, lint/typecheck/build lulus; fault storage/audit rollback terbukti. Hosted migration dan probe localhost lulus, CP-05 ditinjau. T016 sedang dikerjakan.
 
 #### CP-05 — setelah T015
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T016
 
