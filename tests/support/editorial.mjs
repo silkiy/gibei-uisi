@@ -17,7 +17,7 @@ export async function editorialFixture(prefix) {
     assert.equal(categorized.status, 200); doc = (await categorized.json()).doc; return doc;
   }
   const command = (actor, doc, action, extra = {}) => actor.request(`/api/editorial/articles/${doc.id}/${action}`, { method: 'POST', data: {
-    expectedLockVersion: doc.lockVersion, expectedRevisionId: doc.workingRevision || doc.publicRevision, ...extra,
+    expectedLockVersion: doc.lockVersion, expectedRevisionId: doc.workingRevision || doc.publicRevision || doc.expectedRevisionId, ...extra,
   } });
   async function submit(actor, doc) { const result = await command(actor, doc, 'submit'); assert.equal(result.status, 200); return result.json(); }
   async function publish(pending) { const result = await command(admin, pending.doc, 'publish', { submissionId: pending.submission.id }); assert.equal(result.status, 200); return (await result.json()).doc; }

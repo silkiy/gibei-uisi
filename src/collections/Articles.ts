@@ -19,6 +19,7 @@ export const Articles: CollectionConfig = {
     { name: 'publicRevision', type: 'relationship', relationTo: 'article-revisions', maxDepth: 0, admin: { hidden: true } },
     { name: 'lockVersion', type: 'number', required: true, defaultValue: 0, admin: { hidden: true } },
     { name: 'expectedLockVersion', type: 'number', virtual: true, admin: { readOnly: true, description: 'Versi yang dibaca; muat ulang jika terjadi konflik.' } },
+    { name: 'expectedRevisionId', type: 'number', virtual: true, admin: { hidden: true, readOnly: true } },
     { name: 'state', type: 'text', virtual: true, admin: { readOnly: true } },
   ],
 };

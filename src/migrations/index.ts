@@ -4,6 +4,7 @@ import * as migration_20261030_180255_article_drafts from './20261030_180255_art
 import * as migration_20261031_021413_private_media from './20261031_021413_private_media';
 import * as migration_20261031_030604_editorial_submissions from './20261031_030604_editorial_submissions';
 import * as migration_20261031_061247_public_relations from './20261031_061247_public_relations';
+import * as migration_20261031_063346_working_revision_guard from './20261031_063346_working_revision_guard';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20261031_061247_public_relations.up,
     down: migration_20261031_061247_public_relations.down,
-    name: '20261031_061247_public_relations'
+    name: '20261031_061247_public_relations',
+  },
+  {
+    up: migration_20261031_063346_working_revision_guard.up,
+    down: migration_20261031_063346_working_revision_guard.down,
+    name: '20261031_063346_working_revision_guard'
   },
 ];

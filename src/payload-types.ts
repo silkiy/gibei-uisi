@@ -262,6 +262,7 @@ export interface Article {
    * Versi yang dibaca; muat ulang jika terjadi konflik.
    */
   expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
   state?: string | null;
   updatedAt: string;
   createdAt: string;
@@ -585,6 +586,7 @@ export interface ArticlesSelect<T extends boolean = true> {
   publicRevision?: T;
   lockVersion?: T;
   expectedLockVersion?: T;
+  expectedRevisionId?: T;
   state?: T;
   updatedAt?: T;
   createdAt?: T;

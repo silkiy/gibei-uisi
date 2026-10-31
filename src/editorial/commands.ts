@@ -10,6 +10,7 @@ import { isActiveAdmin } from '../auth/policy';
 import { editorialLock } from '../media/access';
 import { verifyReferencedFiles } from '../media/references';
 import { validateRequiredRelations } from '../content/relations';
+import { copyDraftPayload } from './revision-copy';
 
 export const internalOptions = (req: PayloadRequest) => ({ req, overrideAccess: true, context: { [editorialWrite]: true } });
 export const revisionManifest = (revision: ArticleRevision) => ({ revisionId: revision.id, editVersion: revision.editVersion,
@@ -25,22 +26,35 @@ export async function advanceArticle(req: PayloadRequest, article: Article, data
   await req.payload.db.updateOne({ collection: 'articles', id: article.id, req, data: { ...data, lockVersion: article.lockVersion + 1, updatedAt: new Date().toISOString() } });
 }
 export async function articleCommand(req: PayloadRequest, id: number, action: string, input: Record<string, unknown>) {
-  if (!['submit', 'withdraw-submission', 'request-revision', 'publish'].includes(action)) throw new APIError('Unknown editorial action', 400);
-  const allowed = ['expectedLockVersion', 'expectedRevisionId', 'submissionId', ...(action === 'request-revision' ? ['note'] : [])];
+  if (!['submit', 'withdraw-submission', 'request-revision', 'publish', 'create-revision', 'archive-revision', 'restart-archived'].includes(action)) throw new APIError('Unknown editorial action', 400);
+  const allowed = ['expectedLockVersion', 'expectedRevisionId', 'submissionId', ...(['request-revision', 'archive-revision'].includes(action) ? ['note'] : [])];
   if (Object.keys(input).some(key => !allowed.includes(key))) throw new APIError('Unsupported command field', 400);
   if (!Number.isSafeInteger(id) || !Number.isSafeInteger(input.expectedLockVersion) || !Number.isSafeInteger(input.expectedRevisionId)) throw new APIError('Revision and lock version required', 400);
   try { return await atomic(req, async () => {
     await editorialLock(req); await currentActor(req); await articleLock(req, id);
-    if (['request-revision', 'publish'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
+    if (['request-revision', 'publish', 'archive-revision', 'restart-archived'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
     const article = await req.payload.db.findOne({ collection: 'articles', where: { id: { equals: id } }, req }) as Article | null;
     if (!article || !canEditDraft(req.user, article)) throw new NotFound();
-    if (article.lockVersion !== input.expectedLockVersion || relationId(article.workingRevision) !== input.expectedRevisionId) throw new APIError('Article changed; reload before continuing', 409);
+    const expectedPointer = action === 'create-revision' ? relationId(article.publicRevision) : action === 'restart-archived' ? input.expectedRevisionId : relationId(article.workingRevision);
+    if (article.lockVersion !== input.expectedLockVersion || !expectedPointer || expectedPointer !== input.expectedRevisionId) throw new APIError('Article changed; reload before continuing', 409);
     const revision = await req.payload.findByID({ collection: 'article-revisions', id: input.expectedRevisionId as number, req, overrideAccess: true, depth: 0 });
     if (relationId(revision.article) !== article.id) throw new Forbidden();
     const pending = (await req.payload.find({ collection: 'content-reviews', req, overrideAccess: true, depth: 0, limit: 1, pagination: false, where: { and: [{ article: { equals: id } }, { status: { equals: 'pending' } }] } })).docs[0];
     let submission;
     let articleChanges: Partial<Article> = {};
-    if (action === 'submit') {
+    if (action === 'create-revision' || action === 'restart-archived') {
+      if (article.workingRevision || pending || (action === 'create-revision' ? revision.state !== 'published' : article.publicRevision || revision.state !== 'archived')) throw new APIError('A working revision already exists or source is unavailable', 409);
+      const latest = (await req.payload.find({ collection: 'article-revisions', req, overrideAccess: true, depth: 0, limit: 1, pagination: false, sort: '-number', where: { article: { equals: id } } })).docs[0];
+      const copy = copyDraftPayload(Object.fromEntries(draftKeys.map(key => [key, revision[key]])));
+      const created = await req.payload.create({ collection: 'article-revisions', ...internalOptions(req), data: { ...copy, article: id, number: (latest?.number || 0) + 1, editVersion: article.lockVersion + 1, state: 'draft' } });
+      articleChanges = { workingRevision: created.id };
+      await auditCommand(req, article, created, 'revision_created', revision.state, 'draft', { sourceRevisionId: revision.id });
+    } else if (action === 'archive-revision') {
+      if (pending || !['draft', 'revision_required'].includes(revision.state)) throw new APIError('Withdraw review before archiving', 409);
+      await req.payload.update({ collection: 'article-revisions', id: revision.id, ...internalOptions(req), data: { state: 'archived' } });
+      articleChanges = { workingRevision: null };
+      await auditCommand(req, article, revision, 'revision_archived', revision.state, 'archived');
+    } else if (action === 'submit') {
       if (pending || !['draft', 'revision_required'].includes(revision.state)) throw new APIError('Revision cannot be submitted', 409);
       try { validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
       await verifyReferencedFiles(req, revision);

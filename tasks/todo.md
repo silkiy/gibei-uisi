@@ -389,7 +389,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T017
 
-- [ ] **Revisi artikel tanpa mengubah versi publik**
+- [x] **Revisi artikel tanpa mengubah versi publik**
 
 **Hasil:** Buat satu revisi kerja dari artikel terbit dan terbitkan ulang melalui alur yang sama.
 
@@ -400,13 +400,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Judul, isi, metadata, slug, dan aset versi publik lama tetap tampil selama revisi.
-- [ ] Maksimum satu revisi kerja aktif; slug tidak berubah setelah publikasi pertama.
-- [ ] Persetujuan baru mengganti versi secara utuh; pengarsipan revisi saja tidak menarik versi publik.
+- [x] Judul, isi, metadata, slug, dan aset versi publik lama tetap tampil selama revisi.
+- [x] Maksimum satu revisi kerja aktif; slug tidak berubah setelah publikasi pertama.
+- [x] Persetujuan baru mengganti versi secara utuh; pengarsipan revisi saja tidak menarik versi publik.
 
 **Verifikasi:** Bandingkan respons publik sebelum/saat/setelah revisi dan dua permintaan membuat revisi bersamaan.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Implementasi/uji selesai. [Laporan T017](../docs/reports/T017.md): 20 unit, 20 integration dan 17 e2e lulus. Snapshot publik tetap, CAS 200/409, slug terkunci, clone tanpa child ID sumber dan archive working diuji. Aktivasi hosted pada CP-06. T018 sedang dikerjakan.
 
 ### T018
 

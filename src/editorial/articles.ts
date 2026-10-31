@@ -81,6 +81,10 @@ export const articleHooks: CollectionConfig['hooks'] = {
     data.updatedAt = new Date().toISOString();
     try { data.slug = normalizeSlug(data.slug || (creating ? raw.title || `draft-${randomUUID()}` : originalDoc.slug)); }
     catch (error) { throw new APIError((error as Error).message, 400); }
+    if (!creating && data.slug !== originalDoc.slug) {
+      const published = await req.payload.count({ collection: 'content-reviews', req, overrideAccess: true, where: { and: [{ article: { equals: originalDoc.id } }, { status: { equals: 'approved' } }] } });
+      if (published.totalDocs) throw new APIError('Slug is locked after the first publication', 409);
+    }
     // Payload injects empty array defaults even on PATCH. Only explicit input replaces stored draft fields.
     const draft = Object.fromEntries(keys.map(key => [key, creating || Object.hasOwn(raw, key) ? data[key] ?? null : previous?.[key] ?? null])) as Draft;
     draft.sources ??= [];
@@ -118,9 +122,9 @@ export const articleHooks: CollectionConfig['hooks'] = {
   afterRead: [async ({ doc, req }) => {
     if (!canEditDraft(req.user, doc)) throw new NotFound();
     const pointer = doc.workingRevision || doc.publicRevision;
-    if (!pointer) return doc;
-    const revision = await readRevision(req, pointer);
-    return { ...doc, ...Object.fromEntries(keys.map(key => [key, revision[key]])), state: revision.state, expectedLockVersion: doc.lockVersion };
+    const revision = pointer ? await readRevision(req, pointer) : (await req.payload.find({ collection: 'article-revisions', req, overrideAccess: true, depth: 0, limit: 1, pagination: false, sort: '-number', where: { article: { equals: doc.id } } })).docs[0];
+    if (!revision) return { ...doc, expectedLockVersion: doc.lockVersion };
+    return { ...doc, ...Object.fromEntries(keys.map(key => [key, revision[key]])), state: revision.state, expectedLockVersion: doc.lockVersion, expectedRevisionId: revision.id };
   }],
   beforeDelete: [() => { throw new Forbidden(); }],
 };
