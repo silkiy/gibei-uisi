@@ -4,6 +4,7 @@ import type { ArticleRevision } from '../payload-types';
 import { transaction } from '../editorial/internal';
 import { assetFilesExist } from '../media/storage';
 import { publicBody } from './serialization';
+import { articleSearch } from './article-search';
 
 type PublicAssetRow = { id: number; key: string; mime: string; state: string; version: string; checksum: string; expectedVersion: string; expectedChecksum: string; size: number; thumbnail: boolean; alt: string; caption: string | null };
 type Row = { id: number; slug: string; title: string; excerpt: string; body: ArticleRevision['body']; public_author: string; published_at: Date | string; category_name: string | null; category_slug: string | null; sources: { title: string | null; url: string | null }[]; assets: PublicAssetRow[]; related: { id: number; slug: string; title: string; excerpt: string }[] };
@@ -48,18 +49,16 @@ export async function publicArticle(req: PayloadRequest, slug: string) {
 export async function publicArticles(req: PayloadRequest, query: URLSearchParams) {
   const keys = ['q', 'category', 'page', 'limit'];
   if ([...query.keys()].some(key => !keys.includes(key) || query.getAll(key).length !== 1)) throw new APIError('Unsupported query parameter', 400);
-  const integer = (name: string, fallback: number, maximum: number) => {
-    const value = query.get(name); if (value === null) return fallback;
-    if (!/^[1-9]\d*$/.test(value) || Number(value) > maximum) throw new APIError('Invalid pagination', 400);
-    return Number(value);
-  };
-  const page = integer('page', 1, 1000000), limit = integer('limit', 12, 24);
-  const q = (query.get('q') || '').trim(), category = query.get('category') || '';
-  if (q.length > 120 || (category && (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(category) || category.length > 120))) throw new APIError('Invalid search or category', 400);
+  const { page, limit, q, category } = articleSearch(query);
   const { from } = base(req);
   const where = sql`(${q} = '' OR strpos(lower(COALESCE(r.title,'')),lower(${q})) > 0 OR strpos(lower(COALESCE(r.excerpt,'')),lower(${q})) > 0) AND (${category} = '' OR c.slug = ${category})`;
   const count = await (await transaction(req)).execute<{ total: number }>(sql`SELECT count(*)::int AS total ${from} WHERE ${where}`);
   const totalDocs = count.rows[0].total, totalPages = Math.max(1, Math.ceil(totalDocs / limit));
-  if (page > totalPages) throw new NotFound();
-  return { docs: await Promise.all((await rows(req, where, limit, (page - 1) * limit)).map(row => serialize(row, false))), totalDocs, totalPages, page, limit };
+  const outOfRange = page > totalPages;
+  return { docs: outOfRange ? [] : await Promise.all((await rows(req, where, limit, (page - 1) * limit)).map(row => serialize(row, false))), totalDocs, totalPages, page, limit, outOfRange };
+}
+
+export async function publicArticleCategories(req: PayloadRequest) {
+  const { from } = base(req);
+  return (await (await transaction(req)).execute<{ name: string; slug: string }>(sql`SELECT DISTINCT c.name,c.slug ${from} WHERE c.slug IS NOT NULL ORDER BY c.name,c.slug`)).rows;
 }

@@ -527,7 +527,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T023
 
-- [ ] **Buat daftar artikel yang bisa dicari**
+- [x] **Buat daftar artikel yang bisa dicari**
 
 **Hasil:** Bangun daftar publik dengan pencarian judul/excerpt, kategori, pagination, serta empty state.
 
@@ -538,13 +538,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Pencarian case-insensitive, kategori dan pagination dapat digabung; default 12 dan maksimum 48.
-- [ ] Kategori tidak dikenal/hasil kosong/halaman di luar rentang ditangani sesuai PRD; parameter tidak valid memakai default.
-- [ ] Hanya versi terbit memengaruhi isi dan hitungan hasil.
+- [x] Pencarian case-insensitive, kategori dan pagination dapat digabung; default 12 dan maksimum 48.
+- [x] Kategori tidak dikenal/hasil kosong/halaman di luar rentang ditangani sesuai PRD; parameter tidak valid memakai default.
+- [x] Hanya versi terbit memengaruhi isi dan hitungan hasil.
 
 **Verifikasi:** Tes query kombinasi dan browser mobile/keyboard; gunakan fixture draft berjudul serupa untuk membuktikan tidak bocor.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T023](../docs/reports/T023.md): 34 integration/20 e2e, normalisasi PRD, mobile/keyboard/axe dan inspeksi visual lulus. Filter/count mengecualikan draft; T024 sedang dikerjakan.
 
 ### T024
 

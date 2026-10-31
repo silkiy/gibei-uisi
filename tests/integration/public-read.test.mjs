@@ -23,8 +23,12 @@ test('anonymous list/count/detail use approved snapshots and an explicit field a
   assert.equal((await s.anonymous.request(`/api/public/articles/${draft.slug}`)).status, 404);
   assert.equal((await s.anonymous.request(`/api/public/articles/${draft.id}`)).status, 404);
   for (const path of ['/api/articles', '/api/article-revisions', '/api/content-reviews', '/api/editorial-audit', '/api/media']) assert.equal((await s.anonymous.request(path)).status, 403);
-  for (const query of ['page=0', 'limit=1000', 'depth=10', 'where[owner][exists]=true']) assert.equal((await s.anonymous.request(`/api/public/articles?${query}`)).status, 400);
-  assert.equal((await s.anonymous.request('/api/public/articles?page=999999&limit=1')).status, 404);
+  for (const query of ['depth=10', 'where[owner][exists]=true']) assert.equal((await s.anonymous.request(`/api/public/articles?${query}`)).status, 400);
+  for (const query of ['page=0', 'limit=1000']) {
+    const normalized = await s.anonymous.request(`/api/public/articles?${query}`); assert.equal(normalized.status, 200);
+    const defaults = await normalized.json(); assert.equal(defaults.page, 1); assert.equal(defaults.limit, 12);
+  }
+  const outside = await s.anonymous.request('/api/public/articles?page=999999&limit=1'); assert.equal(outside.status, 200); assert.deepEqual((await outside.json()).docs, []);
 });
 test('nested related content resolves its public target while a newer private target draft exists', async () => {
   const target = await s.publish(await s.submit(s.a, await s.draft(s.a, 'public-relation-target', { title: 'Approved target title' })));

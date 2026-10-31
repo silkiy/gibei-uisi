@@ -86,6 +86,34 @@ h2 { font-size: clamp(1.9rem, 3vw, 2.8rem); line-height: 1.2; font-weight: 600; 
 .footer-bottom a { min-height: 44px; display: inline-flex; align-items: center; gap: 1rem; }
 .site-footer :focus-visible { outline-color: var(--lime); }
 
+.publication-main { padding-block: 3.5rem; }
+.publication-intro { display: grid; gap: 1rem; margin-bottom: 2.5rem; }
+.publication-intro h1 { margin-bottom: 0; }
+.publication-intro > p { max-width: 40ch; color: var(--muted); align-self: end; }
+.article-filters { display: flex; flex-wrap: wrap; gap: 1rem; align-items: end; padding-block: 1.5rem; border-block: 1px solid var(--line); }
+.article-filters label { display: grid; gap: .5rem; font-size: .8rem; flex: 1 1 10rem; min-width: 0; }
+.article-filters label:first-child { flex-grow: 2; }
+.article-filters input, .article-filters select { width: 100%; min-height: 48px; border: 1px solid #9eafa0; background: var(--paper); color: var(--ink); padding: .65rem; font: inherit; }
+.article-filters .button-primary { margin: 0; border: 0; }
+.article-result-count { margin-block: 1.5rem; font-size: .8rem; color: var(--muted); }
+.article-list { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line); }
+.article-row { display: grid; gap: 1rem; border-bottom: 1px solid var(--line); padding-block: 2rem; overflow-wrap: anywhere; }
+.article-row-meta { display: grid; align-content: start; gap: .4rem; font-size: .75rem; }
+.article-row-meta time { color: var(--muted); }
+.article-row h2 { font-size: clamp(1.5rem, 2.5vw, 2.2rem); margin-block: .5rem .8rem; }
+.article-row h2 a { color: var(--ink); }
+.article-row h2 a:hover { text-decoration: underline; text-underline-offset: .2em; }
+.article-row p { max-width: 65ch; color: var(--muted); font-size: .9rem; }
+.article-row .demo-label, .demo-label { font-size: .7rem; color: #415847; }
+.article-author { display: block; margin-top: .8rem; font-size: .75rem; }
+.article-pagination { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-block: 2rem; }
+.article-pagination a, .empty-state a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration: underline; }
+.publication-main > .education-note { padding-top: 3rem; }
+@media (min-width: 768px) {
+  .publication-intro { grid-template-columns: 2fr 1fr; gap: 3rem; }
+  .article-row { grid-template-columns: 12rem 1fr; gap: 2rem; }
+}
+
 @media (min-width: 768px) {
   .page-width { width: min(100% - 5rem, 80rem); }
   .hero { grid-template-columns: 1.15fr 1fr; align-items: stretch; gap: 2rem; padding-block: 4rem; }

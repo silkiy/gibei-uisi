@@ -1,0 +1,32 @@
+import { test, expect } from '@playwright/test';
+import AxeBuilder from '@axe-core/playwright';
+import { editorialFixture } from '../support/editorial.mjs';
+
+test('article list combines filters and pagination with mobile, keyboard and empty states', async ({ page }) => {
+  test.setTimeout(90000);
+  const s = await editorialFixture('list-browser');
+  for (let i = 0; i < 13; i++) await s.publish(await s.submit(s.a, await s.draft(s.a, `list-browser-${i}`, { title: `Batch Cerah ${i}`, excerpt: 'Belajar membaca informasi pasar modal secara kritis.' })));
+  await s.draft(s.a, 'list-browser-secret', { title: 'Batch Cerah SECRET' });
+  const route = '/publikasi/artikel?q=Batch%20Cerah&category=category-list-browser';
+  await page.setViewportSize({ width: 1440, height: 900 }); await page.goto(route);
+  await expect(page.getByRole('heading', { name: 'Artikel & edukasi', exact: true })).toBeVisible();
+  await expect(page.locator('main article')).toHaveCount(12);
+  await expect(page.getByRole('status')).toContainText('13 artikel');
+  await expect(page.getByText('Batch Cerah SECRET')).toHaveCount(0);
+  await page.screenshot({ path: 'artifacts/T023-desktop.png', fullPage: true });
+  await page.getByRole('link', { name: 'Halaman berikutnya' }).click();
+  await expect(page.locator('main article')).toHaveCount(1); await expect(page).toHaveURL(/page=2/);
+  await page.setViewportSize({ width: 375, height: 850 });
+  await page.getByLabel('Cari artikel').fill('batch cerah');
+  await page.getByLabel('Kategori artikel').selectOption('category-list-browser');
+  await page.getByLabel('Artikel per halaman').selectOption('48');
+  await page.getByRole('button', { name: 'Tampilkan artikel', exact: true }).focus(); await page.keyboard.press('Enter');
+  await expect(page.locator('main article')).toHaveCount(13);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth + 1)).toBe(true);
+  expect((await new AxeBuilder({ page }).include('main').withTags(['wcag2a', 'wcag2aa', 'wcag21a', 'wcag21aa']).analyze()).violations).toEqual([]);
+  await page.screenshot({ path: 'artifacts/T023-mobile.png', fullPage: true });
+  await page.goto(`${route}&page=99`); await expect(page.getByText('Halaman ini tidak memiliki artikel.', { exact: true })).toBeVisible();
+  await page.getByRole('link', { name: 'Kembali ke halaman pertama' }).click(); await expect(page.locator('main article')).toHaveCount(12);
+  await page.goto('/publikasi/artikel?category=kategori-tidak-dikenal'); await expect(page.getByText('Belum ada artikel yang sesuai.', { exact: true })).toBeVisible();
+  await page.goto(`${route}&page=0&limit=1000`); await expect(page.locator('main article')).toHaveCount(12);
+});
