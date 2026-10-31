@@ -6,13 +6,14 @@ import { articleLock, currentActor, editorialWrite, transaction } from './intern
 import { canEditDraft, normalizeSlug, relationId, validateDraft } from './policy';
 import { editorialLock } from '../media/access';
 import { normalizeAssets } from '../media/references';
+import { normalizeRelated } from '../content/relations';
 
 export const articleAccess: Access = ({ req }) => {
   if (isActiveAdmin(req.user)) return true;
   if (!isActiveUser(req.user)) return false;
   return { or: [{ owner: { equals: req.user!.id } }, { assignedTo: { in: [req.user!.id] } }] } as import('payload').Where;
 };
-export const draftKeys = ['title', 'excerpt', 'body', 'category', 'publicAuthor', 'sources', 'assets'] as const;
+export const draftKeys = ['title', 'excerpt', 'body', 'category', 'publicAuthor', 'sources', 'assets', 'related'] as const;
 const keys = draftKeys;
 type Draft = Pick<ArticleRevision, typeof keys[number]>;
 type Change = { raw: Record<string, unknown>; draft?: Draft; previous?: ArticleRevision; ownerChanged?: boolean; before?: Record<string, unknown> };
@@ -85,6 +86,7 @@ export const articleHooks: CollectionConfig['hooks'] = {
     draft.sources ??= [];
     draft.sources = draft.sources.map(source => ({ title: source.title, url: source.url }));
     draft.assets = await normalizeAssets(req, draft.assets ?? []);
+    draft.related = await normalizeRelated(req, draft.related ?? []);
     if (!isActiveAdmin(req.user)) draft.category = previous?.category ?? null;
     try { validateDraft(draft); } catch { throw new APIError('Draft text, sources or rich text are invalid', 400); }
     change.draft = draft;

@@ -245,6 +245,13 @@ export interface Article {
         id?: string | null;
       }[]
     | null;
+  related?:
+    | {
+        target: number | Article;
+        required?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
   createdBy: number | User;
   owner: number | User;
   assignedTo?: (number | User)[] | null;
@@ -330,6 +337,13 @@ export interface ArticleRevision {
         caption?: string | null;
         fileVersion?: string | null;
         checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  related?:
+    | {
+        target: number | Article;
+        required?: boolean | null;
         id?: string | null;
       }[]
     | null;
@@ -557,6 +571,13 @@ export interface ArticlesSelect<T extends boolean = true> {
         checksum?: T;
         id?: T;
       };
+  related?:
+    | T
+    | {
+        target?: T;
+        required?: T;
+        id?: T;
+      };
   createdBy?: T;
   owner?: T;
   assignedTo?: T;
@@ -597,6 +618,13 @@ export interface ArticleRevisionsSelect<T extends boolean = true> {
         caption?: T;
         fileVersion?: T;
         checksum?: T;
+        id?: T;
+      };
+  related?:
+    | T
+    | {
+        target?: T;
+        required?: T;
         id?: T;
       };
   updatedAt?: T;

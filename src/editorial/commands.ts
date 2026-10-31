@@ -9,9 +9,11 @@ import { validateComplete, snapshotDigest, revisionNote } from './review-policy'
 import { isActiveAdmin } from '../auth/policy';
 import { editorialLock } from '../media/access';
 import { verifyReferencedFiles } from '../media/references';
+import { validateRequiredRelations } from '../content/relations';
 
 export const internalOptions = (req: PayloadRequest) => ({ req, overrideAccess: true, context: { [editorialWrite]: true } });
-export const revisionManifest = (revision: ArticleRevision) => ({ revisionId: revision.id, editVersion: revision.editVersion, ...Object.fromEntries(draftKeys.map(key => [key, revision[key]])) });
+export const revisionManifest = (revision: ArticleRevision) => ({ revisionId: revision.id, editVersion: revision.editVersion,
+  ...Object.fromEntries(draftKeys.filter(key => key !== 'related' || revision.related?.length).map(key => [key, revision[key]])) });
 export function assertPending(revision: ArticleRevision, pending: ContentReview | undefined, submissionId: unknown): asserts pending is ContentReview {
   if (!pending || pending.status !== 'pending' || pending.id !== submissionId || relationId(pending.revision) !== revision.id || pending.editVersion !== revision.editVersion || pending.manifestDigest !== snapshotDigest(revisionManifest(revision)) || revision.state !== 'in_review') throw new APIError('Submission is no longer current', 409);
 }
@@ -42,6 +44,7 @@ export async function articleCommand(req: PayloadRequest, id: number, action: st
       if (pending || !['draft', 'revision_required'].includes(revision.state)) throw new APIError('Revision cannot be submitted', 409);
       try { validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
       await verifyReferencedFiles(req, revision);
+      await validateRequiredRelations(req, revision);
       const manifest = revisionManifest(revision);
       submission = await req.payload.create({ collection: 'content-reviews', ...internalOptions(req), data: { article: id, revision: revision.id, editVersion: revision.editVersion, manifest, manifestDigest: snapshotDigest(manifest), status: 'pending', submittedBy: req.user!.id } });
       await req.payload.update({ collection: 'article-revisions', id: revision.id, ...internalOptions(req), data: { state: 'in_review' } });
@@ -60,6 +63,7 @@ export async function articleCommand(req: PayloadRequest, id: number, action: st
       } else {
         try { validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
         await verifyReferencedFiles(req, revision);
+        await validateRequiredRelations(req, revision);
         const previousId = relationId(article.publicRevision);
         if (previousId) {
           const previous = await req.payload.findByID({ collection: 'article-revisions', id: previousId, req, overrideAccess: true, depth: 0 });

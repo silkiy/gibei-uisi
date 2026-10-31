@@ -34,3 +34,12 @@ export async function removeAsset(key: string) {
   const target = await directory(key);
   await rm(target, { recursive: true, force: true });
 }
+export async function assetFilesExist(key: string, size: number, thumbnail: boolean) {
+  try {
+    const target = await directory(key);
+    const original = await lstat(path.join(target, 'original'));
+    if (!original.isFile() || original.isSymbolicLink() || original.size !== size) return false;
+    if (thumbnail) { const file = await lstat(path.join(target, 'thumbnail')); if (!file.isFile() || file.isSymbolicLink() || !file.size) return false; }
+    return true;
+  } catch { return false; }
+}

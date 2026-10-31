@@ -368,7 +368,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T016
 
-- [ ] **Baca hanya versi publik artikel**
+- [x] **Baca hanya versi publik artikel**
 
 **Hasil:** Buat pembacaan publik terpusat dengan field whitelist untuk daftar/detail serta relasi yang aman.
 
@@ -379,13 +379,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Draft tidak muncul pada hasil, hitungan, detail, atau relasi; detail tanpa publikasi mengembalikan 404.
-- [ ] Email akun, ownership, audit, dan bukti privat tidak ikut respons publik.
-- [ ] Nama/isi target relasi diambil dari versi publik target, tanpa mengekspose draftnya.
+- [x] Draft tidak muncul pada hasil, hitungan, detail, atau relasi; detail tanpa publikasi mengembalikan 404.
+- [x] Email akun, ownership, audit, dan bukti privat tidak ikut respons publik.
+- [x] Nama/isi target relasi diambil dari versi publik target, tanpa mengekspose draftnya.
 
 **Verifikasi:** Tes request anonim termasuk nested relations, filter, count, API bawaan CMS yang diaktifkan, dan ID yang ditebak.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Implementasi/uji selesai. [Laporan T016](../docs/reports/T016.md): 19 unit, 18 integration dan 17 e2e lulus; whitelist rekursif, draft/count/search/filter, relasi target publik dan private shadow draft diuji. Aktivasi hosted pada CP-06. T017 sedang dikerjakan.
 
 ### T017
 

@@ -18,5 +18,9 @@ export function draftFields(virtual = false): Field[] {
       { name: 'alt', type: 'text', maxLength: 300 }, { name: 'caption', type: 'text', maxLength: 600 },
       { name: 'fileVersion', type: 'text', admin: { readOnly: true } }, { name: 'checksum', type: 'text', admin: { readOnly: true } },
     ] },
+    { name: 'related', type: 'array', virtual, maxRows: 20, admin: { readOnly: false }, fields: [
+      { name: 'target', type: 'relationship', relationTo: 'articles', required: true, maxDepth: 0 },
+      { name: 'required', type: 'checkbox', defaultValue: false },
+    ] },
   ];
 }
