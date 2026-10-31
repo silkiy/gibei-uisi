@@ -1,6 +1,7 @@
 import { withPayload } from '@payloadcms/next/withPayload';
 
 export default withPayload({
+  images: { unoptimized: true },
   distDir: process.env.GIBEI_TEST_RUN_ID ? '.next-test' : '.next',
   typescript: { tsconfigPath: process.env.GIBEI_TEST_RUN_ID ? 'tsconfig.test.json' : 'tsconfig.json' },
   async headers() {

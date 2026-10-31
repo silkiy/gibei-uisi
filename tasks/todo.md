@@ -272,7 +272,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T012
 
-- [ ] **Lindungi pembacaan file dan turunannya**
+- [x] **Lindungi pembacaan file dan turunannya**
 
 **Hasil:** Sajikan file asli, thumbnail/transformasi, dan PDF melalui pemeriksaan izin yang konsisten.
 
@@ -283,19 +283,19 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Pengunjung tidak menerima byte file draft melalui seluruh bentuk URL termasuk permintaan parsial/varian ukuran.
-- [ ] Pemilik/assignee/Admin dapat melihat file privat yang diizinkan; akun lain ditolak.
-- [ ] Transformasi dan cache gambar tidak menjadi jalur bypass; PDF diunduh dengan header yang tepat.
+- [x] Pengunjung tidak menerima byte file draft melalui seluruh bentuk URL termasuk permintaan parsial/varian ukuran.
+- [x] Pemilik/assignee/Admin dapat melihat file privat yang diizinkan; akun lain ditolak.
+- [x] Transformasi dan cache gambar tidak menjadi jalur bypass; PDF diunduh dengan header yang tepat.
 
 **Verifikasi:** Uji URL asli, thumbnail, transformasi, dan PDF secara langsung sebagai anonim serta pengguna lain; periksa byte dan header/cache.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T012/CP-04](../docs/reports/T012.md): 16 unit, 11 integration, 16 e2e, lint/build/TypeScript dan verifikasi localhost lulus. Migrasi media Supabase diterapkan; file pengembangan tetap kosong. CP-04 ditinjau.
 
 #### CP-04 — setelah T012
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T013
 

@@ -14,6 +14,7 @@ export const Media: CollectionConfig = {
     return doc;
   }] },
   fields: [
+    { name: 'preview', type: 'ui', admin: { components: { Field: '/components/MediaPreview#MediaPreview' } } },
     { name: 'key', type: 'text', required: true, unique: true },
     { name: 'name', type: 'text', required: true },
     { name: 'alt', type: 'text', required: true, maxLength: 300 },

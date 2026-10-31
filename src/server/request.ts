@@ -2,12 +2,16 @@ import { APIError, Forbidden, createLocalReq, getPayload, initTransaction, commi
 import config from '../payload.config';
 import { isActiveUser } from '../auth/policy';
 
-export async function authenticatedRequest(request: Request, mutation = false) {
+export async function requestContext(request: Request) {
   const payload = await getPayload({ config });
-  if (mutation && request.headers.get('origin') !== new URL(payload.config.serverURL).origin) throw new Forbidden();
   const { user } = await payload.auth({ headers: request.headers });
-  if (!user || !isActiveUser(user)) throw new Forbidden();
-  return createLocalReq({ user, req: { headers: request.headers, url: request.url } }, payload);
+  return createLocalReq({ user: user || undefined, req: { headers: request.headers, url: request.url } }, payload);
+}
+export async function authenticatedRequest(request: Request, mutation = false) {
+  const req = await requestContext(request);
+  if (mutation && request.headers.get('origin') !== new URL(req.payload.config.serverURL).origin) throw new Forbidden();
+  if (!isActiveUser(req.user)) throw new Forbidden();
+  return req;
 }
 export async function atomic<T>(req: PayloadRequest, work: () => Promise<T>) {
   await initTransaction(req);

@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — T010:** T001–T010 selesai, CP-01/CP-02/CP-03 ditinjau dan T011 siap dikerjakan. Draft artikel privat dengan ownership, revisi kerja, audit atomik dan editor CMS sudah diverifikasi. Upload dan workflow persetujuan/publikasi mengikuti tugas selanjutnya. Status ada di [todo.md](todo.md), bukti terbaru di [laporan T010](../docs/reports/T010.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
+**Status terbaru — T012 / CP-04:** T001–T012 selesai, CP-04 ditinjau. Batch T011–T020 diotorisasi pengguna dan sedang berjalan; berikutnya T013. Upload dan gateway privat telah diuji serta diaktifkan di localhost/Supabase. Bukti: [T012](../docs/reports/T012.md). Workflow persetujuan/publikasi belum dinyatakan selesai.
 
 ## Tujuan dan kondisi awal
 
