@@ -3,7 +3,7 @@ import { randomUUID } from 'node:crypto';
 import type { Article, ArticleRevision, EditorialAudit, ContentReview } from '../payload-types';
 import { atomic } from '../server/request';
 import { articleLock, currentActor, editorialWrite } from './internal';
-import { canEditDraft, relationId } from './policy';
+import { canEditDraft, relationId, validateDraft } from './policy';
 import { draftKeys } from './articles';
 import { validateComplete, snapshotDigest, revisionNote } from './review-policy';
 import { isActiveAdmin } from '../auth/policy';
@@ -82,7 +82,7 @@ export async function articleCommand(req: PayloadRequest, id: number, action: st
       await auditCommand(req, article, revision, 'revision_archived', revision.state, 'archived');
     } else if (action === 'submit') {
       if (pending || !['draft', 'revision_required'].includes(revision.state)) throw new APIError('Revision cannot be submitted', 409);
-      try { validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
+      try { validateDraft(revision); validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
       await verifyReferencedFiles(req, revision);
       await validateRequiredRelations(req, revision);
       const manifest = revisionManifest(revision);
@@ -101,7 +101,7 @@ export async function articleCommand(req: PayloadRequest, id: number, action: st
         await req.payload.update({ collection: 'article-revisions', id: revision.id, ...internalOptions(req), data: { state: 'revision_required' } });
         await auditCommand(req, article, revision, 'revision_requested', 'in_review', 'revision_required', { submissionId: submission.id, note });
       } else {
-        try { validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
+        try { validateDraft(revision); validateComplete(revision); } catch (error) { throw new APIError((error as Error).message, 400); }
         await verifyReferencedFiles(req, revision);
         await validateRequiredRelations(req, revision);
         const previousId = relationId(article.publicRevision);

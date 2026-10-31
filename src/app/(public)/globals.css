@@ -109,6 +109,25 @@ h2 { font-size: clamp(1.9rem, 3vw, 2.8rem); line-height: 1.2; font-weight: 600; 
 .article-pagination { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 1rem; margin-block: 2rem; }
 .article-pagination a, .empty-state a { display: inline-flex; align-items: center; min-height: 44px; color: var(--ink); text-decoration: underline; }
 .publication-main > .education-note { padding-top: 3rem; }
+.article-detail { max-width: 52rem; margin-inline: auto; overflow-wrap: anywhere; }
+.article-back { display: inline-flex; min-height: 44px; align-items: center; margin-bottom: 2rem; color: var(--muted); text-decoration: underline; }
+.article-detail h1 { font-size: clamp(2.1rem, 4.8vw, 4rem); }
+.article-lead { font-size: 1.15rem; color: var(--muted); }
+.article-meta { display: flex; flex-wrap: wrap; gap: .5rem 2rem; margin-block: 1.5rem .6rem; font-size: .8rem; }
+.article-body { margin-block: 2.5rem; font-size: 1rem; line-height: 1.85; overflow-wrap: anywhere; }
+.article-body p, .article-body ul, .article-body ol { margin-block: 1.25rem; }
+.article-body ul, .article-sources ul { list-style: disc; padding-left: 1.5rem; }
+.article-body ol { list-style: decimal; padding-left: 1.5rem; }
+.article-body h2, .article-sources h2 { font-size: 1.7rem; margin-block: 2rem 1rem; }
+.article-body h3 { font-size: 1.3rem; margin-block: 1.5rem 1rem; }
+.article-body a, .article-sources a { color: var(--ink); text-decoration: underline; text-underline-offset: .2em; }
+.article-body figure { margin: 2rem 0; }
+.article-body img { display: block; width: 100%; height: auto; max-height: 36rem; object-fit: contain; background: #eaf0e1; }
+.article-body figcaption, .media-caption { display: block; font-size: .8rem; color: var(--muted); margin-top: .5rem; }
+.inline-media { display: block; margin-block: 2rem; }
+.article-sources { border-top: 1px solid var(--line); padding-bottom: 1.5rem; }
+.article-detail > .education-note { padding-top: 1.5rem; border-top: 1px solid var(--line); }
+.asset-fallback { display: block; padding: 1rem; border: 1px solid var(--line); color: var(--muted); }
 @media (min-width: 768px) {
   .publication-intro { grid-template-columns: 2fr 1fr; gap: 3rem; }
   .article-row { grid-template-columns: 12rem 1fr; gap: 2rem; }

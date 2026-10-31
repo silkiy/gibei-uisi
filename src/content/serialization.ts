@@ -1,6 +1,7 @@
-const types = new Set(['root', 'paragraph', 'text', 'linebreak', 'heading', 'list', 'listitem']);
+import { safeExternalURL, mediaLinkID } from './links.mjs';
+const types = new Set(['root', 'paragraph', 'text', 'linebreak', 'heading', 'list', 'listitem', 'link']);
 const fields = ['text', 'format', 'detail', 'mode', 'direction', 'indent', 'start', 'value', 'listType', 'textFormat'] as const;
-export function publicBody(body: unknown) {
+export function publicBody(body: unknown, allowedAssetIds: number[] = []) {
   const root = (body as { root?: { type?: string } } | null)?.root;
   if (root?.type !== 'root') return null;
   let count = 0;
@@ -13,6 +14,12 @@ export function publicBody(body: unknown) {
     const result: Record<string, unknown> = { type: node.type, version: 1 };
     for (const key of fields) if (node[key] === null || ['string', 'number', 'boolean'].includes(typeof node[key])) result[key] = node[key];
     if (node.type === 'heading' || node.type === 'list') result.tag = node.tag;
+    if (node.type === 'link') {
+      const input = node.fields as { url?: unknown; newTab?: unknown; assetId?: number } | undefined;
+      const assetId = mediaLinkID(input) ?? (Number.isSafeInteger(input?.assetId) ? input!.assetId! : null);
+      const url = safeExternalURL(input?.url);
+      result.fields = assetId && allowedAssetIds.includes(assetId) ? { assetId } : url && !assetId ? { url, newTab: input?.newTab === true } : {};
+    }
     if (Array.isArray(node.children)) result.children = node.children.map(child => visit(child, depth + 1)).filter(Boolean);
     return result;
   }

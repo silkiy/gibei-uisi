@@ -6,6 +6,11 @@ export function fixtureAccounts(env = process.env) {
   return accounts;
 }
 
+/**
+ * @param {string} baseURL
+ * @param {string=} cookie
+ * @returns {(path: string, options?: {method?: string, data?: unknown, bytes?: Uint8Array, headers?: Record<string, string>}) => Promise<Response>}
+ */
 export function httpClient(baseURL, cookie) {
   const base = new URL(baseURL);
   assert.equal(base.hostname, '127.0.0.1');

@@ -1,3 +1,5 @@
+import { safeExternalURL, mediaLinkID } from '../content/links.mjs';
+
 type Identity = { id: number | string; role?: string; status?: string } | null | undefined;
 type Relation = number | string | { id: number | string };
 export const relationId = (value: Relation | null | undefined) => value && typeof value === 'object' ? value.id : value;
@@ -14,20 +16,23 @@ export function normalizeSlug(value: string): string {
   return slug;
 }
 
-export function validateDraft(data: { title?: string | null; excerpt?: string | null; publicAuthor?: string | null; body?: unknown; sources?: { url?: string | null }[] | null }) {
+export function validateDraft(data: { title?: string | null; excerpt?: string | null; publicAuthor?: string | null; body?: unknown; sources?: { url?: string | null }[] | null; assets?: { asset: Relation }[] | null }) {
   if ((data.title?.length || 0) > 240 || (data.excerpt?.length || 0) > 600 || (data.publicAuthor?.length || 0) > 160) throw new Error('Teks draft melampaui batas panjang');
   for (const source of data.sources || []) {
     if (!source.url) continue;
-    const url = new URL(source.url);
-    if (!['http:', 'https:'].includes(url.protocol) || url.username || url.password) throw new Error('Sumber harus URL HTTP/HTTPS tanpa kredensial');
+    if (!safeExternalURL(source.url)) throw new Error('Sumber harus URL HTTPS tanpa kredensial');
   }
   if (!data.body) return;
   if (JSON.stringify(data.body).length > 200000) throw new Error('Isi draft terlalu besar');
   let count = 0;
   const visit = (node: unknown, depth: number) => {
     if (!node || typeof node !== 'object' || depth > 32 || ++count > 5000) throw new Error('Struktur rich text tidak valid');
-    const value = node as { type?: string; children?: unknown[]; tag?: string; text?: unknown; style?: unknown; textStyle?: unknown };
-    if (!['root', 'paragraph', 'text', 'linebreak', 'heading', 'list', 'listitem'].includes(value.type || '')) throw new Error('Node rich text belum didukung; upload dan relasi masih privat');
+    const value = node as { type?: string; children?: unknown[]; tag?: string; text?: unknown; style?: unknown; textStyle?: unknown; fields?: { linkType?: string; url?: unknown } };
+    if (!['root', 'paragraph', 'text', 'linebreak', 'heading', 'list', 'listitem', 'link'].includes(value.type || '')) throw new Error('Node rich text belum didukung');
+    if (value.type === 'link') {
+      const id = mediaLinkID(value.fields);
+      if (value.fields?.linkType === 'internal' ? !id || !data.assets?.some(asset => Number(relationId(asset.asset)) === id) : value.fields?.linkType !== 'custom' || !safeExternalURL(value.fields.url)) throw new Error('Link harus HTTPS atau media yang tercantum pada aset revisi');
+    }
     if (value.type === 'heading' && !['h2', 'h3'].includes(value.tag || '')) throw new Error('Heading harus h2/h3');
     if (value.type === 'text' && typeof value.text !== 'string') throw new Error('Text harus string');
     if (value.style || value.textStyle) throw new Error('Custom styling belum didukung');

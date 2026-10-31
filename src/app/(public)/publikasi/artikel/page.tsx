@@ -2,6 +2,7 @@ import { publicPageData } from '../../../../content/public-pages';
 import { publicArticles, publicArticleCategories } from '../../../../content/public-read';
 import { articleSearch } from '../../../../content/article-search';
 import { EmptyState } from '../../../../components/public/EmptyState';
+import Link from 'next/link';
 
 export default async function ArticleList({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const input = await searchParams, query = new URLSearchParams();
@@ -23,12 +24,12 @@ export default async function ArticleList({ searchParams }: { searchParams: Prom
     <p role="status" className="article-result-count">{result.totalDocs} artikel · Halaman {result.page} dari {result.totalPages}</p>
     {result.docs.length ? <ol className="article-list">{result.docs.map(article => <li key={article.id}><article className="article-row">
       <div className="article-row-meta"><span>{article.category?.name || 'Artikel'}</span><time dateTime={article.publishedAt}>{new Date(article.publishedAt).toLocaleDateString('id-ID', { timeZone: 'Asia/Jakarta', day: 'numeric', month: 'long', year: 'numeric' })}</time></div>
-      <div><p className="demo-label">Konten pratinjau · belum dikonfirmasi resmi</p><h2><a href={`/publikasi/artikel/${article.slug}`}>{article.title}<span aria-hidden="true"> ↗</span></a></h2><p>{article.excerpt}</p><span className="article-author">{article.publicAuthor}</span></div>
-    </article></li>)}</ol> : <EmptyState title={result.outOfRange ? 'Halaman ini tidak memiliki artikel.' : 'Belum ada artikel yang sesuai.'}>Coba kata kunci atau kategori lain. {result.outOfRange && <a href={pageURL(1)}>Kembali ke halaman pertama</a>}</EmptyState>}
+      <div><p className="demo-label">Konten pratinjau · belum dikonfirmasi resmi</p><h2><Link prefetch={false} href={`/publikasi/artikel/${article.slug}`}>{article.title}<span aria-hidden="true"> ↗</span></Link></h2><p>{article.excerpt}</p><span className="article-author">{article.publicAuthor}</span></div>
+    </article></li>)}</ol> : <EmptyState title={result.outOfRange ? 'Halaman ini tidak memiliki artikel.' : 'Belum ada artikel yang sesuai.'}>Coba kata kunci atau kategori lain. {result.outOfRange && <Link prefetch={false} href={pageURL(1)}>Kembali ke halaman pertama</Link>}</EmptyState>}
     {result.docs.length > 0 && result.totalPages > 1 && <nav className="article-pagination" aria-label="Halaman artikel">
-      {result.page > 1 && <a href={pageURL(result.page - 1)}>Halaman sebelumnya</a>}
+      {result.page > 1 && <Link prefetch={false} href={pageURL(result.page - 1)}>Halaman sebelumnya</Link>}
       <span aria-current="page">Halaman {result.page}</span>
-      {result.page < result.totalPages && <a href={pageURL(result.page + 1)}>Halaman berikutnya</a>}
+      {result.page < result.totalPages && <Link prefetch={false} href={pageURL(result.page + 1)}>Halaman berikutnya</Link>}
     </nav>}
     <div className="education-note"><span>Catatan edukasi</span><p>Materi ditujukan untuk pembelajaran, bukan rekomendasi membeli atau menjual efek.</p></div>
   </main>;

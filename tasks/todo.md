@@ -548,7 +548,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T024
 
-- [ ] **Buat detail artikel dan renderer aman**
+- [x] **Buat detail artikel dan renderer aman**
 
 **Hasil:** Render isi artikel, penulis publik, tanggal, sampul, sumber, dan disclaimer tanpa konten aktif berbahaya.
 
@@ -559,19 +559,19 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Rich text mempertahankan heading/link/gambar yang sah tanpa script atau iframe bebas.
-- [ ] Tautan hanya memakai skema yang diizinkan dan rel yang aman; 404 tidak membocorkan draft.
-- [ ] Tanggal publikasi jelas, alt terbaca, dan label contoh tampil saat data demo digunakan.
+- [x] Rich text mempertahankan heading/link/gambar yang sah tanpa script atau iframe bebas.
+- [x] Tautan hanya memakai skema yang diizinkan dan rel yang aman; 404 tidak membocorkan draft.
+- [x] Tanggal publikasi jelas, alt terbaca, dan label contoh tampil saat data demo digunakan.
 
 **Verifikasi:** Uji payload rich text/URL berbahaya, detail draft, tautan eksternal, serta navigasi keyboard.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T024/CP-08](../docs/reports/T024.md): 23 unit, 36 integration dan 21 e2e lulus; renderer aman, gambar versi approved, HTML/media withdrawal, mobile/keyboard/axe dan inspeksi visual terbukti. CP-08 ditinjau; T025 sedang dikerjakan.
 
 #### CP-08 — setelah T024
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T025
 

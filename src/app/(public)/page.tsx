@@ -1,4 +1,5 @@
 import { EmptyState } from '@/components/public/EmptyState';
+import Link from 'next/link';
 
 export default function HomePage() {
   return (
@@ -31,7 +32,7 @@ export default function HomePage() {
         <section id="publikasi" tabIndex={-1} aria-labelledby="publications-heading">
           <div className="section-heading"><div><p className="section-label">02 / Publikasi</p><h2 id="publications-heading">Wawasan untuk<br />langkah berikutnya.</h2></div><span className="section-aside">Artikel &amp; riset</span></div>
           <EmptyState title="Ruang baca GIBEI UISI.">Temukan artikel yang telah melalui review di daftar artikel. Publikasi riset akan ditambahkan pada tahap berikutnya.</EmptyState>
-          <a className="button-primary" href="/publikasi/artikel">Baca artikel <span aria-hidden="true">↗</span></a>
+          <Link prefetch={false} className="button-primary" href="/publikasi/artikel">Baca artikel <span aria-hidden="true">↗</span></Link>
         </section>
         <section id="agenda" tabIndex={-1} aria-labelledby="agenda-heading">
           <div className="section-heading"><div><p className="section-label">03 / Agenda</p><h2 id="agenda-heading">Belajar juga berarti<br />bertemu dan berbagi.</h2></div><span className="section-aside">Kegiatan &amp; diskusi</span></div>

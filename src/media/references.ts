@@ -2,7 +2,18 @@ import { APIError, NotFound, type PayloadRequest } from 'payload';
 import type { ArticleRevision, Media } from '../payload-types';
 import { relationId } from '../editorial/policy';
 import { privatelyAllowed, isAssetPublic } from './access';
-import { digest, readAsset } from './storage';
+import { digest, readAsset, assetFilesExist } from './storage';
+
+export async function previewAssets(req: PayloadRequest, references: ArticleRevision['assets']) {
+  return Promise.all((references || []).map(async reference => {
+    const id = Number(relationId(reference.asset));
+    const asset = await req.payload.db.findOne({ collection: 'media', where: { id: { equals: id } }, req }) as Media | null;
+    const available = !!asset && asset.state === 'ready' && asset.fileVersion === reference.fileVersion && asset.checksum === reference.checksum
+      && (privatelyAllowed(req, asset) || await isAssetPublic(req, asset)) && await assetFilesExist(asset.key, asset.size, asset.hasThumbnail);
+    return { id, mime: asset?.mime || 'application/pdf', alt: reference.alt || 'Media', caption: reference.caption,
+      width: asset?.width, height: asset?.height, available, url: available ? `/api/media/${asset!.key}/original` : null };
+  }));
+}
 
 export async function referencedAsset(req: PayloadRequest, id: number) {
   if (!Number.isSafeInteger(id) || id < 1) throw new NotFound();

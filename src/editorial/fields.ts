@@ -1,8 +1,8 @@
 import type { Field } from 'payload';
-import { lexicalEditor, ParagraphFeature, BoldFeature, ItalicFeature, HeadingFeature, OrderedListFeature, UnorderedListFeature, FixedToolbarFeature } from '@payloadcms/richtext-lexical';
+import { lexicalEditor, ParagraphFeature, BoldFeature, ItalicFeature, HeadingFeature, OrderedListFeature, UnorderedListFeature, FixedToolbarFeature, LinkFeature } from '@payloadcms/richtext-lexical';
 import { isActiveAdmin } from '../auth/policy';
 
-const editor = lexicalEditor({ features: () => [ParagraphFeature(), BoldFeature(), ItalicFeature(), HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }), OrderedListFeature(), UnorderedListFeature(), FixedToolbarFeature()] });
+const editor = lexicalEditor({ features: () => [ParagraphFeature(), BoldFeature(), ItalicFeature(), HeadingFeature({ enabledHeadingSizes: ['h2', 'h3'] }), OrderedListFeature(), UnorderedListFeature(), LinkFeature({ enabledCollections: ['media'], disableAutoLinks: true, maxDepth: 0 }), FixedToolbarFeature()] });
 export function draftFields(virtual = false): Field[] {
   return [
     // Payload defaults virtual fields to read-only; these fields proxy the guarded working revision.
