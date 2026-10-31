@@ -75,6 +75,17 @@ async function startTestServer() {
   throw new Error('Test application must become ready');
 }
 
+async function seedMediaFixtures() {
+  // Authenticate the run-owned server before writing any fixture data.
+  const admin = await authenticate(accounts.admin, env.SERVER_URL);
+  for (const key of ['mediaA', 'mediaB']) {
+    const result = await admin.request('/api/users', { method: 'POST', data: { ...accounts[key], role: 'media', status: 'active' } });
+    assert.equal(result.status, 201, 'Create isolated Media fixture');
+  }
+  const roles = (await migration.query('SELECT role FROM payload.users ORDER BY role')).rows.map(row => row.role);
+  assert.deepEqual(roles, ['admin', 'media', 'media']);
+}
+
 async function resetApplicationData() {
   await assertTarget();
   const client = await migration.connect();
@@ -151,19 +162,11 @@ try {
   env.NODE_ENV = 'production';
   await child(['node_modules/next/dist/bin/next', 'build'], 'Isolated production build');
   await startTestServer();
-  // Verify the actual server identity via the unique generated credential, then seed Media through its API.
-  const admin = await authenticate(accounts.admin, env.SERVER_URL);
-  for (const key of ['mediaA', 'mediaB']) {
-    const account = accounts[key];
-    const result = await admin.request('/api/users', { method: 'POST', data: { ...account, role: 'media', status: 'active' } });
-    assert.equal(result.status, 201, 'Create isolated Media fixture');
-  }
-  const roles = (await migration.query('SELECT role FROM payload.users ORDER BY role')).rows.map(row => row.role);
-  assert.deepEqual(roles, ['admin', 'media', 'media']);
+  await seedMediaFixtures();
   await assertTarget();
   if (mode !== 'e2e') {
     console.log('Running integration smoke tests with Admin and two Media');
-    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs', 'tests/integration/article-search.test.mjs', 'tests/integration/article-links.test.mjs'], 'Integration tests');
+    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs', 'tests/integration/article-search.test.mjs', 'tests/integration/article-links.test.mjs', 'tests/integration/pages.test.mjs'], 'Integration tests');
     await child(['scripts/payload.mjs', 'run', 'scripts/verify-editorial-local.ts'], 'Local editorial boundary tests');
     const beforeRestart = (await migration.query('SELECT * FROM payload.editorial_audit ORDER BY id')).rows;
     assert.ok(beforeRestart.length > 0);
@@ -173,6 +176,17 @@ try {
     assert.equal(audit.status, 200); assert.equal((await audit.json()).totalDocs, beforeRestart.length);
     assert.deepEqual((await migration.query('SELECT * FROM payload.editorial_audit ORDER BY id')).rows, beforeRestart);
     console.log('Editorial audit persistence verified after production-server restart');
+    if (mode === 'all') {
+      // Both suites own singleton fixtures (Pages); give e2e the same clean
+      // baseline as standalone mode, only after the restart assertion above.
+      stop(server);
+      await resetApplicationData();
+      await child(['scripts/payload.mjs', 'run', 'scripts/bootstrap-admin.ts'], 'Browser Admin bootstrap');
+      await startTestServer();
+      await seedMediaFixtures();
+      assert.equal((await migration.query('SELECT count(*)::int AS n FROM payload.pages')).rows[0].n, 0);
+      console.log('Browser fixtures reset on the verified run-owned database');
+    }
   }
   if (mode !== 'integration') {
     console.log('Running isolated Chromium browser tests');

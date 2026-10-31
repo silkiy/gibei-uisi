@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — T025 / akhir Fase B:** T001–T025 selesai; CP-01–CP-09 ditinjau. 23 unit, 36 integration dan 22 e2e, lint/TypeScript/build, audit restart serta probe CMS/reader lokal lulus. [Laporan T025](../docs/reports/T025.md), [matriks bukti](../docs/qa/article-slice.md). Berhenti sebelum **T026**, tugas pertama Fase C; dependensinya selesai, implementasi belum dimulai. Modul lain dan kelulusan MVP tetap terbuka.
+**Status terbaru — T026 / awal Fase C:** T001–T026 selesai; CP-01–CP-09 tetap menjadi checkpoint Fase B. Pages homepage/about kini memiliki draft, review, publikasi, revisi, blok terstruktur dan preview privat; situs publik belum mengonsumsi Pages (T028/T042), Site Settings menunggu T027. [Bukti T026](../docs/reports/T026.md). Modul lain dan kelulusan MVP tetap terbuka.
 
 ## Cara menggunakan checklist
 
@@ -606,7 +606,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T026
 
-- [ ] **Buat konten Pages dengan review**
+- [x] **Buat konten Pages dengan review**
 
 **Hasil:** Tambahkan Pages dengan pageKey homepage/about dan blok isi minimum, memakai workflow artikel yang sudah terbukti.
 
@@ -617,13 +617,13 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Homepage/About masing-masing memiliki identitas tunggal; isi tidak diduplikasi di global settings.
-- [ ] Media berizin menyunting lewat review; versi terbit tetap konsisten selama revisi.
-- [ ] Blok mendukung hero/profil/program/CTA dan SEO tanpa menjalankan HTML bebas.
+- [x] Homepage/About masing-masing memiliki identitas tunggal; isi tidak diduplikasi di global settings.
+- [x] Media berizin menyunting lewat review; versi terbit tetap konsisten selama revisi.
+- [x] Blok mendukung hero/profil/program/CTA dan SEO tanpa menjalankan HTML bebas.
 
 **Verifikasi:** Tes Pages draft/publish/revisi dan duplikasi pageKey; belum wajib melengkapi homepage agregasi.
 
-**Bukti/status:** Siap dimulai: dependensi T025 dan CP-09 selesai. Belum diimplementasikan; pengerjaan dihentikan sebelum T026 sesuai batas batch pengguna.
+**Bukti/status:** Selesai setelah perbaikan review. [Laporan T026](../docs/reports/T026.md): `pnpm test:all` lulus 25 unit, 40 integration, 23 e2e; textarea LF/CRLF dan isolasi fixture singleton diperbaiki, lint/TypeScript/build lulus, migrasi Pages diterapkan ke Supabase pengembangan. Halaman publik Tentang dan homepage agregasi belum memakai Pages; masing-masing mengikuti T028/T042. T027 siap menjadi tugas berikutnya, belum dimulai.
 
 ### T027
 

@@ -6,6 +6,7 @@ import * as migration_20261031_030604_editorial_submissions from './20261031_030
 import * as migration_20261031_061247_public_relations from './20261031_061247_public_relations';
 import * as migration_20261031_063346_working_revision_guard from './20261031_063346_working_revision_guard';
 import * as migration_20261031_070403_safe_deletion from './20261031_070403_safe_deletion';
+import * as migration_20261031_112626_pages_editorial from './20261031_112626_pages_editorial';
 
 export const migrations = [
   {
@@ -46,6 +47,11 @@ export const migrations = [
   {
     up: migration_20261031_070403_safe_deletion.up,
     down: migration_20261031_070403_safe_deletion.down,
-    name: '20261031_070403_safe_deletion'
+    name: '20261031_070403_safe_deletion',
+  },
+  {
+    up: migration_20261031_112626_pages_editorial.up,
+    down: migration_20261031_112626_pages_editorial.down,
+    name: '20261031_112626_pages_editorial'
   },
 ];

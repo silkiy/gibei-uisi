@@ -51,7 +51,9 @@ Request API Playwright di luar browser harus menyertakan Origin dari baseURL tes
 
 ## Bukti dan diagnosis
 
-**Hasil akhir Fase B/T025:** 23 unit, 36 integration dan 22 e2e lulus, termasuk seluruh transisi CMS melalui Admin/dua Media/pengunjung, HTTP negatif, audit restart dan cleanup. [Laporan T025](reports/T025.md), [matriks skenario](qa/article-slice.md). Nomor hasil batch T011–T020 di atas adalah catatan historis. CP-01–CP-09 ditinjau; T026 belum dimulai.
+**Hasil akhir Fase B/T025:** 23 unit, 36 integration dan 22 e2e lulus, termasuk seluruh transisi CMS melalui Admin/dua Media/pengunjung, HTTP negatif, audit restart dan cleanup. [Laporan T025](reports/T025.md), [matriks skenario](qa/article-slice.md). Nomor hasil batch T011–T020 di atas adalah catatan historis. CP-01–CP-09 ditinjau.
+
+**Hasil T026 setelah review:** `pnpm test:all` lulus dengan 25 unit, 40 integration dan 23 e2e, termasuk paragraf LF/CRLF melalui validasi/API/CMS/preview serta identitas Pages unik. Dalam mode `all`, sesudah assertion persistensi audit/restart, launcher menghentikan server milik run dan melakukan guarded reset database sementara lalu bootstrap ulang tiga akun sebelum e2e. Ini memberi baseline singleton yang sama seperti mode browser terpisah; tidak ada reset database pengembangan atau pelemahan aturan unik. [Bukti T026](reports/T026.md). T027 belum dikerjakan.
 
 Untuk mempersempit kegagalan browser tanpa melewati isolasi/guard, launcher menerima satu spec yang berada di `tests/e2e`:
 

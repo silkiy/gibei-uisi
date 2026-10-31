@@ -119,7 +119,9 @@ Untuk pengujian berikutnya gunakan `pnpm test:unit`, `pnpm test:integration`, da
 
 ## Backend artikel dan media — T011–T020
 
-Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru T020 adalah `20261031_070403_safe_deletion`. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T059.
+Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru T026 adalah `20261031_112626_pages_editorial`, sudah diterapkan ke Supabase pengembangan. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T059.
+
+Pages T026 tersedia di `/admin/collections/pages`. Admin membuat identitas `homepage` atau `about` (masing-masing satu) dan menentukan owner/assignee. Media yang ditugaskan menyimpan blok hero/profil/program/CTA dan SEO lalu mengajukan review; Admin memberi catatan revisi atau menerbitkan melalui panel editorial. Preview privat berada di `/editorial/pages/[id]`. Teks textarea mendukung paragraf LF/CRLF; URL CTA hanya rute yang didukung atau HTTPS. Konten Pages belum mengubah halaman publik sampai T028/T042; Site Settings tetap T027.
 
 Upload melalui formulir pada daftar Media menyimpan gambar/PDF ke `storage/private`, di luar public/static. Setiap upload membuat key dan versi baru. Reader file adalah `/api/media/:key/original` atau `/thumbnail`; URL lama tetap memakai pengecekan izin saat request. Jangan menyalin file tersebut ke public/CDN atau memakai optimizer.
 

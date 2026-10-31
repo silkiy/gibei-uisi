@@ -73,6 +73,10 @@ export interface Config {
     articles: Article;
     'article-revisions': ArticleRevision;
     'editorial-audit': EditorialAudit;
+    pages: Page;
+    'page-revisions': PageRevision;
+    'page-reviews': PageReview;
+    'page-audit': PageAudit;
     media: Media;
     'media-audit': MediaAudit;
     'content-reviews': ContentReview;
@@ -89,6 +93,10 @@ export interface Config {
     articles: ArticlesSelect<false> | ArticlesSelect<true>;
     'article-revisions': ArticleRevisionsSelect<false> | ArticleRevisionsSelect<true>;
     'editorial-audit': EditorialAuditSelect<false> | EditorialAuditSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
+    'page-revisions': PageRevisionsSelect<false> | PageRevisionsSelect<true>;
+    'page-reviews': PageReviewsSelect<false> | PageReviewsSelect<true>;
+    'page-audit': PageAuditSelect<false> | PageAuditSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'media-audit': MediaAuditSelect<false> | MediaAuditSelect<true>;
     'content-reviews': ContentReviewsSelect<false> | ContentReviewsSelect<true>;
@@ -400,6 +408,187 @@ export interface EditorialAudit {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages".
+ */
+export interface Page {
+  id: number;
+  pageKey: 'homepage' | 'about';
+  title?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  sections?:
+    | (
+        | {
+            heading: string;
+            summary: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            heading: string;
+            description: string;
+            history?: string | null;
+            vision?: string | null;
+            mission?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'profile';
+          }
+        | {
+            heading: string;
+            description: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'program';
+          }
+        | {
+            heading: string;
+            description?: string | null;
+            label: string;
+            url: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | PageRevision;
+  publicRevision?: (number | null) | PageRevision;
+  lockVersion: number;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-revisions".
+ */
+export interface PageRevision {
+  id: number;
+  page: number | Page;
+  number: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  editVersion: number;
+  title?: string | null;
+  seoTitle?: string | null;
+  seoDescription?: string | null;
+  sections?:
+    | (
+        | {
+            heading: string;
+            summary: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            heading: string;
+            description: string;
+            history?: string | null;
+            vision?: string | null;
+            mission?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'profile';
+          }
+        | {
+            heading: string;
+            description: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'program';
+          }
+        | {
+            heading: string;
+            description?: string | null;
+            label: string;
+            url: string;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+      )[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-reviews".
+ */
+export interface PageReview {
+  id: number;
+  page: number | Page;
+  revision: number | PageRevision;
+  editVersion: number;
+  manifest:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  manifestDigest: string;
+  status: 'pending' | 'approved' | 'changes_requested' | 'cancelled';
+  submittedBy: number;
+  reviewerId?: number | null;
+  note?: string | null;
+  resolvedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-audit".
+ */
+export interface PageAudit {
+  id: number;
+  page: number | Page;
+  revisionId: number;
+  actorId: number;
+  editVersion: number;
+  action:
+    | 'draft_created'
+    | 'draft_saved'
+    | 'ownership_changed'
+    | 'submitted'
+    | 'submission_withdrawn'
+    | 'revision_requested'
+    | 'published'
+    | 'revision_created'
+    | 'publication_withdrawn';
+  before?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  after:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  correlationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media-audit".
  */
 export interface MediaAudit {
@@ -656,6 +845,158 @@ export interface EditorialAuditSelect<T extends boolean = true> {
   actorId?: T;
   article?: T;
   revisionId?: T;
+  editVersion?: T;
+  action?: T;
+  before?: T;
+  after?: T;
+  correlationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  pageKey?: T;
+  title?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  sections?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              heading?: T;
+              summary?: T;
+              id?: T;
+              blockName?: T;
+            };
+        profile?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              history?: T;
+              vision?: T;
+              mission?: T;
+              id?: T;
+              blockName?: T;
+            };
+        program?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              label?: T;
+              url?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-revisions_select".
+ */
+export interface PageRevisionsSelect<T extends boolean = true> {
+  page?: T;
+  number?: T;
+  state?: T;
+  editVersion?: T;
+  title?: T;
+  seoTitle?: T;
+  seoDescription?: T;
+  sections?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              heading?: T;
+              summary?: T;
+              id?: T;
+              blockName?: T;
+            };
+        profile?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              history?: T;
+              vision?: T;
+              mission?: T;
+              id?: T;
+              blockName?: T;
+            };
+        program?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              heading?: T;
+              description?: T;
+              label?: T;
+              url?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-reviews_select".
+ */
+export interface PageReviewsSelect<T extends boolean = true> {
+  page?: T;
+  revision?: T;
+  editVersion?: T;
+  manifest?: T;
+  manifestDigest?: T;
+  status?: T;
+  submittedBy?: T;
+  reviewerId?: T;
+  note?: T;
+  resolvedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "page-audit_select".
+ */
+export interface PageAuditSelect<T extends boolean = true> {
+  page?: T;
+  revisionId?: T;
+  actorId?: T;
   editVersion?: T;
   action?: T;
   before?: T;
