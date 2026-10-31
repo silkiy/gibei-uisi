@@ -299,7 +299,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T013
 
-- [ ] **Ajukan dan tarik pengajuan artikel**
+- [x] **Ajukan dan tarik pengajuan artikel**
 
 **Hasil:** Tambahkan transisi draft/revision_required→in_review serta penarikan pengajuan ke draft.
 
@@ -310,13 +310,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Pengajuan menyimpan identitas versi dan daftar aset; isi in_review terkunci untuk semua peran.
-- [ ] Owner/assignee dapat mengajukan/menarik; editor lain ditolak.
-- [ ] Referensi aset privat tanpa izin ditolak saat simpan dan submit; audit pengajuan dibuat server.
+- [x] Pengajuan menyimpan identitas versi dan daftar aset; isi in_review terkunci untuk semua peran.
+- [x] Owner/assignee dapat mengajukan/menarik; editor lain ditolak.
+- [x] Referensi aset privat tanpa izin ditolak saat simpan dan submit; audit pengajuan dibuat server.
 
 **Verifikasi:** Tes request langsung dengan ID aset pengguna lain, edit versi terkunci, submit ulang, dan tarik pengajuan.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Implementasi/uji selesai. [Laporan T013](../docs/reports/T013.md): 17 unit, 13 integration, Local API guard dan 16 e2e lulus. Pengajuan/withdraw, lock versi, manifest aset dan spoofing diuji. Aktivasi hosted pada CP-05. T014 sedang dikerjakan.
 
 ### T014
 

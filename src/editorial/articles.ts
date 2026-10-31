@@ -4,13 +4,16 @@ import type { ArticleRevision } from '../payload-types';
 import { isActiveAdmin, isActiveUser } from '../auth/policy';
 import { articleLock, currentActor, editorialWrite, transaction } from './internal';
 import { canEditDraft, normalizeSlug, relationId, validateDraft } from './policy';
+import { editorialLock } from '../media/access';
+import { normalizeAssets } from '../media/references';
 
 export const articleAccess: Access = ({ req }) => {
   if (isActiveAdmin(req.user)) return true;
   if (!isActiveUser(req.user)) return false;
   return { or: [{ owner: { equals: req.user!.id } }, { assignedTo: { in: [req.user!.id] } }] } as import('payload').Where;
 };
-const keys = ['title', 'excerpt', 'body', 'category', 'publicAuthor', 'sources'] as const;
+export const draftKeys = ['title', 'excerpt', 'body', 'category', 'publicAuthor', 'sources', 'assets'] as const;
+const keys = draftKeys;
 type Draft = Pick<ArticleRevision, typeof keys[number]>;
 type Change = { raw: Record<string, unknown>; draft?: Draft; previous?: ArticleRevision; ownerChanged?: boolean; before?: Record<string, unknown> };
 const changes = new WeakMap<PayloadRequest, Change>();
@@ -27,6 +30,7 @@ export const articleHooks: CollectionConfig['hooks'] = {
     if (operation === 'delete') throw new Forbidden();
     if (!['create', 'update'].includes(operation)) return args;
     await transaction(req);
+    await editorialLock(req);
     await currentActor(req);
     if (operation === 'update') {
       if (!('id' in args) || !Number.isSafeInteger(Number(args.id))) throw new APIError('Edit one draft at a time', 400);
@@ -46,9 +50,9 @@ export const articleHooks: CollectionConfig['hooks'] = {
     const creating = operation === 'create';
     if (!creating && !canEditDraft(req.user, originalDoc)) throw new NotFound();
     const previous = creating ? undefined : await readRevision(req, originalDoc.workingRevision);
-    if (previous && previous.state !== 'draft') throw new APIError('This revision is locked', 409);
+    if (previous && !['draft', 'revision_required'].includes(previous.state)) throw new APIError('This revision is locked', 409);
     if (!creating && Number(raw.expectedLockVersion) !== originalDoc.lockVersion) throw new APIError('Draft changed; reload before saving', 409);
-    const immutable = { createdBy: creating ? req.user!.id : relationId(originalDoc.createdBy), workingRevision: creating ? null : relationId(originalDoc.workingRevision), publicRevision: null, lockVersion: creating ? 0 : originalDoc.lockVersion, state: 'draft' };
+    const immutable = { createdBy: creating ? req.user!.id : relationId(originalDoc.createdBy), workingRevision: creating ? null : relationId(originalDoc.workingRevision), publicRevision: creating ? null : relationId(originalDoc.publicRevision), lockVersion: creating ? 0 : originalDoc.lockVersion, state: previous?.state || 'draft' };
     for (const [key, expected] of Object.entries(immutable)) {
       if (raw[key] != null && String(relationId(raw[key] as number)) !== String(expected)) throw new Forbidden();
     }
@@ -70,14 +74,17 @@ export const articleHooks: CollectionConfig['hooks'] = {
       }
     }
     data.lockVersion = creating ? 1 : originalDoc.lockVersion + 1;
-    data.publicRevision = null;
+    data.publicRevision = immutable.publicRevision;
     data.workingRevision = creating ? null : immutable.workingRevision;
     data.createdAt = creating ? new Date().toISOString() : originalDoc.createdAt;
     data.updatedAt = new Date().toISOString();
     try { data.slug = normalizeSlug(data.slug || (creating ? raw.title || `draft-${randomUUID()}` : originalDoc.slug)); }
     catch (error) { throw new APIError((error as Error).message, 400); }
-    const draft = Object.fromEntries(keys.map(key => [key, data[key] !== undefined ? data[key] : previous?.[key] ?? null])) as Draft;
+    // Payload injects empty array defaults even on PATCH. Only explicit input replaces stored draft fields.
+    const draft = Object.fromEntries(keys.map(key => [key, creating || Object.hasOwn(raw, key) ? data[key] ?? null : previous?.[key] ?? null])) as Draft;
     draft.sources ??= [];
+    draft.sources = draft.sources.map(source => ({ title: source.title, url: source.url }));
+    draft.assets = await normalizeAssets(req, draft.assets ?? []);
     if (!isActiveAdmin(req.user)) draft.category = previous?.category ?? null;
     try { validateDraft(draft); } catch { throw new APIError('Draft text, sources or rich text are invalid', 400); }
     change.draft = draft;
@@ -101,9 +108,9 @@ export const articleHooks: CollectionConfig['hooks'] = {
       await req.payload.create({ collection: 'editorial-audit', ...options, data: {
         actorId: req.user!.id, article: doc.id, revisionId: revision.id, editVersion: doc.lockVersion,
         action: operation === 'create' ? 'draft_created' : change.ownerChanged ? 'ownership_changed' : 'draft_saved',
-        before: change.before, after: { state: 'draft', owner: relationId(doc.owner), assignedTo: ids(doc.assignedTo), lockVersion: doc.lockVersion }, correlationId: randomUUID(),
+        before: change.before, after: { state: change.previous?.state || 'draft', owner: relationId(doc.owner), assignedTo: ids(doc.assignedTo), lockVersion: doc.lockVersion }, correlationId: randomUUID(),
       } });
-      return { ...doc, ...change.draft, state: 'draft', expectedLockVersion: doc.lockVersion };
+      return { ...doc, ...change.draft, state: change.previous?.state || 'draft', expectedLockVersion: doc.lockVersion };
     } finally { Reflect.deleteProperty(req.context, editorialWrite); changes.delete(req); }
   }],
   afterRead: [async ({ doc, req }) => {

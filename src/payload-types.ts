@@ -75,6 +75,7 @@ export interface Config {
     'editorial-audit': EditorialAudit;
     media: Media;
     'media-audit': MediaAudit;
+    'content-reviews': ContentReview;
     'payload-kv': PayloadKv;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -89,6 +90,7 @@ export interface Config {
     'editorial-audit': EditorialAuditSelect<false> | EditorialAuditSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     'media-audit': MediaAuditSelect<false> | MediaAuditSelect<true>;
+    'content-reviews': ContentReviewsSelect<false> | ContentReviewsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -233,6 +235,16 @@ export interface Article {
         id?: string | null;
       }[]
     | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   createdBy: number | User;
   owner: number | User;
   assignedTo?: (number | User)[] | null;
@@ -244,6 +256,31 @@ export interface Article {
    */
   expectedLockVersion?: number | null;
   state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  key: string;
+  name: string;
+  alt: string;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  state: 'ready' | 'revoked' | 'deleted';
+  fileVersion: string;
+  checksum: string;
+  mime: string;
+  extension: string;
+  size: number;
+  width?: number | null;
+  height?: number | null;
+  hasThumbnail: boolean;
+  thumbnailChecksum?: string | null;
+  revokedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -286,6 +323,16 @@ export interface ArticleRevision {
         id?: string | null;
       }[]
     | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -299,7 +346,18 @@ export interface EditorialAudit {
   article: number | Article;
   revisionId: number;
   editVersion: number;
-  action: 'draft_created' | 'draft_saved' | 'ownership_changed';
+  action:
+    | 'draft_created'
+    | 'draft_saved'
+    | 'ownership_changed'
+    | 'submitted'
+    | 'submission_withdrawn'
+    | 'revision_requested'
+    | 'published'
+    | 'revision_created'
+    | 'revision_archived'
+    | 'publication_withdrawn'
+    | 'draft_deleted';
   before?:
     | {
         [k: string]: unknown;
@@ -324,31 +382,6 @@ export interface EditorialAudit {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  key: string;
-  name: string;
-  alt: string;
-  owner: number | User;
-  assignedTo?: (number | User)[] | null;
-  state: 'ready' | 'revoked' | 'deleted';
-  fileVersion: string;
-  checksum: string;
-  mime: string;
-  extension: string;
-  size: number;
-  width?: number | null;
-  height?: number | null;
-  hasThumbnail: boolean;
-  thumbnailChecksum?: string | null;
-  revokedAt?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media-audit".
  */
 export interface MediaAudit {
@@ -366,6 +399,33 @@ export interface MediaAudit {
     | boolean
     | null;
   correlationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "content-reviews".
+ */
+export interface ContentReview {
+  id: number;
+  article: number | Article;
+  revision: number | ArticleRevision;
+  editVersion: number;
+  manifestDigest: string;
+  manifest:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  status: 'pending' | 'approved' | 'changes_requested' | 'cancelled';
+  submittedBy: number;
+  reviewerId?: number | null;
+  note?: string | null;
+  resolvedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -487,6 +547,16 @@ export interface ArticlesSelect<T extends boolean = true> {
         url?: T;
         id?: T;
       };
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
   createdBy?: T;
   owner?: T;
   assignedTo?: T;
@@ -517,6 +587,16 @@ export interface ArticleRevisionsSelect<T extends boolean = true> {
     | {
         title?: T;
         url?: T;
+        id?: T;
+      };
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
         id?: T;
       };
   updatedAt?: T;
@@ -572,6 +652,24 @@ export interface MediaAuditSelect<T extends boolean = true> {
   action?: T;
   details?: T;
   correlationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "content-reviews_select".
+ */
+export interface ContentReviewsSelect<T extends boolean = true> {
+  article?: T;
+  revision?: T;
+  editVersion?: T;
+  manifestDigest?: T;
+  manifest?: T;
+  status?: T;
+  submittedBy?: T;
+  reviewerId?: T;
+  note?: T;
+  resolvedAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

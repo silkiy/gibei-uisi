@@ -13,5 +13,10 @@ export function draftFields(virtual = false): Field[] {
       ...(virtual ? { access: { create: ({ req }) => isActiveAdmin(req.user), update: ({ req }) => isActiveAdmin(req.user) } } : {}) },
     { name: 'publicAuthor', type: 'text', maxLength: 160, virtual, admin: { readOnly: false, description: 'Nama penulis publik atau tim; terpisah dari akun CMS.' } },
     { name: 'sources', type: 'array', virtual, maxRows: 30, admin: { readOnly: false }, fields: [{ name: 'title', type: 'text', maxLength: 200 }, { name: 'url', type: 'text', maxLength: 2048 }] },
+    { name: 'assets', type: 'array', virtual, maxRows: 30, admin: { readOnly: false }, fields: [
+      { name: 'asset', type: 'relationship', relationTo: 'media', required: true, maxDepth: 0 },
+      { name: 'alt', type: 'text', maxLength: 300 }, { name: 'caption', type: 'text', maxLength: 600 },
+      { name: 'fileVersion', type: 'text', admin: { readOnly: true } }, { name: 'checksum', type: 'text', admin: { readOnly: true } },
+    ] },
   ];
 }

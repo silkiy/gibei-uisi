@@ -42,6 +42,7 @@ test('draft visibility, assignment, transfer and stale-version protection use cu
   assert.equal(saved.title, 'Disunting Media B');
   assert.equal(saved.category, category.id);
   assert.equal(saved.publicAuthor, 'Tim Riset Contoh');
+  assert.equal(saved.sources[0].url, 'https://www.idx.co.id/');
   await patch(a, assigned, { title: 'Versi lama' }, 409);
   await patch(b, saved, { category: null }, 403);
   const transferred = await patch(admin, saved, { owner: b.user.id, assignedTo: [] });

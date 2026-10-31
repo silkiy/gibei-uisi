@@ -14,9 +14,18 @@ export async function authenticatedRequest(request: Request, mutation = false) {
   return req;
 }
 export async function atomic<T>(req: PayloadRequest, work: () => Promise<T>) {
-  await initTransaction(req);
-  try { const result = await work(); await commitTransaction(req); return result; }
-  catch (error) { await killTransaction(req); throw error; }
+  const owns = await initTransaction(req);
+  try { const result = await work(); if (owns) await commitTransaction(req); return result; }
+  catch (error) { if (owns) await killTransaction(req); throw error; }
+}
+export async function readJSON(request: Request, limit = 16384): Promise<Record<string, unknown>> {
+  if (Number(request.headers.get('content-length')) > limit) throw new APIError('Request too large', 413);
+  const reader = request.body?.getReader(); if (!reader) throw new APIError('JSON body required', 400);
+  const chunks: Uint8Array[] = []; let length = 0;
+  try { for (;;) { const { done, value } = await reader.read(); if (done) break; length += value.length; if (length > limit) throw new APIError('Request too large', 413); chunks.push(value); } }
+  finally { await reader.cancel(); }
+  try { const result = JSON.parse(Buffer.concat(chunks).toString('utf8')); if (!result || Array.isArray(result) || typeof result !== 'object') throw Error(); return result; }
+  catch { throw new APIError('Invalid JSON body', 400); }
 }
 export function failure(error: unknown) {
   const status = error instanceof APIError ? error.status : 500;

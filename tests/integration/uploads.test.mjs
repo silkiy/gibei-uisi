@@ -8,6 +8,7 @@ let admin, a, b;
 before(async () => { const accounts = fixtureAccounts(); admin = await authenticate(accounts.admin); a = await authenticate(accounts.mediaA); b = await authenticate(accounts.mediaB); });
 const upload = (actor, bytes, name, mime, alt = 'Deskripsi file uji') => actor.request('/api/media/upload', { method: 'POST', bytes, headers: { 'Content-Type': mime, 'X-Filename': encodeURIComponent(name), 'X-Alt': encodeURIComponent(alt) } });
 test('private upload accepts validated images/PDF and metadata stays owned', async () => {
+  const otherCount = (await (await b.request('/api/media')).json()).totalDocs;
   for (const format of ['jpeg', 'png', 'webp']) {
     const bytes = await sharp({ create: { width: 16, height: 12, channels: 3, background: '#123456' } }).toFormat(format).toBuffer();
     const response = await upload(a, bytes, `valid.${format}`, `image/${format}`);
@@ -23,7 +24,7 @@ test('private upload accepts validated images/PDF and metadata stays owned', asy
   }
   const pdf = await PDFDocument.create(); pdf.addPage();
   assert.equal((await upload(a, Buffer.from(await pdf.save()), 'valid.pdf', 'application/pdf')).status, 201);
-  assert.equal((await (await b.request('/api/media')).json()).totalDocs, 0);
+  assert.equal((await (await b.request('/api/media')).json()).totalDocs, otherCount, 'Other fixtures do not gain access to these uploads');
   assert.equal((await admin.request('/api/media', { method: 'POST', data: { owner: a.user.id, key: 'forged' } })).status, 403);
 });
 test('invalid, disguised, oversized, high-dimension and unsafe filename uploads fail', async () => {
