@@ -39,16 +39,21 @@ async function freePort() {
 
 async function child(args, label) {
   const command = spawn(process.execPath, args, { env, stdio: ['ignore', log, log], windowsHide: true });
-  const timer = setTimeout(() => stop(command), 240000);
+  let timedOut = false;
+  const timer = setTimeout(() => { timedOut = true; stop(command); }, 240000);
   try {
     const code = await new Promise((resolve, reject) => { command.once('error', reject); command.once('exit', resolve); });
+    assert.ok(!timedOut, `${label} exceeded the test timeout; inspect artifacts/test-run.log locally`);
     assert.equal(code, 0, `${label} failed; inspect artifacts/test-run.log locally`);
   } finally { clearTimeout(timer); }
 }
 
 function stop(command) {
   if (!command?.pid || command.exitCode !== null || stopped.has(command)) return;
-  if (process.platform === 'win32') execFileSync('taskkill', ['/PID', String(command.pid), '/T', '/F'], { stdio: 'ignore', windowsHide: true });
+  if (process.platform === 'win32') {
+    try { execFileSync('taskkill', ['/PID', String(command.pid), '/T', '/F'], { stdio: 'ignore', windowsHide: true }); }
+    catch (error) { if (error.status !== 128) throw error; } // Already exited before Node delivered its exit event.
+  }
   else command.kill('SIGTERM');
   stopped.add(command);
 }
@@ -155,7 +160,8 @@ try {
   await assertTarget();
   if (mode !== 'e2e') {
     console.log('Running integration smoke tests with Admin and two Media');
-    await child(['--test', 'tests/integration/accounts.test.mjs'], 'Integration tests');
+    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs'], 'Integration tests');
+    await child(['scripts/payload.mjs', 'run', 'scripts/verify-editorial-local.ts'], 'Local editorial boundary tests');
   }
   if (mode !== 'integration') {
     console.log('Running isolated Chromium browser tests');

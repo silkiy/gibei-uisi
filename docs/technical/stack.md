@@ -12,6 +12,8 @@ Tanggal pemeriksaan: **23 Oktober 2026**. Acuan: PRD v1.1 §11.1 dan [T002](../.
 
 **Pembaruan T009:** Tailwind/plugin 4.3.3, PostCSS 8.5.28 dan Fontsource Manrope variable 5.3.0 kini terpasang. Versi PostCSS runtime ini memenuhi rentang plugin serta patch advisory; tabel T002 di bawah tetap mencatat kandidat dokumentasi 8.5.31. Font Latin dilayani lokal melalui next/font/local; styling hanya di layout publik. Axe Playwright 4.14.0 dipakai untuk audit terarah. Fondasi publik, CP-03 dan hasil 13 e2e tercatat pada [laporan T009](../reports/T009.md).
 
+**Pembaruan T010:** editor `@payloadcms/richtext-lexical` 3.92.0 dipasang dengan fitur teks dasar; dependency happy-dom dipatok melalui override 21.0.4 untuk dua advisory high. Node 24.22.1 memenuhi engine; build/editor dan 15 e2e lulus. Snapshot/migrasi Payload menambah koleksi artikel, revisi internal, kategori dan audit di private schema. [Laporan T010](../reports/T010.md) mencatat audit dependency terbaru dan batas workflow.
+
 Pada 23 Oktober 2026 pemilik proyek memilih [proyek Supabase lgqnxvldjqzgbfyxqonx](https://supabase.com/dashboard/project/lgqnxvldjqzgbfyxqonx). Keputusan ini menggantikan database Docker lokal. T005 memverifikasi PostgreSQL aktual **17.11** melalui `SELECT version()` pada 26 Oktober 2026. Aplikasi/CMS tetap localhost dan membutuhkan internet untuk database hosted. Payload tetap memakai adapter PostgreSQL dan autentikasi CMS; Supabase Auth/Storage tidak ditambahkan.
 
 Ambil connection string dari menu **Connect** dashboard: direct connection jika jaringan mendukung, atau session pooler 5432 untuk jaringan IPv4. Salin host aktual, jangan menebaknya. Transaction pooler 6543 belum dipilih. Simpan `DATABASE_URL` hanya pada environment server yang diabaikan Git; API key bukan pengganti kredensial PostgreSQL. [Panduan koneksi](https://supabase.com/docs/guides/database/connecting-to-postgres).
@@ -77,4 +79,4 @@ Pemeriksaan memakai `Get-Command`, perintah versi, serta pengecekan lokasi insta
 
 Metadata diambil langsung melalui HTTPS dari endpoint registry yang ditautkan di matriks, dengan membaca `version`, `engines`, `peerDependencies`, serta dependency integrasi Next/Tailwind. Versi GraphQL dipilih dari daftar rilis stabil 16.x. Pemeriksaan tidak menjalankan installer atau kode dependency.
 
-Kedua kriteria T002 terpenuhi. T003 selesai melalui [kontrak editorial](editorial-architecture.md) dan [akses media](media-access.md). **T001–T009 selesai**; fondasi visual publik dan CP-03 sudah diverifikasi. T010 siap dikerjakan untuk draft artikel dengan ownership.
+Kedua kriteria T002 terpenuhi. T003 selesai melalui [kontrak editorial](editorial-architecture.md) dan [akses media](media-access.md). **T001–T010 selesai**; fondasi visual publik/CP-03 dan draft artikel dengan ownership sudah diverifikasi. T011 siap untuk upload privat tervalidasi. Lihat [laporan T010](../reports/T010.md).

@@ -6,6 +6,10 @@ import { buildConfig } from 'payload';
 import sharp from 'sharp';
 import { Users } from './collections/Users';
 import { AccountAudit } from './audit/accounts';
+import { Articles } from './collections/Articles';
+import { Categories } from './collections/Categories';
+import { ArticleRevisions } from './collections/ArticleRevisions';
+import { EditorialAudit } from './collections/EditorialAudit';
 import { isActiveUser } from './auth/policy';
 import { connectionConfig } from '../scripts/database/config.mjs';
 import { localTestConnection } from '../scripts/database/test-config.mjs';
@@ -26,7 +30,7 @@ export default buildConfig({
   cors: [serverURL],
   csrf: [serverURL],
   admin: { user: 'users', importMap: { baseDir: dirname } },
-  collections: [Users, AccountAudit],
+  collections: [Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit],
   onInit: async payload => {
     // Payload JWT resolves the current user and session from the database on every request.
     // Reject inactive accounts before any CMS/API authorization or /me response.

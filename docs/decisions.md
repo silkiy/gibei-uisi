@@ -3,7 +3,9 @@
 **Tanggal persetujuan:** 23 Oktober 2026 (Asia/Jakarta)  
 **Pihak penentu:** Pemilik proyek, melalui percakapan proyek ini  
 **Acuan:** [PRD v1.1 §18](PRD-v1.1.md#18-decision-register--open-questions)  
-**Status tugas terbaru — T009:** T001–T009 selesai; CP-01/CP-02/CP-03 ditinjau dan T010 siap dikerjakan berikutnya.
+**Status tugas terbaru — T010:** T001–T010 selesai; CP-01/CP-02/CP-03 ditinjau dan T011 siap dikerjakan berikutnya.
+
+**Pembaruan T010, 31 Oktober 2026:** draft artikel privat menyimpan isi pada revisi kerja terpisah; form virtual editable menjadi proxy ke hook domain yang sama dengan REST. Ownership, versi dan audit dijaga server dalam satu transaksi, termasuk ketika Local API melewati access control bawaan. Perubahan owner/assignee Admin menggunakan save beraudit; input native Payload memakai status 400. Upload dan approval/publikasi belum dibuka. [Bukti T010](reports/T010.md): 13 unit, 7 integration, pemeriksaan Local API dan 15 e2e lulus; migrasi Supabase dan localhost terverifikasi.
 
 ## Bukti dan cakupan persetujuan
 

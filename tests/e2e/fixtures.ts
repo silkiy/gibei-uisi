@@ -11,6 +11,8 @@ async function signIn(page: Page, account: Account) {
     await page.getByLabel(/Email/i).fill(account.email);
     await page.getByLabel(/^Password/i).fill(account.password);
     await page.getByRole('button', { name: /Log.?in/i }).click();
+    await expect(page).toHaveURL(/\/admin\/?$/);
+    await expect(page.getByRole('heading', { name: 'Collections', exact: true })).toBeVisible();
     await expect(page.getByRole('link', { name: 'Users', exact: true }).first()).toBeVisible();
   } catch { throw new Error('Fixture browser login failed; credential details withheld'); }
 }

@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — T009:** T001–T009 selesai, CP-01/CP-02/CP-03 ditinjau dan T010 siap dikerjakan. CMS, harness uji dan fondasi publik responsif/keyboard sudah diverifikasi; workflow editorial belum tersedia. Status ada di [todo.md](todo.md), bukti terbaru di [laporan T009](../docs/reports/T009.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
+**Status terbaru — T010:** T001–T010 selesai, CP-01/CP-02/CP-03 ditinjau dan T011 siap dikerjakan. Draft artikel privat dengan ownership, revisi kerja, audit atomik dan editor CMS sudah diverifikasi. Upload dan workflow persetujuan/publikasi mengikuti tugas selanjutnya. Status ada di [todo.md](todo.md), bukti terbaru di [laporan T010](../docs/reports/T010.md). PRD, register keputusan, stack dan kontrak T003 tetap menjadi acuan.
 
 ## Tujuan dan kondisi awal
 

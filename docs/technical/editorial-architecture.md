@@ -2,6 +2,8 @@
 
 Tanggal: 23 Oktober 2026. Status: **rancangan pelaksanaan T003 selesai; belum diimplementasikan atau diuji pada runtime**. Baseline produk D-01–D-10 disetujui; keputusan teknis di bawah adalah rancangan implementasi, bukan perubahan kebutuhan produk. Acuan: [PRD §8 dan §12](../PRD-v1.1.md), [stack](stack.md), [kontrak media](media-access.md).
 
+**Pembaruan 31 Oktober 2026 — T010:** subset create/save draft artikel telah diimplementasikan dan diuji; kontrak workflow lengkap di bawah tetap target tugas lanjutan. `articles` menjadi Content, `article-revisions` menjadi Revision, dan `editorial-audit` mencatat command. Form Articles memakai field virtual editable untuk revisi kerja; generic mutation internal tetap tertutup, termasuk default Local API override. Hook domain menjadi jalur bersama form/REST. Perubahan owner/assignee Admin melewati jalur beraudit yang sama. Save saat ini hanya state draft; subset lain mengikuti T013–T025. Input tidak valid memakai 400 bawaan Payload, sedangkan objek tanpa izin 404 dan konflik versi 409. Audit saat ini dibaca Admin; histori Media mengikuti workflow lanjutan. Bukti transaksi/rollback dan lock ada di [laporan T010](../reports/T010.md).
+
 ## Keputusan dan alasan
 
 Gunakan Payload 3.92.0 untuk akun, form/list CMS, validasi, access control dan adapter PostgreSQL. Gunakan layanan editorial kustom untuk state machine, revision pointer, submission, approval, audit dan referensi aset. Seluruh collection editorial memakai kontrak bersama; jenis konten menentukan schema payload dan relasi wajib/opsional.

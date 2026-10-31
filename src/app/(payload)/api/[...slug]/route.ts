@@ -10,7 +10,12 @@ function sameOrigin(handler: typeof post): typeof post {
     return handler(request, context);
   };
 }
-export const GET = REST_GET(config);
+const get = REST_GET(config);
+export const GET: typeof get = async (request, context) => {
+  const response = await get(request, context);
+  response.headers.set('Cache-Control', 'private, no-store');
+  return response;
+};
 export const DELETE = sameOrigin(REST_DELETE(config));
 export const PATCH = sameOrigin(REST_PATCH(config));
 export const PUT = sameOrigin(REST_PUT(config));

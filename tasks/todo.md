@@ -230,7 +230,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T010
 
-- [ ] **Buat draft artikel dengan ownership**
+- [x] **Buat draft artikel dengan ownership**
 
 **Hasil:** Tambahkan collection artikel dan kategori artikel, owner/assignee, penulis publik terpisah, serta slug unik.
 
@@ -241,13 +241,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Media hanya membaca/mengedit draft milik sendiri atau ditugaskan; createdBy ditetapkan server.
-- [ ] Hanya Admin mengubah owner/assignee/kategori; spoofing field melalui API ditolak.
-- [ ] Judul, excerpt, rich text, kategori, sumber dan penulis publik dapat disimpan tanpa menerbitkan.
+- [x] Media hanya membaca/mengedit draft milik sendiri atau ditugaskan; createdBy ditetapkan server.
+- [x] Hanya Admin mengubah owner/assignee/kategori; spoofing field melalui API ditolak.
+- [x] Judul, excerpt, rich text, kategori, sumber dan penulis publik dapat disimpan tanpa menerbitkan.
 
 **Verifikasi:** Tes integrasi dua Media termasuk ID draft yang ditebak, assignment, dan duplikasi slug.
 
-**Bukti/status:** Siap dikerjakan setelah T009/CP-03; dependensi T007 dan T008 selesai. Ownership, kategori artikel, spoofing relasi dan akses dua Media tetap harus dibuktikan pada implementasi tugas ini.
+**Bukti/status:** Selesai pada 31 Oktober 2026. [Laporan T010](../docs/reports/T010.md): 13 unit, 7 integration, pemeriksaan Local API dan 15 e2e lulus; create/edit/reload CMS, dua Media, assignment/transfer, spoofing, slug unik, rollback audit serta konflik simpan dibuktikan. Lint/build/typecheck dan frozen install lulus; migrasi Supabase serta regresi localhost terverifikasi. T011 siap.
 
 ### T011
 
@@ -268,7 +268,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Verifikasi:** Uji file valid, oversized, gambar berdimensi besar, signature palsu, dan nama file berbahaya melalui API.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Siap dikerjakan setelah T010; dependensi T008 dan T010 selesai. Upload privat dan validasi file belum diimplementasikan.
 
 ### T012
 

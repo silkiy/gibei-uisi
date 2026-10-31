@@ -39,6 +39,10 @@ Tambahkan tes fungsi murni di `tests/unit/*.test.mjs`. Tambahkan pengujian API p
 
 T009 menambah `public-shell.spec.ts`: lima ukuran layar, target anchor, keyboard/Escape/fokus, reduced motion, reflow/ukuran teks 200% serta dua scan axe untuk aturan WCAG A/AA terarah. Audit otomatis melengkapi pengujian keyboard dan inspeksi visual; tidak membuktikan seluruh kriteria WCAG telah terpenuhi.
 
+T010 menambah `articles.test.mjs` dan `articles.spec.ts`: visibilitas dua Media, assignment/transfer, field terlindungi, slug duplikat, rollback create/save dengan kegagalan audit, dua save bersamaan, serta create/edit/reload rich text pada CMS. `verify-editorial-local.ts` menguji default Local API override dan context palsu pada target test yang dijaga. Integration files dijalankan berurutan karena fault injection sementara mencabut INSERT audit milik runtime. Grant dipulihkan dalam finally sebelum tes berikutnya.
+
+Request API Playwright di luar browser harus menyertakan Origin dari baseURL test agar cookie diterima oleh pemeriksaan CSRF Payload. Fixture login menunggu URL/dashboard selesai sebelum navigasi berikutnya. Jangan menonaktifkan CSRF, mengabaikan tes, atau menaikkan timeout untuk meloloskan masalah akses.
+
 ## Bukti dan diagnosis
 
 Ringkasan lulus/gagal muncul di terminal. Log migration/build/test ada di `artifacts/test-run.log`, screenshot yang dibuat eksplisit di `test-results/`; semuanya diabaikan Git. Trace/video/storageState dimatikan agar kredensial/cookie tidak tersimpan dalam rekaman jaringan. Hindari membagikan log mentah sebelum memeriksa isinya. Kegagalan proses menghasilkan exit nonzero; tidak ada tes yang dilewati karena database/browser belum tersedia.

@@ -69,6 +69,10 @@ export interface Config {
   collections: {
     users: User;
     'account-audit': AccountAudit;
+    'article-categories': ArticleCategory;
+    articles: Article;
+    'article-revisions': ArticleRevision;
+    'editorial-audit': EditorialAudit;
     'payload-kv': PayloadKv;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -77,6 +81,10 @@ export interface Config {
   collectionsSelect: {
     users: UsersSelect<false> | UsersSelect<true>;
     'account-audit': AccountAuditSelect<false> | AccountAuditSelect<true>;
+    'article-categories': ArticleCategoriesSelect<false> | ArticleCategoriesSelect<true>;
+    articles: ArticlesSelect<false> | ArticlesSelect<true>;
+    'article-revisions': ArticleRevisionsSelect<false> | ArticleRevisionsSelect<true>;
+    'editorial-audit': EditorialAuditSelect<false> | EditorialAuditSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -176,6 +184,142 @@ export interface AccountAudit {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories".
+ */
+export interface ArticleCategory {
+  id: number;
+  name: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles".
+ */
+export interface Article {
+  id: number;
+  slug: string;
+  title?: string | null;
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  category?: (number | null) | ArticleCategory;
+  /**
+   * Nama penulis publik atau tim; terpisah dari akun CMS.
+   */
+  publicAuthor?: string | null;
+  sources?:
+    | {
+        title?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | ArticleRevision;
+  publicRevision?: (number | null) | ArticleRevision;
+  lockVersion: number;
+  /**
+   * Versi yang dibaca; muat ulang jika terjadi konflik.
+   */
+  expectedLockVersion?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-revisions".
+ */
+export interface ArticleRevision {
+  id: number;
+  article: number | Article;
+  number: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  editVersion: number;
+  title?: string | null;
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  category?: (number | null) | ArticleCategory;
+  /**
+   * Nama penulis publik atau tim; terpisah dari akun CMS.
+   */
+  publicAuthor?: string | null;
+  sources?:
+    | {
+        title?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "editorial-audit".
+ */
+export interface EditorialAudit {
+  id: number;
+  actorId: number;
+  article: number | Article;
+  revisionId: number;
+  editVersion: number;
+  action: 'draft_created' | 'draft_saved' | 'ownership_changed';
+  before?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  after:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  correlationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -261,6 +405,85 @@ export interface AccountAuditSelect<T extends boolean = true> {
   action?: T;
   before?: T;
   after?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-categories_select".
+ */
+export interface ArticleCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "articles_select".
+ */
+export interface ArticlesSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  excerpt?: T;
+  body?: T;
+  category?: T;
+  publicAuthor?: T;
+  sources?:
+    | T
+    | {
+        title?: T;
+        url?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  expectedLockVersion?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "article-revisions_select".
+ */
+export interface ArticleRevisionsSelect<T extends boolean = true> {
+  article?: T;
+  number?: T;
+  state?: T;
+  editVersion?: T;
+  title?: T;
+  excerpt?: T;
+  body?: T;
+  category?: T;
+  publicAuthor?: T;
+  sources?:
+    | T
+    | {
+        title?: T;
+        url?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "editorial-audit_select".
+ */
+export interface EditorialAuditSelect<T extends boolean = true> {
+  actorId?: T;
+  article?: T;
+  revisionId?: T;
+  editVersion?: T;
+  action?: T;
+  before?: T;
+  after?: T;
+  correlationId?: T;
   updatedAt?: T;
   createdAt?: T;
 }
