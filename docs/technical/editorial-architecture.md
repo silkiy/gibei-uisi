@@ -90,4 +90,4 @@ Auth CMS dan Supabase Auth adalah domain berbeda; jangan memakai `auth.uid()` se
 | A membuat revisi R3 dan submit S4, lalu Admin withdraw publikasi R2 | C menjadi 404 di detail/API, hilang dari count/sitemap; S4 cancelled, R3 disimpan sebagai draft; P2 tertutup kecuali dipakai publik lain. |
 | Admin mencoba approve S4 setelah withdraw | Ditolak; R3 harus submit baru. Relasi wajib yang masih menunjuk C menahan withdraw sampai dependensinya diselesaikan. |
 
-Review ini memeriksa kontrak terhadap PRD, bukan hasil tes aplikasi. Risiko dan eksperimen implementasi ada pada dokumen media di bawah; semua harus dilaksanakan sebelum T025 lulus.
+Review awal ini memeriksa kontrak terhadap PRD. **Pembaruan T020, 31 Oktober 2026:** layanan nyata pada `src/editorial/commands.ts` memakai transaksi, manifest review dan lock graph; reader publik memakai approved snapshot, no-store dan DTO allowlist. `deletedAt` menyimpan tombstone draft tanpa menghapus audit. Bukti T011–T020 ada pada [laporan akhir batch](../reports/T020.md); eksperimen konflik keputusan/UI/halaman harus dilengkapi pada T021–T025, dan metadata/sitemap T051 belum tersedia.

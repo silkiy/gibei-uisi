@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — T018 / CP-06:** T001–T018 selesai; CP-04/CP-05/CP-06 ditinjau. Batch T011–T020 masih berjalan, berikutnya T019/T020. Reader publik, revisi dan withdrawal teruji; produksi lokal 3200 diverifikasi sambil mempertahankan dev server pengguna 3000. Bukti: [T018](../docs/reports/T018.md).
+**Status terbaru — T020:** T001–T020 selesai; CP-01–CP-06 ditinjau. Batch upload privat sampai revoke/delete teruji dengan 20 unit, 30 integration dan 18 e2e. Migrasi Supabase aktif, produksi lokal 3200 diverifikasi dan dev pengguna 3000 dipertahankan. Berikutnya T021. Bukti: [T020](../docs/reports/T020.md).
 
 ## Tujuan dan kondisi awal
 
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**T001–T009 selesai; CP-01/CP-02/CP-03 ditinjau. Langkah berikutnya T010:** implementasikan draft artikel dengan ownership dan verifikasi izin dua Media. Fondasi publik belum membuktikan workflow editorial atau kesiapan produksi.
+**T001–T020 selesai; CP-01–CP-06 ditinjau. Langkah berikutnya T021:** buktikan keputusan review bersamaan dan audit append-only. Backend artikel/media telah diverifikasi; UI antrean, halaman artikel, perluasan modul dan kelulusan MVP masih mengikuti backlog.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 

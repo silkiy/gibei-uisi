@@ -1,6 +1,6 @@
 # Setup localhost dan PostgreSQL Supabase
 
-Terakhir diverifikasi: **30 Oktober 2026**. Runtime Node 24.22.1, pnpm 10.24.0; langkah aplikasi ada di [README](../README.md). Fondasi database T005 serta integrasi Payload/login T006 sudah diverifikasi. Pengelolaan akun lengkap mengikuti T007.
+Terakhir diverifikasi: **31 Oktober 2026**, sampai T020. Runtime Node 24.22.1, pnpm 10.24.0; langkah aplikasi ada di [README](../README.md). Database, CMS, akun dan backend workflow artikel/media telah diuji. [Laporan T020](reports/T020.md) mencatat batas implementasi dan hasil akhir batch.
 
 ## Environment server
 
@@ -113,4 +113,25 @@ Suite memeriksa nama, ownership dan tabel kosong, menjalankan fixture terisolasi
 
 ## Harness umum — T008
 
+Bagian berikut mencatat harness yang mulai tersedia pada T008 dan masih dipakai sampai T020.
+
 Untuk pengujian berikutnya gunakan `pnpm test:unit`, `pnpm test:integration`, dan `pnpm test:e2e`. [Panduan pengujian](testing.md) menjelaskan fixture Admin/dua Media, pilihan backend, guard reset, log dan isolasi browser. Harness baru menggunakan database lokal yang terpisah sepenuhnya dari Supabase, bukan schema sementara T007. Backend native portable telah disiapkan pada `.env.test.local`; file ini hanya memilih direktori binary dan tidak berisi kredensial pengembangan.
+
+## Backend artikel dan media — T011–T020
+
+Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru T020 adalah `20261031_070403_safe_deletion`. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T059.
+
+Upload melalui formulir pada daftar Media menyimpan gambar/PDF ke `storage/private`, di luar public/static. Setiap upload membuat key dan versi baru. Reader file adalah `/api/media/:key/original` atau `/thumbnail`; URL lama tetap memakai pengecekan izin saat request. Jangan menyalin file tersebut ke public/CDN atau memakai optimizer.
+
+Layanan domain tersedia sebelum UI antrean/aksi lengkap T022. Semua POST memakai cookie login, header Origin yang sama dengan SERVER_URL dan JSON terbatas; jangan meletakkan cookie/token pada command atau dokumen yang dibagikan.
+
+| Endpoint | Kontrak |
+|---|---|
+| POST `/api/editorial/articles/:id/:action` | `expectedLockVersion`, `expectedRevisionId`, serta `submissionId` untuk keputusan pengajuan. Actions: submit, withdraw-submission, request-revision, publish, create-revision, archive-revision, restart-archived, withdraw-publication, delete-draft. |
+| Request-revision / withdraw-publication / delete-draft | Hanya Admin dan alasan `note` wajib. Publish/archive/restart juga hanya Admin. Expected revision memakai pointer publik untuk create-revision/withdraw-publication, ID arsip untuk restart, pointer kerja untuk lainnya. |
+| POST `/api/media/:key/manage` | Admin, `{action:"revoke"|"delete",note:"alasan"}`. Delete yang masih dirujuk mengembalikan 409 dan `references`; revoke menampilkan dampak dan mematikan byte segera. |
+| GET `/api/public/articles` dan `/:slug` | Tanpa login, hanya snapshot approved saat ini, tanpa data draft/owner/reviewer. Query list: q, category, page, limit. |
+
+Jika delete mengembalikan `cleanupPending:true`, file sudah ditutup aksesnya tetapi pembersihan disk gagal. Periksa warning dengan assetId dan ulangi aksi delete setelah kendala storage selesai; jangan menghapus path yang belum diverifikasi. Draft dihapus secara logis sehingga audit/riwayat tetap tersedia untuk Admin. Ledger konfigurasi hanya melindungi retensi; Site Settings dan izin publik konfigurasinya tetap T027.
+
+Verifikasi akhir berlangsung pada produksi lokal `http://127.0.0.1:3200` dengan SERVER_URL khusus proses, sementara dev server pengguna 3000 dipertahankan. Gunakan origin yang sama saat menjalankan `pnpm test:cms` pada port alternatif.

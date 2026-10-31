@@ -41,6 +41,12 @@ T009 menambah `public-shell.spec.ts`: lima ukuran layar, target anchor, keyboard
 
 T010 menambah `articles.test.mjs` dan `articles.spec.ts`: visibilitas dua Media, assignment/transfer, field terlindungi, slug duplikat, rollback create/save dengan kegagalan audit, dua save bersamaan, serta create/edit/reload rich text pada CMS. `verify-editorial-local.ts` menguji default Local API override dan context palsu pada target test yang dijaga. Integration files dijalankan berurutan karena fault injection sementara mencabut INSERT audit milik runtime. Grant dipulihkan dalam finally sebelum tes berikutnya.
 
+## Hasil batch T011–T020
+
+Per 31 Oktober 2026: 20 unit, 30 integration, 18 Chromium e2e dan Local API guard lulus. Suite menambah upload/validasi PDF worker, gateway/HEAD/range/optimizer, submit/revisi/publish/rollback, reader publik, working revision, withdraw/dependency, reuse dan revoke/delete. `media-reuse.test.mjs` membuktikan pencabutan referensi terakhir; `deletion.test.mjs` menguji seluruh referensi, fallback, tombstone, audit gagal dan filesystem cleanup retry. Fixture junction hanya dibuat pada direktori run yang diverifikasi dan dipulihkan dalam finally. Tidak ada fault injection pada database/file Supabase pengembangan.
+
+Build/TypeScript/lint dan instalasi `pnpm install --frozen-lockfile --offline --ignore-scripts --store-dir .pnpm-store` lulus pada mesin ini. Gunakan store yang sesuai instalasi lokal; jangan mengizinkan penggantian seluruh node_modules hanya untuk mengatasi store berbeda. [Laporan T020](reports/T020.md) memuat bukti dan batasnya. T021 menambah pembuktian race keputusan; T022–T025 melengkapi UI/halaman serta alur artikel end-to-end.
+
 Request API Playwright di luar browser harus menyertakan Origin dari baseURL test agar cookie diterima oleh pemeriksaan CSRF Payload. Fixture login menunggu URL/dashboard selesai sebelum navigasi berikutnya. Jangan menonaktifkan CSRF, mengabaikan tes, atau menaikkan timeout untuk meloloskan masalah akses.
 
 ## Bukti dan diagnosis

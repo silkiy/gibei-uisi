@@ -4,7 +4,7 @@ import { isActiveAdmin, isActiveUser } from '../auth/policy';
 
 export const reviewAccess = ({ req }: Parameters<import('payload').Access>[0]) => {
   if (isActiveAdmin(req.user)) return true;
-  return isActiveUser(req.user) ? { or: [{ 'article.owner': { equals: req.user!.id } }, { 'article.assignedTo': { in: [req.user!.id] } }] } as Where : false;
+  return isActiveUser(req.user) ? { and: [{ 'article.deletedAt': { exists: false } }, { or: [{ 'article.owner': { equals: req.user!.id } }, { 'article.assignedTo': { in: [req.user!.id] } }] }] } as Where : false;
 };
 export const ContentReviews: CollectionConfig = {
   slug: 'content-reviews', lockDocuments: false, admin: { useAsTitle: 'status' }, hooks: internalHooks,

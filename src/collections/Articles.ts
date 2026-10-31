@@ -11,6 +11,7 @@ export const Articles: CollectionConfig = {
   hooks: articleHooks,
   fields: [
     { name: 'slug', type: 'text', required: true, unique: true },
+    { name: 'deletedAt', type: 'date', admin: { hidden: true } },
     ...draftFields(true),
     { name: 'createdBy', type: 'relationship', relationTo: 'users', required: true, maxDepth: 0, defaultValue: ({ user }) => user?.id, admin: { readOnly: true } },
     { name: 'owner', type: 'relationship', relationTo: 'users', required: true, maxDepth: 0, defaultValue: ({ user }) => user?.id, access: { create: adminWrite, update: adminWrite } },

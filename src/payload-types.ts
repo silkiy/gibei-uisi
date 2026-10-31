@@ -76,6 +76,7 @@ export interface Config {
     media: Media;
     'media-audit': MediaAudit;
     'content-reviews': ContentReview;
+    'asset-config-references': AssetConfigReference;
     'payload-kv': PayloadKv;
     'payload-preferences': PayloadPreference;
     'payload-migrations': PayloadMigration;
@@ -91,6 +92,7 @@ export interface Config {
     media: MediaSelect<false> | MediaSelect<true>;
     'media-audit': MediaAuditSelect<false> | MediaAuditSelect<true>;
     'content-reviews': ContentReviewsSelect<false> | ContentReviewsSelect<true>;
+    'asset-config-references': AssetConfigReferencesSelect<false> | AssetConfigReferencesSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
     'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
@@ -206,6 +208,7 @@ export interface ArticleCategory {
 export interface Article {
   id: number;
   slug: string;
+  deletedAt?: string | null;
   title?: string | null;
   excerpt?: string | null;
   body?: {
@@ -446,6 +449,18 @@ export interface ContentReview {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "asset-config-references".
+ */
+export interface AssetConfigReference {
+  id: number;
+  asset: number | Media;
+  configKey: string;
+  version: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -550,6 +565,7 @@ export interface ArticleCategoriesSelect<T extends boolean = true> {
  */
 export interface ArticlesSelect<T extends boolean = true> {
   slug?: T;
+  deletedAt?: T;
   title?: T;
   excerpt?: T;
   body?: T;
@@ -700,6 +716,17 @@ export interface ContentReviewsSelect<T extends boolean = true> {
   reviewerId?: T;
   note?: T;
   resolvedAt?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "asset-config-references_select".
+ */
+export interface AssetConfigReferencesSelect<T extends boolean = true> {
+  asset?: T;
+  configKey?: T;
+  version?: T;
   updatedAt?: T;
   createdAt?: T;
 }

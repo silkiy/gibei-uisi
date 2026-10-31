@@ -12,6 +12,7 @@ import { verifyReferencedFiles } from '../media/references';
 import { validateRequiredRelations } from '../content/relations';
 import { copyDraftPayload } from './revision-copy';
 import { requiredDependents } from '../content/dependencies';
+import { assertDeletableDraft } from './delete-draft';
 
 export const internalOptions = (req: PayloadRequest) => ({ req, overrideAccess: true, context: { [editorialWrite]: true } });
 export const revisionManifest = (revision: ArticleRevision) => ({ revisionId: revision.id, editVersion: revision.editVersion,
@@ -27,15 +28,15 @@ export async function advanceArticle(req: PayloadRequest, article: Article, data
   await req.payload.db.updateOne({ collection: 'articles', id: article.id, req, data: { ...data, lockVersion: article.lockVersion + 1, updatedAt: new Date().toISOString() } });
 }
 export async function articleCommand(req: PayloadRequest, id: number, action: string, input: Record<string, unknown>) {
-  if (!['submit', 'withdraw-submission', 'request-revision', 'publish', 'create-revision', 'archive-revision', 'restart-archived', 'withdraw-publication'].includes(action)) throw new APIError('Unknown editorial action', 400);
-  const allowed = ['expectedLockVersion', 'expectedRevisionId', 'submissionId', ...(['request-revision', 'archive-revision', 'withdraw-publication'].includes(action) ? ['note'] : [])];
+  if (!['submit', 'withdraw-submission', 'request-revision', 'publish', 'create-revision', 'archive-revision', 'restart-archived', 'withdraw-publication', 'delete-draft'].includes(action)) throw new APIError('Unknown editorial action', 400);
+  const allowed = ['expectedLockVersion', 'expectedRevisionId', 'submissionId', ...(['request-revision', 'archive-revision', 'withdraw-publication', 'delete-draft'].includes(action) ? ['note'] : [])];
   if (Object.keys(input).some(key => !allowed.includes(key))) throw new APIError('Unsupported command field', 400);
   if (!Number.isSafeInteger(id) || !Number.isSafeInteger(input.expectedLockVersion) || !Number.isSafeInteger(input.expectedRevisionId)) throw new APIError('Revision and lock version required', 400);
   try { return await atomic(req, async () => {
     await editorialLock(req); await currentActor(req); await articleLock(req, id);
-    if (['request-revision', 'publish', 'archive-revision', 'restart-archived', 'withdraw-publication'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
+    if (['request-revision', 'publish', 'archive-revision', 'restart-archived', 'withdraw-publication', 'delete-draft'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
     const article = await req.payload.db.findOne({ collection: 'articles', where: { id: { equals: id } }, req }) as Article | null;
-    if (!article || !canEditDraft(req.user, article)) throw new NotFound();
+    if (!article || article.deletedAt || !canEditDraft(req.user, article)) throw new NotFound();
     const expectedPointer = ['create-revision', 'withdraw-publication'].includes(action) ? relationId(article.publicRevision) : action === 'restart-archived' ? input.expectedRevisionId : relationId(article.workingRevision);
     if (article.lockVersion !== input.expectedLockVersion || !expectedPointer || expectedPointer !== input.expectedRevisionId) throw new APIError('Article changed; reload before continuing', 409);
     const revision = await req.payload.findByID({ collection: 'article-revisions', id: input.expectedRevisionId as number, req, overrideAccess: true, depth: 0 });
@@ -43,7 +44,14 @@ export async function articleCommand(req: PayloadRequest, id: number, action: st
     const pending = (await req.payload.find({ collection: 'content-reviews', req, overrideAccess: true, depth: 0, limit: 1, pagination: false, where: { and: [{ article: { equals: id } }, { status: { equals: 'pending' } }] } })).docs[0];
     let submission;
     let articleChanges: Partial<Article> = {};
-    if (action === 'withdraw-publication') {
+    if (action === 'delete-draft') {
+      if (pending || !['draft', 'revision_required'].includes(revision.state)) throw new APIError('Withdraw review before deleting a draft', 409);
+      let note: string; try { note = revisionNote(input.note); } catch (error) { throw new APIError((error as Error).message, 400); }
+      await assertDeletableDraft(req, article);
+      await req.payload.update({ collection: 'article-revisions', id: revision.id, ...internalOptions(req), data: { state: 'archived' } });
+      articleChanges = { deletedAt: new Date().toISOString(), workingRevision: null, slug: `deleted-${article.id}-${randomUUID()}` };
+      await auditCommand(req, article, revision, 'draft_deleted', revision.state, 'archived', { note, originalSlug: article.slug });
+    } else if (action === 'withdraw-publication') {
       if (revision.state !== 'published') throw new APIError('There is no current publication', 409);
       let note: string; try { note = revisionNote(input.note); } catch (error) { throw new APIError((error as Error).message, 400); }
       const references = await requiredDependents(req, id);
@@ -109,6 +117,7 @@ export async function articleCommand(req: PayloadRequest, id: number, action: st
       }
     }
     await advanceArticle(req, article, articleChanges);
+    if (action === 'delete-draft') return { doc: null, deleted: true };
     return { doc: await req.payload.findByID({ collection: 'articles', id, req, overrideAccess: true, depth: 0 }), submission };
   }); } finally { Reflect.deleteProperty(req.context, editorialWrite); }
 }

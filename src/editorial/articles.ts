@@ -9,9 +9,9 @@ import { normalizeAssets } from '../media/references';
 import { normalizeRelated } from '../content/relations';
 
 export const articleAccess: Access = ({ req }) => {
-  if (isActiveAdmin(req.user)) return true;
+  if (isActiveAdmin(req.user)) return { deletedAt: { exists: false } };
   if (!isActiveUser(req.user)) return false;
-  return { or: [{ owner: { equals: req.user!.id } }, { assignedTo: { in: [req.user!.id] } }] } as import('payload').Where;
+  return { and: [{ deletedAt: { exists: false } }, { or: [{ owner: { equals: req.user!.id } }, { assignedTo: { in: [req.user!.id] } }] }] } as import('payload').Where;
 };
 export const draftKeys = ['title', 'excerpt', 'body', 'category', 'publicAuthor', 'sources', 'assets', 'related'] as const;
 const keys = draftKeys;
@@ -39,8 +39,8 @@ export const articleHooks: CollectionConfig['hooks'] = {
       // Payload's query-based update access returns 403; resolve guessed IDs uniformly as 404 first.
       await req.payload.findByID({ collection: 'articles', id: Number(args.id), req, overrideAccess: true, depth: 0 });
     }
-    const raw = 'data' in args ? { ...args.data } : {};
-    if (Object.hasOwn(raw, '_status')) throw new Forbidden();
+    const raw: Record<string, unknown> = 'data' in args ? { ...args.data } : {};
+    if (Object.hasOwn(raw, '_status') || raw.deletedAt != null) throw new Forbidden();
     changes.set(req, { raw });
     return args;
   }],
@@ -65,6 +65,7 @@ export const articleHooks: CollectionConfig['hooks'] = {
       if (!creating && raw.category === null && previous?.category) throw new Forbidden();
     }
     data.createdBy = immutable.createdBy;
+    data.deletedAt = null;
     data.owner = creating ? req.user!.id : (data.owner ?? relationId(originalDoc.owner));
     data.assignedTo = creating ? (isActiveAdmin(req.user) ? data.assignedTo || [] : []) : data.assignedTo ?? originalDoc.assignedTo ?? [];
     if (data.assignedTo.length > 20) throw new APIError('Maximum 20 assignees', 400);
@@ -120,7 +121,7 @@ export const articleHooks: CollectionConfig['hooks'] = {
     } finally { Reflect.deleteProperty(req.context, editorialWrite); changes.delete(req); }
   }],
   afterRead: [async ({ doc, req }) => {
-    if (!canEditDraft(req.user, doc)) throw new NotFound();
+    if (doc.deletedAt || !canEditDraft(req.user, doc)) throw new NotFound();
     const pointer = doc.workingRevision || doc.publicRevision;
     const revision = pointer ? await readRevision(req, pointer) : (await req.payload.find({ collection: 'article-revisions', req, overrideAccess: true, depth: 0, limit: 1, pagination: false, sort: '-number', where: { article: { equals: doc.id } } })).docs[0];
     if (!revision) return { ...doc, expectedLockVersion: doc.lockVersion };

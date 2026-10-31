@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — T009:** T001–T009 selesai; CP-01, CP-02 dan CP-03 ditinjau. Fondasi visual publik, navigasi responsif/keyboard serta audit aksesibilitas terarah terverifikasi pada [laporan T009](../docs/reports/T009.md). T010 siap dikerjakan untuk draft artikel dengan ownership. Workflow editorial belum diimplementasikan.
+**Status terbaru — T020:** T001–T020 selesai; CP-01–CP-06 ditinjau. Batch T011–T020 lulus 20 unit, 30 integration dan 18 e2e, lint/TypeScript/build, migrasi Supabase dan probe CMS lokal. [Laporan akhir batch](../docs/reports/T020.md). Berikutnya **T021**, konflik review dan audit. UI antrean, halaman artikel dan alur lengkap tetap T022–T025; MVP belum selesai.
 
 ## Cara menggunakan checklist
 
@@ -458,7 +458,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T020
 
-- [ ] **Amankan hapus dan pencabutan darurat**
+- [x] **Amankan hapus dan pencabutan darurat**
 
 **Hasil:** Sediakan tindakan Admin menghapus aset/draft yang memenuhi syarat dan mencabut media darurat.
 
@@ -469,13 +469,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Penghapusan media yang dirujuk draft, riwayat versi, publikasi, atau konfigurasi ditolak dengan daftar referensi.
-- [ ] Pencabutan darurat menghentikan akses file dan menunjukkan fallback serta konten terdampak.
-- [ ] Media tidak dapat menghapus; konten pernah terbit/audit tidak dihapus permanen; draft belum terbit tanpa referensi boleh dihapus Admin dengan audit.
+- [x] Penghapusan media yang dirujuk draft, riwayat versi, publikasi, atau konfigurasi ditolak dengan daftar referensi.
+- [x] Pencabutan darurat menghentikan akses file dan menunjukkan fallback serta konten terdampak.
+- [x] Media tidak dapat menghapus; konten pernah terbit/audit tidak dihapus permanen; draft belum terbit tanpa referensi boleh dihapus Admin dengan audit.
 
 **Verifikasi:** Tes masing-masing jenis referensi, URL lama, fallback publik, serta percobaan hapus melalui API.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T020](../docs/reports/T020.md): 20 unit, 30 integration dan 18 e2e lulus. Guard seluruh referensi, revoke/fallback, tombstone draft/audit, rollback dan cleanup retry terbukti. Migrasi Supabase dan build/CMS produksi lokal terverifikasi; T021 siap.
 
 ### T021
 
