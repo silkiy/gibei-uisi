@@ -1,0 +1,36 @@
+import { test, expect } from './fixtures';
+
+test('private preview and review controls enforce ownership and show a genuine stale-version conflict', async ({ adminPage, mediaAPage, mediaBPage, page, baseURL }) => {
+  const headers = { Origin: baseURL! };
+  const category = await adminPage.request.post('/api/article-categories', { headers, data: { name: 'UI Review', slug: 'ui-review' } });
+  const body = { root: { type: 'root', version: 1, children: [{ type: 'paragraph', version: 1, children: [{ type: 'text', version: 1, text: 'Isi preview privat yang berizin.' }] }] } };
+  const created = await mediaAPage.request.post('/api/articles', { headers, data: { slug: 'ui-private-preview', title: 'Preview privat UI', excerpt: 'Ringkasan untuk review', publicAuthor: 'Tim Demo', body } });
+  expect(created.status()).toBe(201); let doc = (await created.json()).doc;
+  const categorized = await adminPage.request.patch(`/api/articles/${doc.id}`, { headers, data: { expectedLockVersion: doc.lockVersion, category: (await category.json()).doc.id } });
+  doc = (await categorized.json()).doc;
+  await mediaAPage.goto(`/admin/collections/articles/${doc.id}`);
+  await expect(mediaAPage.getByRole('heading', { name: 'Alur editorial' })).toBeVisible();
+  await expect(mediaAPage.getByRole('link', { name: 'Preview privat' })).toHaveAttribute('href', `/editorial/preview/${doc.id}`);
+  await mediaAPage.getByRole('link', { name: 'Preview privat' }).click();
+  await expect(mediaAPage.getByRole('heading', { name: 'Preview privat UI', exact: true })).toBeVisible();
+  await expect(mediaAPage.getByText('Isi preview privat yang berizin.')).toBeVisible();
+  expect((await mediaBPage.request.get(`/editorial/preview/${doc.id}`, { headers })).status()).toBe(404);
+  await page.goto(`/editorial/preview/${doc.id}`); await expect(page).toHaveURL(/\/admin\/login/);
+  await expect(page.getByText('Isi preview privat yang berizin.')).toHaveCount(0);
+  await mediaAPage.goto(`/admin/collections/articles/${doc.id}`);
+  const external = await mediaAPage.request.patch(`/api/articles/${doc.id}`, { headers, data: { expectedLockVersion: doc.lockVersion, title: 'Versi lebih baru' } }); expect(external.status()).toBe(200);
+  await mediaAPage.getByRole('button', { name: 'Ajukan review', exact: true }).click();
+  await expect(mediaAPage.getByRole('region', { name: 'Alur editorial' }).getByRole('alert')).toContainText('berubah');
+  await expect(mediaAPage.getByText('Status editorial: draft', { exact: true })).toBeVisible();
+  await mediaAPage.reload();
+  await mediaAPage.getByRole('button', { name: 'Ajukan review', exact: true }).click();
+  await expect(mediaAPage.getByText('Status editorial: in_review', { exact: true })).toBeVisible();
+  await adminPage.goto('/admin/collections/articles');
+  await expect(adminPage.getByRole('heading', { name: 'Antrean review' })).toBeVisible();
+  await adminPage.getByRole('link', { name: 'Tinjau: Versi lebih baru' }).click();
+  await adminPage.getByLabel('Alasan editorial').fill('Lengkapi referensi sebelum terbit.');
+  await adminPage.getByRole('button', { name: 'Minta revisi', exact: true }).click();
+  await expect(adminPage.getByText('Status editorial: revision_required', { exact: true })).toBeVisible();
+  await mediaAPage.reload(); await expect(mediaAPage.getByText('Lengkapi referensi sebelum terbit.', { exact: true })).toBeVisible();
+  await expect(mediaAPage.getByRole('button', { name: 'Terbitkan', exact: true })).toHaveCount(0);
+});

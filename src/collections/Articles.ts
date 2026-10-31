@@ -5,11 +5,12 @@ import { draftFields } from '../editorial/fields';
 
 const adminWrite: FieldAccess = ({ req }) => isActiveAdmin(req.user);
 export const Articles: CollectionConfig = {
-  slug: 'articles', admin: { useAsTitle: 'slug', defaultColumns: ['slug', 'owner', 'updatedAt'] },
+  slug: 'articles', admin: { useAsTitle: 'slug', defaultColumns: ['slug', 'owner', 'updatedAt'], components: { beforeList: ['/components/ReviewQueue#ReviewQueue'] } },
   lockDocuments: false, disableBulkEdit: true, disableDuplicate: true,
   access: { create: ({ req }) => isActiveUser(req.user), read: articleAccess, update: articleAccess, delete: () => false },
   hooks: articleHooks,
   fields: [
+    { name: 'editorialActions', type: 'ui', admin: { components: { Field: '/components/ArticleActions#ArticleActions' } } },
     { name: 'slug', type: 'text', required: true, unique: true },
     { name: 'deletedAt', type: 'date', admin: { hidden: true } },
     ...draftFields(true),

@@ -506,7 +506,7 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 ### T022
 
-- [ ] **Tampilkan antrean review dan preview privat**
+- [x] **Tampilkan antrean review dan preview privat**
 
 **Hasil:** Hubungkan tindakan server yang sudah diuji ke Payload Admin menggunakan tampilan minimum.
 
@@ -517,13 +517,13 @@ Draft sampai revisi/penarikan terbukti pada API, CMS, file, dan website publik.
 
 **Kriteria selesai:**
 
-- [ ] Editor melihat status dan catatan konten berizin; Admin mendapat antrean in_review dan tindakan yang sesuai.
-- [ ] Preview memerlukan login dan izin; tidak ada preview publik atau data privat dalam URL berbagi.
-- [ ] Status gagal/konflik jelas dan tidak memberi kesan publikasi berhasil.
+- [x] Editor melihat status dan catatan konten berizin; Admin mendapat antrean in_review dan tindakan yang sesuai.
+- [x] Preview memerlukan login dan izin; tidak ada preview publik atau data privat dalam URL berbagi.
+- [x] Status gagal/konflik jelas dan tidak memberi kesan publikasi berhasil.
 
 **Verifikasi:** Demo kedua role di browser lalu uji bypass endpoint; gunakan komponen CMS bawaan bila cukup.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Laporan T022](../docs/reports/T022.md): 19 e2e, build produksi terisolasi, lint dan TypeScript lulus; antrean Admin, status/catatan, konflik, preview berizin/404/login terbukti. T023 sedang dikerjakan.
 
 ### T023
 
