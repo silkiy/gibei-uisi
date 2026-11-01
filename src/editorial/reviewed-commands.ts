@@ -27,12 +27,12 @@ async function recruitmentDivisionReferences(req:PayloadRequest,id:number) {
   return (await (await transaction(req)).execute<{id:number;slug:string}>(sql`SELECT DISTINCT c.id,c.slug FROM ${schema}.recruitment_periods c JOIN ${schema}.recruitment_revisions r ON r.id=c.public_revision_id AND r.entity_id=c.id AND r.state='published' JOIN ${schema}.recruitment_revisions_positions p ON p._parent_id=r.id WHERE p.division_id=${id} AND c.deleted_at IS NULL`)).rows;
 }
 export async function reviewedCommand(req: PayloadRequest, kind: EditorialKind, id: number, action: string, input: Record<string, unknown>) {
-  if (!['submit', 'withdraw-submission', 'request-revision', 'publish', 'create-revision', 'withdraw-publication', 'delete-draft'].includes(action)) throw new APIError('Unknown organization action', 400);
+  if (!['submit', 'withdraw-submission', 'request-revision', 'publish', 'create-revision', 'archive-revision', 'withdraw-publication', 'delete-draft'].includes(action)) throw new APIError('Unknown organization action', 400);
   if (Object.keys(input).some(key => !['expectedLockVersion', 'expectedRevisionId', 'submissionId', 'note'].includes(key)) || !Number.isSafeInteger(id) || id < 1 || !Number.isSafeInteger(input.expectedLockVersion) || !Number.isSafeInteger(input.expectedRevisionId)) throw new APIError('Expected entity version and revision required', 400);
   const model = editorialModel(kind);
   try { return await atomic(req, async () => {
     await editorialLock(req); await currentActor(req);
-    if (['publish', 'request-revision', 'withdraw-publication', 'delete-draft'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
+    if (['publish', 'request-revision', 'archive-revision', 'withdraw-publication', 'delete-draft'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
     const root = await req.payload.db.findOne({ collection: model.root, req, where: { id: { equals: id } } }) as unknown as EditorialDoc | null;
     if (!root || root.deletedAt || !canEditDraft(req.user, root)) throw new NotFound();
     const latest = action === 'create-revision' && !root.publicRevision && !root.workingRevision
@@ -47,13 +47,19 @@ export async function reviewedCommand(req: PayloadRequest, kind: EditorialKind, 
     const options = orgOptions(req);
     const updateRevision = (target: EditorialRevision, state: string) => req.payload.update({ collection: model.revisions, id: target.id, ...options, data: { state } as never });
     if (action === 'create-revision') {
-      if (root.workingRevision || pending || !['published', 'archived'].includes(revision.state)) throw new APIError('Working revision already exists', 409);
+      if (!root.publicRevision && !isActiveAdmin(req.user)) throw new Forbidden();
+      if (root.workingRevision || pending || (root.publicRevision ? revision.state !== 'published' : revision.state !== 'archived')) throw new APIError('Working revision already exists or source unavailable', 409);
       const last = (await req.payload.find({ collection: model.revisions, req, overrideAccess: true, depth: 0, limit: 1, sort: '-number', where: { entity: { equals: id } } })).docs[0] as unknown as EditorialRevision;
       const draft = structuredClone(Object.fromEntries(model.keys.map(key => [key, revision[key]])));
       for (const key of model.keys) if (Array.isArray(draft[key])) draft[key] = draft[key].map((row: Record<string, unknown>) => { const copy = { ...row }; delete copy.id; return copy; });
       const created = await req.payload.create({ collection: model.revisions, ...options, data: { ...draft, entity: id, number: last.number + 1, editVersion: root.lockVersion + 1, state: 'draft' } as never }) as unknown as EditorialRevision;
       updates.workingRevision = created.id;
       await orgAudit(req, kind, root, created, 'revision_created', { state: revision.state }, { state: 'draft', sourceRevisionId: revision.id });
+    } else if (action === 'archive-revision') {
+      if (pending || !['draft', 'revision_required'].includes(revision.state)) throw new APIError('Withdraw review before archiving', 409);
+      const note = pageNote(input.note);
+      await updateRevision(revision, 'archived'); updates.workingRevision = null;
+      await orgAudit(req, kind, root, revision, 'revision_archived', { state: revision.state }, { state: 'archived', note });
     } else if (action === 'withdraw-publication') {
       const note = pageNote(input.note);
       const references = kind === 'periods' ? await organizationReferences(req, id, true) : kind === 'divisions' ? await recruitmentDivisionReferences(req,id) : [];

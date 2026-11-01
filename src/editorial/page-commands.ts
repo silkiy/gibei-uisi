@@ -19,13 +19,13 @@ function assertPending(revision: PageRevisionDoc, pending: PageReviewDoc | undef
   if (!pending || pending.status !== 'pending' || pending.id !== submissionId || pending.revision !== revision.id || pending.editVersion !== revision.editVersion || pending.manifestDigest !== snapshotDigest(manifest(revision)) || revision.state !== 'in_review') throw new APIError('Submission is no longer current', 409);
 }
 export async function pageCommand(req: PayloadRequest, id: number, action: string, input: Record<string, unknown>) {
-  if (!['submit', 'withdraw-submission', 'request-revision', 'publish', 'create-revision', 'withdraw-publication'].includes(action)) throw new APIError('Unknown page action', 400);
-  const allowed = ['expectedLockVersion', 'expectedRevisionId', 'submissionId', ...(['request-revision', 'withdraw-publication'].includes(action) ? ['note'] : [])];
+  if (!['submit', 'withdraw-submission', 'request-revision', 'publish', 'create-revision', 'archive-revision', 'withdraw-publication'].includes(action)) throw new APIError('Unknown page action', 400);
+  const allowed = ['expectedLockVersion', 'expectedRevisionId', 'submissionId', ...(['request-revision', 'archive-revision', 'withdraw-publication'].includes(action) ? ['note'] : [])];
   if (Object.keys(input).some(key => !allowed.includes(key))) throw new APIError('Unsupported command field', 400);
   if (!Number.isSafeInteger(id) || id < 1 || !Number.isSafeInteger(input.expectedLockVersion) || !Number.isSafeInteger(input.expectedRevisionId)) throw new APIError('Lock version and revision required', 400);
   try { return await atomic(req, async () => {
     await editorialLock(req); await currentActor(req); await articleLock(req, id);
-    if (['request-revision', 'publish', 'withdraw-publication'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
+    if (['request-revision', 'publish', 'archive-revision', 'withdraw-publication'].includes(action) && !isActiveAdmin(req.user)) throw new Forbidden();
     const page = await req.payload.db.findOne({ collection: pageCollection('pages'), where: { id: { equals: id } }, req }) as unknown as PageDoc | null;
     if (!page || !canEditDraft(req.user, page)) throw new NotFound();
     const publicId = relationId(page.publicRevision);
@@ -41,6 +41,7 @@ export async function pageCommand(req: PayloadRequest, id: number, action: strin
     let submission: unknown;
     let updates: Partial<PageDoc> = {};
     if (action === 'create-revision') {
+      if (!publicId && !isActiveAdmin(req.user)) throw new Forbidden();
       if (page.workingRevision || pending || (publicId ? revision.state !== 'published' : revision.state !== 'archived')) throw new APIError('Working revision already exists or source unavailable', 409);
       const latest = (await req.payload.find({ collection: pageCollection('page-revisions'), req, overrideAccess: true, depth: 0, limit: 1, pagination: false, sort: '-number', where: { page: { equals: id } } })).docs[0] as unknown as PageRevisionDoc | undefined;
       const draft = structuredClone(Object.fromEntries(pageDraftKeys.map(key => [key, revision[key]])));
@@ -48,6 +49,12 @@ export async function pageCommand(req: PayloadRequest, id: number, action: strin
       const created = await req.payload.create({ collection: pageCollection('page-revisions'), ...options(req), data: { ...draft, page: id, number: (latest?.number ?? 0) + 1, editVersion: page.lockVersion + 1, state: 'draft' } as never }) as unknown as PageRevisionDoc;
       updates = { workingRevision: created.id };
       await audit(req, page, created, 'revision_created', revision.state, 'draft', { sourceRevisionId: revision.id });
+    } else if (action === 'archive-revision') {
+      if (pending || !['draft', 'revision_required'].includes(revision.state)) throw new APIError('Withdraw review before archiving', 409);
+      const note = pageNote(input.note);
+      await req.payload.update({ collection: pageCollection('page-revisions'), id: revision.id, ...options(req), data: { state: 'archived' } as never });
+      updates = { workingRevision: null };
+      await audit(req, page, revision, 'revision_archived', revision.state, 'archived', { note });
     } else if (action === 'withdraw-publication') {
       if (revision.state !== 'published') throw new APIError('There is no current publication', 409);
       const note = pageNote(input.note);

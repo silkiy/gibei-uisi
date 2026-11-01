@@ -52,7 +52,7 @@ export function PageActions() {
         body: JSON.stringify({
           expectedLockVersion: doc!.lockVersion, expectedRevisionId,
           ...(['withdraw-submission', 'request-revision', 'publish'].includes(action) ? { submissionId: review?.id } : {}),
-          ...(['request-revision', 'withdraw-publication'].includes(action) ? { note } : {}),
+          ...(['request-revision', 'archive-revision', 'withdraw-publication'].includes(action) ? { note } : {}),
         }),
       });
       const result = await response.json();
@@ -78,7 +78,9 @@ export function PageActions() {
       {workingId && ['draft', 'revision_required'].includes(doc.state || '') && button('submit', 'Ajukan review')}
       {pending && doc.state === 'in_review' && button('withdraw-submission', 'Tarik pengajuan')}
       {admin && pending && doc.state === 'in_review' && <>{button('request-revision', 'Minta revisi', true)}{button('publish', 'Terbitkan')}</>}
-      {!workingId && (publicId || doc.state === 'archived') && button('create-revision', 'Buat revisi baru')}
+      {!workingId && publicId && button('create-revision', 'Buat revisi baru')}
+      {admin && !workingId && !publicId && doc.state === 'archived' && button('create-revision', 'Mulai ulang dari arsip')}
+      {admin && workingId && ['draft', 'revision_required'].includes(doc.state || '') && button('archive-revision', 'Arsipkan revisi', true)}
       {admin && publicId && button('withdraw-publication', 'Tarik publikasi', true)}
     </div>
     <p style={{ marginTop: 12 }}>Perubahan status berlaku setelah server mengonfirmasi. Pengajuan mengunci versi tersimpan.</p>

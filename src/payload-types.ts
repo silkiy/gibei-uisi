@@ -608,6 +608,7 @@ export interface PageAudit {
     | 'revision_requested'
     | 'published'
     | 'revision_created'
+    | 'revision_archived'
     | 'publication_withdrawn';
   before?:
     | {

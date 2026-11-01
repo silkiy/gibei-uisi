@@ -215,6 +215,8 @@ test('withdrawal archives a published page and cancels a pending replacement wit
   assert.equal(withdrawn.publicRevision, null);
   assert.equal(withdrawn.workingRevision, null);
   assert.equal(withdrawn.state, 'archived');
+  assert.equal((await command(mediaB, withdrawn, 'create-revision')).status, 403);
+  assert.equal((await page(admin, homepage.id)).lockVersion, withdrawn.lockVersion);
   assert.equal((await command(admin, published, 'withdraw-publication', { note: 'Stale' })).status, 409);
 
   const restarted = await command(admin, withdrawn, 'create-revision');
@@ -237,4 +239,27 @@ test('withdrawal archives a published page and cancels a pending replacement wit
   const fresh = await command(admin, current, 'submit');
   assert.equal(fresh.status, 200);
   assert.notEqual((await fresh.json()).submission.id, pending.submission.id);
+});
+
+test('Admin archives Pages working revisions without withdrawing publication or allowing Media to restart archives', async () => {
+  let doc = await page(admin, about.id);
+  const pending = await (await command(mediaA, doc, 'submit')).json();
+  let response = await command(admin, pending.doc, 'publish', { submissionId: pending.submission.id });
+  assert.equal(response.status, 200); const published = (await response.json()).doc;
+  response = await command(mediaA, published, 'create-revision'); assert.equal(response.status, 200); doc = (await response.json()).doc;
+  assert.equal((await command(mediaA, doc, 'archive-revision', { note: 'Media cannot archive.' })).status, 403);
+  assert.equal((await command(admin, doc, 'archive-revision')).status, 400);
+  const waiting = await (await command(mediaA, doc, 'submit')).json();
+  assert.equal((await command(admin, waiting.doc, 'archive-revision', { note: 'Pending review.' })).status, 409);
+  response = await command(admin, waiting.doc, 'request-revision', { submissionId: waiting.submission.id, note: 'Review before archiving.' }); assert.equal(response.status, 200); doc = (await response.json()).doc;
+  const archivedId = doc.workingRevision;
+  response = await command(admin, doc, 'archive-revision', { note: 'Keep approved version.' }); assert.equal(response.status, 200); doc = (await response.json()).doc;
+  assert.equal(doc.workingRevision, null); assert.equal(doc.publicRevision, published.publicRevision); assert.equal(doc.state, 'published');
+  const audit = (await (await admin.request(`/api/page-audit?where[page][equals]=${doc.id}&limit=100`)).json()).docs;
+  assert.ok(audit.some(row => row.action === 'revision_archived' && row.revisionId === archivedId && row.after.note === 'Keep approved version.'));
+  response = await command(admin, doc, 'withdraw-publication', { note: 'QA withdrawal.' }); assert.equal(response.status, 200); doc = (await response.json()).doc;
+  assert.equal((await command(mediaA, doc, 'create-revision')).status, 403);
+  response = await command(admin, doc, 'create-revision'); assert.equal(response.status, 200); doc = (await response.json()).doc;
+  assert.equal(doc.publicRevision, null); assert.equal(doc.state, 'draft');
+  assert.equal((await command(admin, doc, 'publish')).status, 409);
 });

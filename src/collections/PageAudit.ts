@@ -10,7 +10,7 @@ export const PageAudit: CollectionConfig = {
     { name: 'revisionId', type: 'number', required: true },
     { name: 'actorId', type: 'number', required: true },
     { name: 'editVersion', type: 'number', required: true },
-    { name: 'action', type: 'select', required: true, options: ['draft_created', 'draft_saved', 'ownership_changed', 'submitted', 'submission_withdrawn', 'revision_requested', 'published', 'revision_created', 'publication_withdrawn'] },
+    { name: 'action', type: 'select', required: true, options: ['draft_created', 'draft_saved', 'ownership_changed', 'submitted', 'submission_withdrawn', 'revision_requested', 'published', 'revision_created', 'revision_archived', 'publication_withdrawn'] },
     { name: 'before', type: 'json' }, { name: 'after', type: 'json', required: true },
     { name: 'correlationId', type: 'text', required: true },
   ],
