@@ -12,6 +12,7 @@ import * as migration_20261031_155431_organization_profiles from './20261031_155
 import * as migration_20261101_022923_public_members from './20261101_022923_public_members';
 import * as migration_20261101_023219_active_period from './20261101_023219_active_period';
 import * as migration_20261101_024724_research_events from './20261101_024724_research_events';
+import * as migration_20261101_040307_recruitment_campaigns from './20261101_040307_recruitment_campaigns';
 
 export const migrations = [
   {
@@ -82,6 +83,11 @@ export const migrations = [
   {
     up: migration_20261101_024724_research_events.up,
     down: migration_20261101_024724_research_events.down,
-    name: '20261101_024724_research_events'
+    name: '20261101_024724_research_events',
+  },
+  {
+    up: migration_20261101_040307_recruitment_campaigns.up,
+    down: migration_20261101_040307_recruitment_campaigns.down,
+    name: '20261101_040307_recruitment_campaigns'
   },
 ];

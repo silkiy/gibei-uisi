@@ -9,6 +9,7 @@ import { canEditDraft } from './policy';
 import { pageNote } from './page-policy';
 import { editorialModel, validateDraft, type EditorialKind, type EditorialDoc, type EditorialRevision } from './reviewed-model';
 import { orgOptions, orgRevision, orgAudit, verifyPeriod, verifyDraftFiles } from './reviewed-hooks';
+import { clearWithdrawnCampaign } from '../recruitment/activation';
 import { clearWithdrawnActivePeriod } from '../organization/active-period';
 
 export async function organizationReferences(req: PayloadRequest, id: number, publicOnly = false) {
@@ -17,8 +18,13 @@ export async function organizationReferences(req: PayloadRequest, id: number, pu
     JOIN ${schema}.division_revisions r ON r.entity_id=d.id WHERE r.period_id=${id}
     ${publicOnly ? sql`AND d.public_revision_id=r.id AND r.state='published' AND d.deleted_at IS NULL` : sql``}
     UNION SELECT DISTINCT m.id,m.slug::text FROM ${schema}.members m JOIN ${schema}.member_revisions r ON r.entity_id=m.id
-      WHERE r.period_id=${id} ${publicOnly ? sql`AND m.public_revision_id=r.id AND r.state='published' AND m.deleted_at IS NULL` : sql``}`);
+      WHERE r.period_id=${id} ${publicOnly ? sql`AND m.public_revision_id=r.id AND r.state='published' AND m.deleted_at IS NULL` : sql``}
+    UNION SELECT DISTINCT c.id,c.slug::text FROM ${schema}.recruitment_periods c JOIN ${schema}.recruitment_revisions r ON r.entity_id=c.id WHERE r.period_id=${id} ${publicOnly ? sql`AND c.public_revision_id=r.id AND r.state='published' AND c.deleted_at IS NULL` : sql``}`);
   return result.rows;
+}
+async function recruitmentDivisionReferences(req:PayloadRequest,id:number) {
+  const schema=sql.identifier(req.payload.db.schemaName || 'payload');
+  return (await (await transaction(req)).execute<{id:number;slug:string}>(sql`SELECT DISTINCT c.id,c.slug FROM ${schema}.recruitment_periods c JOIN ${schema}.recruitment_revisions r ON r.id=c.public_revision_id AND r.entity_id=c.id AND r.state='published' JOIN ${schema}.recruitment_revisions_positions p ON p._parent_id=r.id WHERE p.division_id=${id} AND c.deleted_at IS NULL`)).rows;
 }
 export async function reviewedCommand(req: PayloadRequest, kind: EditorialKind, id: number, action: string, input: Record<string, unknown>) {
   if (!['submit', 'withdraw-submission', 'request-revision', 'publish', 'create-revision', 'withdraw-publication', 'delete-draft'].includes(action)) throw new APIError('Unknown organization action', 400);
@@ -50,13 +56,14 @@ export async function reviewedCommand(req: PayloadRequest, kind: EditorialKind, 
       await orgAudit(req, kind, root, created, 'revision_created', { state: revision.state }, { state: 'draft', sourceRevisionId: revision.id });
     } else if (action === 'withdraw-publication') {
       const note = pageNote(input.note);
-      const references = kind === 'periods' ? await organizationReferences(req, id, true) : [];
+      const references = kind === 'periods' ? await organizationReferences(req, id, true) : kind === 'divisions' ? await recruitmentDivisionReferences(req,id) : [];
       if (references.length) throw new APIError('Period still has published dependents', 409, { references });
       if (revision.state !== 'published') throw new APIError('No publication available', 409);
       if (pending) await req.payload.update({ collection: 'organization-reviews', id: pending.id, ...options, data: { status: 'cancelled', resolvedAt: new Date().toISOString() } });
       if (root.workingRevision) { const working = await orgRevision(req, kind, root.workingRevision); if (working.state === 'in_review') await updateRevision(working, 'draft'); }
       await updateRevision(revision, 'archived'); updates.publicRevision = null;
       if (kind === 'periods') await clearWithdrawnActivePeriod(req, id);
+      if (kind === 'recruitment') await clearWithdrawnCampaign(req,id);
       await orgAudit(req, kind, root, revision, 'publication_withdrawn', { state: revision.state }, { state: 'archived', note });
     } else if (action === 'delete-draft') {
       const note = pageNote(input.note);

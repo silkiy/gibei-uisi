@@ -1,3 +1,4 @@
+import { verifyRecruitmentRelations } from '../recruitment/relations';
 import { randomUUID } from 'node:crypto';
 import { APIError, Forbidden, NotFound, type Access, type CollectionConfig, type CollectionSlug, type PayloadRequest, type Where } from 'payload';
 import { isActiveAdmin, isActiveUser } from '../auth/policy';
@@ -20,6 +21,7 @@ export async function orgAudit(req: PayloadRequest, kind: EditorialKind, root: E
   await req.payload.create({ collection: 'organization-audit', ...orgOptions(req), data: { kind, entityId: root.id, revisionId: revision.id, actorId: req.user!.id, action, before, after, correlationId: randomUUID() } });
 }
 export async function verifyPeriod(req: PayloadRequest, kind: EditorialKind, draft: Record<string, unknown>) {
+  if (kind === 'recruitment') { await verifyRecruitmentRelations(req,draft); return; }
   if (!['divisions', 'members'].includes(kind) || !draft.period) return;
   const id = Number(relationId(draft.period as number));
   const period = await req.payload.db.findOne({ collection: 'organizational-periods', where: { id: { equals: id } }, req }) as unknown as EditorialDoc | null;
@@ -47,6 +49,17 @@ export async function normalizeDraft(req: PayloadRequest, kind: EditorialKind, d
     draft.baseDisclaimer = RESEARCH_DISCLAIMER;
     draft.sources = Array.isArray(draft.sources) ? draft.sources.map(row => { const copy = { ...row }; delete copy.id; return copy; }) : [];
     if (draft.category && !await req.payload.db.findOne({ collection: 'research-categories', req, where: { id: { equals: draft.category } } })) throw new APIError('Research category unavailable', 400);
+  }
+  if (kind === 'recruitment') {
+    for (const key of ['positions','selectionStages']) {
+      const rows = draft[key];
+      if (rows != null && (!Array.isArray(rows) || rows.length > 30 || rows.some(row => !row || typeof row !== 'object' || Array.isArray(row)))) throw new APIError('Posisi/tahapan tidak valid',400);
+    }
+    draft.positions = Array.isArray(draft.positions) ? draft.positions.map((row: Record<string,unknown>) => ({ title: row.title, requirements: row.requirements, division: row.division ? Number(relationId(row.division as number)) : null })) : [];
+    draft.selectionStages = Array.isArray(draft.selectionStages) ? draft.selectionStages.map((row: Record<string,unknown>) => ({ title: row.title, description: row.description })) : [];
+    draft.registrationConfirmed ??= false;
+    for (const key of ['opensAt','closesAt']) if(draft[key]) { try { draft[key]=utcTimestamp(draft[key]); } catch(error) { throw new APIError((error as Error).message,400); } }
+    await verifyRecruitmentRelations(req,draft);
   }
   if (kind === 'events') {
     for (const [key, value] of Object.entries({ cancelled: false, registrationConfirmed: false, registrationStatus: 'closed', locationType: 'offline' })) draft[key] ??= value;
@@ -76,6 +89,10 @@ export function reviewedHooks(kind: EditorialKind): CollectionConfig['hooks'] {
         await req.payload.findByID({ collection: model.root, id: Number(args.id), req, overrideAccess: true, depth: 0 });
       }
       const raw: Record<string, unknown> = 'data' in args ? { ...args.data } : {};
+      if (kind === 'recruitment') for (const key of ['positions','selectionStages']) {
+        const rows = raw[key];
+        if (rows != null && (!Array.isArray(rows) || rows.length > 30 || rows.some(row => !row || typeof row !== 'object' || Array.isArray(row)))) throw new APIError('Posisi/tahapan tidak valid',400);
+      }
       if (raw.deletedAt != null || Object.keys(raw).some(key => ![model.identity, ...model.keys, 'owner', 'assignedTo', 'createdBy', 'workingRevision', 'publicRevision', 'lockVersion', 'expectedLockVersion', 'expectedRevisionId', 'state', 'createdAt', 'updatedAt', 'deletedAt'].includes(key))) throw new Forbidden();
       changes.set(req, { raw }); return args;
     }],
@@ -88,7 +105,7 @@ export function reviewedHooks(kind: EditorialKind): CollectionConfig['hooks'] {
         assignedTo: (originalDoc.assignedTo || []).map((value: number | { id: number }) => Number(relationId(value))),
         workingRevision: relationId(originalDoc.workingRevision), publicRevision: relationId(originalDoc.publicRevision),
       } as EditorialDoc;
-      if (creating ? !isActiveAdmin(req.user) && !['members', 'research', 'events'].includes(kind) : root.deletedAt || !canEditDraft(req.user, root)) throw new NotFound();
+      if (creating ? !isActiveAdmin(req.user) && !['members', 'research', 'events', 'recruitment'].includes(kind) : root.deletedAt || !canEditDraft(req.user, root)) throw new NotFound();
       const revision = !creating && root.workingRevision ? await orgRevision(req, kind, root.workingRevision) : undefined;
       if (!creating && (!revision || revision.entity !== root.id || !['draft', 'revision_required'].includes(revision.state))) throw new APIError('Working revision unavailable', 409);
       if (!creating && change.raw.expectedLockVersion !== root.lockVersion) throw new APIError('Entity changed; reload before saving', 409);
@@ -118,7 +135,7 @@ export function reviewedHooks(kind: EditorialKind): CollectionConfig['hooks'] {
           draft.category = revision?.category ?? null;
         }
       }
-      if (kind === 'events') {
+      if (kind === 'events' || kind === 'recruitment') {
         if (!isActiveAdmin(req.user) && change.raw.registrationConfirmed === true && revision?.registrationConfirmed !== true) throw new Forbidden();
         if (!isActiveAdmin(req.user)) draft.registrationConfirmed = draft.registrationURL === revision?.registrationURL && revision?.registrationConfirmed === true;
       }
@@ -145,7 +162,7 @@ export function reviewedHooks(kind: EditorialKind): CollectionConfig['hooks'] {
       if (!revision) return doc;
       if (revision.entity !== doc.id) throw new APIError('Revision mismatch', 409);
       const draft = Object.fromEntries(model.keys.map(key => [key, revision[key]]));
-      if (kind === 'events') for (const key of ['startAt', 'endAt', 'registrationOpensAt', 'registrationClosesAt']) draft[key] = wibTimestamp(draft[key]);
+      if (kind === 'events' || kind === 'recruitment') for (const key of kind === 'events' ? ['startAt', 'endAt', 'registrationOpensAt', 'registrationClosesAt'] : ['opensAt','closesAt']) draft[key] = wibTimestamp(draft[key]);
       return { ...doc, ...draft, state: revision.state, expectedLockVersion: doc.lockVersion, expectedRevisionId: revision.id };
     }],
     beforeDelete: [() => { throw new Forbidden(); }],

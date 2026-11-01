@@ -3,7 +3,7 @@ import { editorialFixture } from './editorial.mjs';
 
 export async function reviewedFixture(prefix) {
   const f = await editorialFixture(prefix);
-  const roots = { periods: 'organizational-periods', divisions: 'divisions', members: 'members', research: 'research-publications', events: 'events' };
+  const roots = { periods: 'organizational-periods', divisions: 'divisions', members: 'members', research: 'research-publications', events: 'events', recruitment: 'recruitment-periods' };
   async function create(kind, slug, fields = {}, actor = f.admin) {
     const response = await actor.request(`/api/${roots[kind]}`, { method: 'POST', data: { [kind === 'periods' ? 'label' : 'slug']: slug, owner: f.a.user.id, ...fields } });
     assert.equal(response.status, 201, `Create reviewed ${kind}`); return (await response.json()).doc;

@@ -79,6 +79,7 @@ export interface Config {
     'page-audit': PageAudit;
     'settings-audit': SettingsAudit;
     'organization-state-audit': OrganizationStateAudit;
+    'recruitment-state-audit': RecruitmentStateAudit;
     'organizational-periods': OrganizationalPeriod;
     'period-revisions': PeriodRevision;
     divisions: Division;
@@ -90,6 +91,8 @@ export interface Config {
     'research-revisions': ResearchRevision;
     events: Event;
     'event-revisions': EventRevision;
+    'recruitment-periods': RecruitmentPeriod;
+    'recruitment-revisions': RecruitmentRevision;
     'organization-reviews': OrganizationReview;
     'organization-audit': OrganizationAudit;
     media: Media;
@@ -114,6 +117,7 @@ export interface Config {
     'page-audit': PageAuditSelect<false> | PageAuditSelect<true>;
     'settings-audit': SettingsAuditSelect<false> | SettingsAuditSelect<true>;
     'organization-state-audit': OrganizationStateAuditSelect<false> | OrganizationStateAuditSelect<true>;
+    'recruitment-state-audit': RecruitmentStateAuditSelect<false> | RecruitmentStateAuditSelect<true>;
     'organizational-periods': OrganizationalPeriodsSelect<false> | OrganizationalPeriodsSelect<true>;
     'period-revisions': PeriodRevisionsSelect<false> | PeriodRevisionsSelect<true>;
     divisions: DivisionsSelect<false> | DivisionsSelect<true>;
@@ -125,6 +129,8 @@ export interface Config {
     'research-revisions': ResearchRevisionsSelect<false> | ResearchRevisionsSelect<true>;
     events: EventsSelect<false> | EventsSelect<true>;
     'event-revisions': EventRevisionsSelect<false> | EventRevisionsSelect<true>;
+    'recruitment-periods': RecruitmentPeriodsSelect<false> | RecruitmentPeriodsSelect<true>;
+    'recruitment-revisions': RecruitmentRevisionsSelect<false> | RecruitmentRevisionsSelect<true>;
     'organization-reviews': OrganizationReviewsSelect<false> | OrganizationReviewsSelect<true>;
     'organization-audit': OrganizationAuditSelect<false> | OrganizationAuditSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -142,10 +148,12 @@ export interface Config {
   globals: {
     'site-settings': SiteSetting;
     'organization-state': OrganizationState;
+    'recruitment-state': RecruitmentState;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     'organization-state': OrganizationStateSelect<false> | OrganizationStateSelect<true>;
+    'recruitment-state': RecruitmentStateSelect<false> | RecruitmentStateSelect<true>;
   };
   locale: null;
   widgets: {
@@ -685,6 +693,36 @@ export interface OrganizationStateAudit {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recruitment-state-audit".
+ */
+export interface RecruitmentStateAudit {
+  id: number;
+  actorId: number;
+  version: number;
+  before:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  after:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  correlationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organizational-periods".
  */
 export interface OrganizationalPeriod {
@@ -1111,11 +1149,100 @@ export interface EventRevision {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recruitment-periods".
+ */
+export interface RecruitmentPeriod {
+  id: number;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  period?: (number | null) | OrganizationalPeriod;
+  positions?:
+    | {
+        title?: string | null;
+        division?: (number | null) | Division;
+        requirements?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  selectionStages?:
+    | {
+        title?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * WIB (Asia/Jakarta), YYYY-MM-DDTHH:mm. Tanpa offset dibaca +07:00; disimpan UTC.
+   */
+  opensAt?: string | null;
+  /**
+   * WIB (Asia/Jakarta), YYYY-MM-DDTHH:mm. Tanpa offset dibaca +07:00; disimpan UTC.
+   */
+  closesAt?: string | null;
+  registrationURL?: string | null;
+  registrationConfirmed?: boolean | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | RecruitmentRevision;
+  publicRevision?: (number | null) | RecruitmentRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recruitment-revisions".
+ */
+export interface RecruitmentRevision {
+  id: number;
+  entity: number | RecruitmentPeriod;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  title?: string | null;
+  description?: string | null;
+  period?: (number | null) | OrganizationalPeriod;
+  positions?:
+    | {
+        title?: string | null;
+        division?: (number | null) | Division;
+        requirements?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  selectionStages?:
+    | {
+        title?: string | null;
+        description?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * WIB (Asia/Jakarta), YYYY-MM-DDTHH:mm. Tanpa offset dibaca +07:00; disimpan UTC.
+   */
+  opensAt?: string | null;
+  /**
+   * WIB (Asia/Jakarta), YYYY-MM-DDTHH:mm. Tanpa offset dibaca +07:00; disimpan UTC.
+   */
+  closesAt?: string | null;
+  registrationURL?: string | null;
+  registrationConfirmed?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organization-reviews".
  */
 export interface OrganizationReview {
   id: number;
-  kind: 'periods' | 'divisions' | 'members' | 'research' | 'events';
+  kind: 'periods' | 'divisions' | 'members' | 'research' | 'events' | 'recruitment';
   entityId: number;
   revisionId: number;
   period?: (number | null) | OrganizationalPeriod;
@@ -1123,6 +1250,7 @@ export interface OrganizationReview {
   member?: (number | null) | Member;
   research?: (number | null) | ResearchPublication;
   event?: (number | null) | Event;
+  recruitment?: (number | null) | RecruitmentPeriod;
   editVersion: number;
   manifest:
     | {
@@ -1148,7 +1276,7 @@ export interface OrganizationReview {
  */
 export interface OrganizationAudit {
   id: number;
-  kind: 'periods' | 'divisions' | 'members' | 'research' | 'events';
+  kind: 'periods' | 'divisions' | 'members' | 'research' | 'events' | 'recruitment';
   entityId: number;
   revisionId: number;
   actorId: number;
@@ -1621,6 +1749,19 @@ export interface OrganizationStateAuditSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recruitment-state-audit_select".
+ */
+export interface RecruitmentStateAuditSelect<T extends boolean = true> {
+  actorId?: T;
+  version?: T;
+  before?: T;
+  after?: T;
+  correlationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organizational-periods_select".
  */
 export interface OrganizationalPeriodsSelect<T extends boolean = true> {
@@ -1940,6 +2081,81 @@ export interface EventRevisionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recruitment-periods_select".
+ */
+export interface RecruitmentPeriodsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  description?: T;
+  period?: T;
+  positions?:
+    | T
+    | {
+        title?: T;
+        division?: T;
+        requirements?: T;
+        id?: T;
+      };
+  selectionStages?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  opensAt?: T;
+  closesAt?: T;
+  registrationURL?: T;
+  registrationConfirmed?: T;
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recruitment-revisions_select".
+ */
+export interface RecruitmentRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  title?: T;
+  description?: T;
+  period?: T;
+  positions?:
+    | T
+    | {
+        title?: T;
+        division?: T;
+        requirements?: T;
+        id?: T;
+      };
+  selectionStages?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
+  opensAt?: T;
+  closesAt?: T;
+  registrationURL?: T;
+  registrationConfirmed?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organization-reviews_select".
  */
 export interface OrganizationReviewsSelect<T extends boolean = true> {
@@ -1951,6 +2167,7 @@ export interface OrganizationReviewsSelect<T extends boolean = true> {
   member?: T;
   research?: T;
   event?: T;
+  recruitment?: T;
   editVersion?: T;
   manifest?: T;
   manifestDigest?: T;
@@ -2126,6 +2343,18 @@ export interface OrganizationState {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recruitment-state".
+ */
+export interface RecruitmentState {
+  id: number;
+  enabledCampaign?: (number | null) | RecruitmentPeriod;
+  version?: number | null;
+  expectedVersion?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -2169,6 +2398,18 @@ export interface SiteSettingsSelect<T extends boolean = true> {
  */
 export interface OrganizationStateSelect<T extends boolean = true> {
   activePeriod?: T;
+  version?: T;
+  expectedVersion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "recruitment-state_select".
+ */
+export interface RecruitmentStateSelect<T extends boolean = true> {
+  enabledCampaign?: T;
   version?: T;
   expectedVersion?: T;
   updatedAt?: T;

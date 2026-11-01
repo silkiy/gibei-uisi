@@ -1,0 +1,22 @@
+import { test, expect } from './fixtures';
+import { reviewedFixture } from '../support/reviewed.mjs';
+test('Media edits nested requirements, Admin publishes and activates campaign, warm mobile CTA closes on time',async({adminPage,mediaAPage,page})=>{
+  test.setTimeout(120000);adminPage.setDefaultTimeout(10000);mediaAPage.setDefaultTimeout(10000);
+  const f=await reviewedFixture('recruitment-browser');
+  const period=await f.publishReviewed('periods',await f.create('periods','Periode kampanye UI',{startDate:'2026-01-01',endDate:'2027-01-01'}));
+  let doc=await f.create('recruitment','kampanye-browser',{title:'Kampanye pengurus contoh',description:'Informasi rekrutmen contoh.',period:period.id,positions:[{title:'Koordinator',requirements:'Persyaratan awal.'}],selectionStages:[{title:'Wawancara',description:'Diskusi pengalaman.'}],opensAt:new Date(Date.now()-60000).toISOString(),closesAt:'2099-12-01T09:00+07:00',registrationURL:'https://example.com/apply',registrationConfirmed:true});
+  const editor=`/admin/collections/recruitment-periods/${doc.id}`;
+  await mediaAPage.goto(editor,{waitUntil:'domcontentloaded'});await mediaAPage.getByLabel(/^Requirements/).fill('Persyaratan yang telah diperbarui.');
+  const saving=mediaAPage.waitForResponse(response=>new URL(response.url()).pathname===`/api/recruitment-periods/${doc.id}`&&response.request().method()==='PATCH');
+  await mediaAPage.getByRole('button',{name:'Save',exact:true}).click();expect((await saving).status()).toBe(200);
+  await mediaAPage.getByRole('button',{name:'Ajukan review',exact:true}).click();await expect(mediaAPage.getByText('Status editorial: in_review',{exact:true})).toBeVisible();
+  await adminPage.goto(editor,{waitUntil:'domcontentloaded'});await adminPage.getByRole('button',{name:'Terbitkan',exact:true}).click();await expect(adminPage.getByText('Status editorial: published',{exact:true})).toBeVisible();
+  await page.goto('/rekrutmen?kampanye=kampanye-browser');await expect(page.getByRole('heading',{name:'Koordinator',exact:true})).toBeVisible();await expect(page.getByText('Persyaratan yang telah diperbarui.',{exact:true})).toBeVisible();await expect(page.getByRole('link',{name:/Daftar sekarang/})).toHaveCount(0);
+  await adminPage.goto('/admin/globals/recruitment-state');await adminPage.locator('#field-enabledCampaign').getByRole('combobox').fill('kampanye-browser');await adminPage.getByRole('option',{name:'kampanye-browser',exact:true}).click();
+  const activating=adminPage.waitForResponse(response=>new URL(response.url()).pathname==='/api/globals/recruitment-state'&&response.request().method()==='POST');await adminPage.getByRole('button',{name:'Save',exact:true}).click();expect((await activating).status()).toBe(200);
+  doc=await f.read('recruitment',doc);doc=await f.revision('recruitment',doc);doc=await f.save('recruitment',doc,{closesAt:new Date(Date.now()+15000).toISOString()});doc=await f.publishReviewed('recruitment',doc);
+  await page.reload();await expect(page.getByRole('link',{name:/Daftar sekarang/})).toHaveAttribute('href','https://example.com/apply');
+  await expect(page.getByRole('link',{name:/Daftar sekarang/})).toHaveCount(0,{timeout:20000});await expect(page.getByText('Ditutup',{exact:true})).toBeVisible();
+  await page.setViewportSize({width:375,height:812});await page.screenshot({path:'artifacts/T039-mobile.png',fullPage:true});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  expect((await (await page.request.get(`/api/public/recruitment/${doc.slug}`)).json()).enabledByAdmin).toBe(true);
+});

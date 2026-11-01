@@ -7,7 +7,8 @@ const labels: Record<string, string> = { upcoming: 'Akan datang', ongoing: 'Seda
 // A server deadline limits the lifetime of the link, including when a tab stays open.
 // Hide before refetch; a failed refresh must never keep a stale registration link.
 export function LiveRegistration({ initial, endpoint }: { initial: RegistrationState; endpoint: string }) {
-  const [state, setState] = useState(initial);
+  // Revalidate before exposing a link: HTML can arrive late or be restored from history.
+  const [state, setState] = useState({ ...initial, canRegister: false, registrationURL: null as string | null, serverNow: 0, refreshAt: 0 as number | null });
   useEffect(() => {
     let alive = true, busy = false;
     const started = performance.now();
@@ -15,10 +16,14 @@ export function LiveRegistration({ initial, endpoint }: { initial: RegistrationS
       if (busy) return;
       busy = true;
       if (alive) setState(current => ({ ...current, canRegister: false, registrationURL: null }));
+      const requested = performance.now();
       try {
         const response = await fetch(endpoint, { cache: 'no-store', signal: AbortSignal.timeout(10000) });
         if (!response.ok) throw Error('Publication unavailable');
         const next: RegistrationState = await response.json();
+        // Subtract the entire round trip conservatively; transport delay cannot extend a deadline.
+        next.serverNow += performance.now() - requested;
+        if (next.refreshAt != null && next.serverNow >= next.refreshAt) { next.canRegister = false; next.registrationURL = null; }
         if (alive) setState(next);
       } catch { if (alive) setState(current => ({ ...current, status: 'unavailable', canRegister: false, registrationURL: null })); }
       finally { busy = false; }
