@@ -5,6 +5,9 @@ import { transaction } from '../editorial/internal';
 import { eventStatus } from '../events/status.mjs';
 import { previewAssets } from '../media/references';
 import { safeExternalURL } from './links.mjs';
+import { nextBoundary } from '../events/deadline.mjs';
+import { APIError } from 'payload';
+import { articleSearch } from './article-search';
 
 type Event = { id: number; slug: string; title: string; description: string; startAt: string; endAt: string; locationType: string; location: string | null; onlineURL: string | null; organizer: string; cancelled: boolean; cancellationNote: string | null; registrationStatus: string; registrationURL: string | null; registrationConfirmed: boolean; registrationOpensAt: string | null; registrationClosesAt: string | null; assets: ArticleRevision['assets'] };
 export async function eventDetail(req: PayloadRequest, slug: string) {
@@ -14,7 +17,22 @@ export async function eventDetail(req: PayloadRequest, slug: string) {
     FROM ${schema}.events e JOIN ${schema}.event_revisions r ON r.id=e.public_revision_id AND r.entity_id=e.id AND r.state='published'
     WHERE e.deleted_at IS NULL AND e.slug=${slug} AND EXISTS(SELECT 1 FROM ${schema}.organization_reviews v WHERE v.kind='events' AND v.entity_id=e.id AND v.revision_id=r.id AND v.edit_version=r.edit_version AND v.status='approved' AND v.resolved_at IS NOT NULL) LIMIT 1`)).rows;
   if (!row) return null;
+  const now = Date.now();
   return { id: row.id, slug: row.slug, title: row.title, description: row.description, startAt: row.startAt, endAt: row.endAt, locationType: row.locationType, location: row.location,
     onlineURL: safeExternalURL(row.onlineURL), organizer: row.organizer, cancellationNote: row.cancelled ? row.cancellationNote : null, registrationStatus: row.registrationStatus,
-    ...eventStatus(row), assets: await previewAssets(req, row.assets) };
+    ...eventStatus(row, now), serverNow: now, refreshAt: nextBoundary([row.startAt, row.endAt, row.registrationOpensAt, row.registrationClosesAt], now), assets: await previewAssets(req, row.assets) };
+}
+
+export async function publicEvents(req: PayloadRequest, query: URLSearchParams) {
+  if ([...query.keys()].some(key => !['status', 'page', 'limit'].includes(key) || query.getAll(key).length !== 1)) throw new APIError('Unsupported query', 400);
+  const status = query.get('status') || '', { page, limit } = articleSearch(query);
+  if (status && !['upcoming', 'ongoing', 'completed', 'cancelled'].includes(status)) throw new APIError('Invalid event status', 400);
+  const schema = sql.identifier(req.payload.db.schemaName || 'payload'), now = new Date().toISOString();
+  const from = sql`FROM ${schema}.events e JOIN ${schema}.event_revisions r ON r.id=e.public_revision_id AND r.entity_id=e.id AND r.state='published'
+    WHERE e.deleted_at IS NULL AND EXISTS(SELECT 1 FROM ${schema}.organization_reviews v WHERE v.kind='events' AND v.entity_id=e.id AND v.revision_id=r.id AND v.edit_version=r.edit_version AND v.status='approved' AND v.resolved_at IS NOT NULL)`;
+  const filter = status === 'cancelled' ? sql`AND r.cancelled=true` : status ? sql`AND r.cancelled=false AND ${status === 'upcoming' ? sql`r.start_at>${now}` : status === 'ongoing' ? sql`r.start_at<=${now} AND r.end_at>${now}` : sql`r.end_at<=${now}`}` : sql``;
+  const totalDocs = (await (await transaction(req)).execute<{total: number}>(sql`SELECT count(*)::int AS total ${from} ${filter}`)).rows[0].total;
+  const totalPages = Math.max(1, Math.ceil(totalDocs / limit));
+  const rows = (await (await transaction(req)).execute<{id:number;slug:string;title:string;startAt:string;endAt:string;cancelled:boolean}>(sql`SELECT e.id,e.slug,r.title,r.start_at AS "startAt",r.end_at AS "endAt",r.cancelled ${from} ${filter} ORDER BY r.start_at ASC,e.id ASC LIMIT ${limit} OFFSET ${(page-1)*limit}`)).rows;
+  return { docs: rows.map(row => ({ id:row.id, slug:row.slug, title:row.title, startAt:row.startAt, endAt:row.endAt, status:eventStatus(row,Date.parse(now)).status })), totalDocs, totalPages, page, limit };
 }

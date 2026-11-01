@@ -834,7 +834,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T036
 
-- [ ] **Tampilkan daftar dan detail kegiatan**
+- [x] **Tampilkan daftar dan detail kegiatan**
 
 **Hasil:** Buat halaman event dengan filter status, arsip selesai, detail, dan tombol pendaftaran bersyarat.
 
@@ -845,19 +845,19 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] /kegiatan dan detail membaca event terbit; event selesai tetap dapat dibaca.
-- [ ] CTA hanya tersedia jika seluruh syarat waktu/pendaftaran/URL terpenuhi dan event tidak batal.
-- [ ] Cache tidak mempertahankan CTA setelah batas waktu; keterangan pembatalan jelas.
+- [x] /kegiatan dan detail membaca event terbit; event selesai tetap dapat dibaca.
+- [x] CTA hanya tersedia jika seluruh syarat waktu/pendaftaran/URL terpenuhi dan event tidak batal.
+- [x] Cache tidak mempertahankan CTA setelah batas waktu; keterangan pembatalan jelas.
 
 **Verifikasi:** Uji browser dengan clock terkendali dan cache yang sudah hangat, tautan eksternal, serta event draft.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan T036](../docs/reports/T036.md). Lint dan production build harness lulus; browser membuktikan draft 404, arsip, pembatalan dan penutupan CTA pada halaman terbuka.
 
 #### CP-13 — setelah T036
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T037
 
