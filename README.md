@@ -1,6 +1,6 @@
 # GIBEI UISI
 
-Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T035 selesai:** artikel/media, Pages, periode/divisi, pengurus dan riset memakai review; Site Settings serta pilihan periode aktif diaudit. CMS event memvalidasi waktu WIB dan status/CTA dari waktu server. Halaman publik meliputi `/tentang`, `/tentang/divisi`, `/tentang/struktur`, `/publikasi/artikel` dan `/publikasi/riset`. Konten resmi belum diisi; contoh hanya di database uji. T036 daftar/detail kegiatan menjadi tugas berikutnya. Acuan: [PRD](docs/PRD-v1.1.md), [backlog](tasks/todo.md), [laporan batch](docs/reports/T035.md).
+Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T042 / Fase C selesai:** modul P0 dan homepage memakai approved snapshot; kegiatan memiliki arsip/status waktu, rekrutmen memakai aktivasi satu kampanye oleh Admin dan CTA bersyarat. Halaman `/kontak` memakai kontak terkonfirmasi yang sama dengan footer; `/publikasi` mengarahkan ke artikel/riset. Konten resmi belum diisi; contoh hanya di database uji. Berikutnya T043 galeri / Fase D. Acuan: [PRD](docs/PRD-v1.1.md), [backlog](tasks/todo.md), [laporan batch](docs/reports/T042.md).
 
 ## Menjalankan
 

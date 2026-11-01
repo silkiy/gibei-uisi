@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — T035 / Fase C:** T001–T035 selesai; CP-01–CP-12 ditinjau. Pengurus per periode/arsip, pilihan periode aktif atomik, riset dengan disclaimer dan daftar/detail publik, serta CMS event dengan waktu WIB sudah tersedia. [Bukti batch T031–T035](../docs/reports/T035.md). T036 daftar/detail kegiatan menjadi tugas berikutnya; konten resmi dan kelulusan MVP tetap terbuka.
+**Status terbaru — T042 / Fase C selesai:** T001–T042 selesai; CP-01–CP-15 ditinjau. Daftar/detail kegiatan, rekrutmen dengan aktivasi tunggal, kontak/publikasi dan homepage P0 terhubung ke snapshot approved. [Bukti batch T036–T042](../docs/reports/T042.md). T043 galeri menjadi tugas berikutnya di Fase D. Konten resmi dan kelulusan MVP tetap terbuka.
 
 ## Cara menggunakan checklist
 
@@ -861,7 +861,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T037
 
-- [ ] **Kelola kampanye dan posisi rekrutmen**
+- [x] **Kelola kampanye dan posisi rekrutmen**
 
 **Hasil:** Tambahkan kampanye yang merujuk periode organisasi, posisi/divisi, syarat, tahapan, jadwal, dan URL.
 
@@ -872,17 +872,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Syarat per posisi dan tahapan dapat diubah melalui CMS/review; periode wajib memiliki publikasi sah.
-- [ ] opensAt/closesAt valid dengan zona waktu yang jelas; field URL tunduk validasi/konfirmasi.
-- [ ] Menyimpan/menerbitkan isi tidak otomatis mengaktifkan kampanye.
+- [x] Syarat per posisi dan tahapan dapat diubah melalui CMS/review; periode wajib memiliki publikasi sah.
+- [x] opensAt/closesAt valid dengan zona waktu yang jelas; field URL tunduk validasi/konfirmasi.
+- [x] Menyimpan/menerbitkan isi tidak otomatis mengaktifkan kampanye.
 
 **Verifikasi:** Tes nested positions, relasi periode/divisi, jadwal, serta pengajuan/revisi rekrutmen melalui kedua role.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [verifikasi batch T036–T042](../docs/reports/T042.md). 32 unit, 57 integration dan 32 e2e lulus tanpa retry; lint/TypeScript/build dan smoke lokal lulus. Migrasi rekrutmen diterapkan ke Supabase pengembangan tanpa konten resmi.
 
 ### T038
 
-- [ ] **Batasi aktivasi satu kampanye**
+- [x] **Batasi aktivasi satu kampanye**
 
 **Hasil:** Tambahkan kontrol Admin enabledByAdmin di luar versi editorial dengan audit dan invariant konkuren.
 
@@ -893,17 +893,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Hanya kampanye terbit dapat diaktifkan; maksimum satu enabled termasuk kampanye mendatang/berakhir.
-- [ ] Dua aktivasi bersamaan tidak menghasilkan dua kampanye enabled; Media tidak dapat memanipulasi flag.
-- [ ] Penarikan otomatis menonaktifkan; lewat waktu tutup menyembunyikan CTA tanpa diam-diam mengganti flag.
+- [x] Hanya kampanye terbit dapat diaktifkan; maksimum satu enabled termasuk kampanye mendatang/berakhir.
+- [x] Dua aktivasi bersamaan tidak menghasilkan dua kampanye enabled; Media tidak dapat memanipulasi flag.
+- [x] Penarikan otomatis menonaktifkan; lewat waktu tutup menyembunyikan CTA tanpa diam-diam mengganti flag.
 
 **Verifikasi:** Tes draft, race dua Admin, rentang tumpang tindih, kampanye mendatang, dan penarikan aktif.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [verifikasi batch T036–T042](../docs/reports/T042.md). 32 unit, 57 integration dan 32 e2e lulus tanpa retry; lint/TypeScript/build dan smoke lokal lulus. Migrasi rekrutmen diterapkan ke Supabase pengembangan tanpa konten resmi.
 
 ### T039
 
-- [ ] **Tampilkan rekrutmen dan CTA tepat waktu**
+- [x] **Tampilkan rekrutmen dan CTA tepat waktu**
 
 **Hasil:** Bangun halaman posisi, persyaratan, tahapan, serta status belum dibuka/terbuka/ditutup.
 
@@ -914,23 +914,23 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] /rekrutmen memakai kampanye terbit dan status operasional yang sah; informasi riwayat dapat dibaca tanpa CTA aktif.
-- [ ] Tombol hanya ada saat enabled, dalam rentang waktu, dan URL valid/terkonfirmasi.
-- [ ] Tepat waktu tutup tombol hilang walaupun halaman pernah di-cache; URL tersimpan saja tidak cukup.
+- [x] /rekrutmen memakai kampanye terbit dan status operasional yang sah; informasi riwayat dapat dibaca tanpa CTA aktif.
+- [x] Tombol hanya ada saat enabled, dalam rentang waktu, dan URL valid/terkonfirmasi.
+- [x] Tepat waktu tutup tombol hilang walaupun halaman pernah di-cache; URL tersimpan saja tidak cukup.
 
 **Verifikasi:** Uji batas buka/tutup server, nonaktif, URL kosong, dan revisi belum disetujui di browser mobile.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [verifikasi batch T036–T042](../docs/reports/T042.md). 32 unit, 57 integration dan 32 e2e lulus tanpa retry; lint/TypeScript/build dan smoke lokal lulus. Migrasi rekrutmen diterapkan ke Supabase pengembangan tanpa konten resmi.
 
 #### CP-14 — setelah T039
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T040
 
-- [ ] **Tampilkan kontak terkonfirmasi**
+- [x] **Tampilkan kontak terkonfirmasi**
 
 **Hasil:** Buat halaman kontak dan konsistensi sumber kontak di seluruh komponen publik.
 
@@ -941,17 +941,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] /kontak menampilkan hanya email/sosial/lokasi terkonfirmasi; kosong memiliki pesan yang wajar.
-- [ ] Header/footer/halaman kontak tidak menyimpan salinan konfigurasi terpisah.
-- [ ] Tidak ada formulir kontak atau pengiriman email otomatis yang menambah scope.
+- [x] /kontak menampilkan hanya email/sosial/lokasi terkonfirmasi; kosong memiliki pesan yang wajar.
+- [x] Header/footer/halaman kontak tidak menyimpan salinan konfigurasi terpisah.
+- [x] Tidak ada formulir kontak atau pengiriman email otomatis yang menambah scope.
 
 **Verifikasi:** Ubah satu kontak lewat Admin lalu periksa semua lokasi tampil, link mailto/HTTPS, dan kondisi belum terkonfirmasi.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [verifikasi batch T036–T042](../docs/reports/T042.md). 32 unit, 57 integration dan 32 e2e lulus tanpa retry; lint/TypeScript/build dan smoke lokal lulus. Migrasi rekrutmen diterapkan ke Supabase pengembangan tanpa konten resmi.
 
 ### T041
 
-- [ ] **Buat pintu masuk publikasi**
+- [x] **Buat pintu masuk publikasi**
 
 **Hasil:** Bangun /publikasi sebagai pengarah artikel dan riset dengan ringkasan versi terbit.
 
@@ -962,16 +962,16 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Tautan jenis publikasi dan item terbaru menuju rute benar; draft tidak ikut tampil.
-- [ ] Tidak ada duplikasi konten artikel/riset yang harus diperbarui manual; empty state jelas.
+- [x] Tautan jenis publikasi dan item terbaru menuju rute benar; draft tidak ikut tampil.
+- [x] Tidak ada duplikasi konten artikel/riset yang harus diperbarui manual; empty state jelas.
 
 **Verifikasi:** Tes kedua jenis publikasi kosong/terisi dan navigasi keyboard/mobile.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [verifikasi batch T036–T042](../docs/reports/T042.md). 32 unit, 57 integration dan 32 e2e lulus tanpa retry; lint/TypeScript/build dan smoke lokal lulus. Migrasi rekrutmen diterapkan ke Supabase pengembangan tanpa konten resmi.
 
 ### T042
 
-- [ ] **Hubungkan homepage dengan modul P0**
+- [x] **Hubungkan homepage dengan modul P0**
 
 **Hasil:** Lengkapi homepage tahap P0 dengan isi Pages, profil/program, artikel/riset terbaru, event terdekat, dan CTA.
 
@@ -982,19 +982,19 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Seluruh isi editorial berasal dari versi disetujui; daftar terbaru terurut sesuai PRD.
-- [ ] CTA kegiatan/publikasi/rekrutmen menuju rute valid dan tidak menawarkan pendaftaran yang ditutup.
-- [ ] Bagian prestasi/mitra yang belum tersedia ditangani tanpa informasi fiktif atau layout rusak.
+- [x] Seluruh isi editorial berasal dari versi disetujui; daftar terbaru terurut sesuai PRD.
+- [x] CTA kegiatan/publikasi/rekrutmen menuju rute valid dan tidak menawarkan pendaftaran yang ditutup.
+- [x] Bagian prestasi/mitra yang belum tersedia ditangani tanpa informasi fiktif atau layout rusak.
 
 **Verifikasi:** Tes homepage dengan dataset kosong/terisi dan pergantian jadwal/kampanye pada cache yang sudah hangat.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [verifikasi batch T036–T042](../docs/reports/T042.md). 32 unit, 57 integration dan 32 e2e lulus tanpa retry; lint/TypeScript/build dan smoke lokal lulus. Migrasi rekrutmen diterapkan ke Supabase pengembangan tanpa konten resmi.
 
 #### CP-15 — setelah T042
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ## Fase D — Modul P1 dan homepage lengkap
 

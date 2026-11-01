@@ -119,7 +119,7 @@ Untuk pengujian berikutnya gunakan `pnpm test:unit`, `pnpm test:integration`, da
 
 ## Backend artikel dan media — T011–T020
 
-Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru T035 adalah `20261101_024724_research_events`, sesudah `20261101_022923_public_members` dan `20261101_023219_active_period`. Empat belas migrasi sudah diterapkan ke Supabase pengembangan. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T059.
+Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru T038 adalah `20261101_040307_recruitment_campaigns`, sesudah `20261101_024724_research_events`. Lima belas migrasi sudah diterapkan ke Supabase pengembangan. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T059.
 
 Pages T026 tersedia di `/admin/collections/pages`. Admin membuat identitas `homepage` atau `about` (masing-masing satu) dan menentukan owner/assignee. Media yang ditugaskan menyimpan blok hero/profil/program/CTA dan SEO lalu mengajukan review; Admin memberi catatan revisi atau menerbitkan melalui panel editorial. Preview privat berada di `/editorial/pages/[id]`. Teks textarea mendukung paragraf LF/CRLF; URL CTA hanya rute yang didukung atau HTTPS. About terbit dibaca di `/tentang`; homepage agregasi tetap T042.
 
@@ -129,7 +129,7 @@ Periode berada di `/admin/collections/organizational-periods`, divisi di `/admin
 
 Riset tersedia di `/admin/collections/research-publications`; empat kategori awal di `/admin/collections/research-categories` dikelola Admin. Media membuat draft, melengkapi tanggal analisis YYYY-MM-DD, tim publik, referensi serta PDF opsional dan mengajukan review. Disclaimer dasar tetap; catatan tambahan terpisah. Hasil terbit muncul di `/publikasi/riset` dan detail slug.
 
-Event tersedia di `/admin/collections/events`. Field waktu jelas berlabel WIB; ISO tanpa offset diartikan +07:00 dan disimpan UTC. End harus sesudah start. Admin mengonfirmasi URL pendaftaran HTTPS; perubahan URL Media menghapus konfirmasi lama. Status/CTA memakai waktu server, pembatalan melalui review. API snapshot berada di `/api/public/events/[slug]`; halaman kegiatan mengikuti T036. Konten pengurus/riset/event resmi belum diisi.
+Event tersedia di `/admin/collections/events`. Field waktu jelas berlabel WIB; ISO tanpa offset diartikan +07:00 dan disimpan UTC. End harus sesudah start. Admin mengonfirmasi URL pendaftaran HTTPS; perubahan URL Media menghapus konfirmasi lama. Status/CTA memakai waktu server, pembatalan melalui review. API snapshot berada di `/api/public/events/[slug]`; daftar/detail dan arsip kegiatan tersedia di `/kegiatan`. Konten pengurus/riset/event resmi belum diisi.
 
 Upload melalui formulir pada daftar Media menyimpan gambar/PDF ke `storage/private`, di luar public/static. Setiap upload membuat key dan versi baru. Reader file adalah `/api/media/:key/original` atau `/thumbnail`; URL lama tetap memakai pengecekan izin saat request. Jangan menyalin file tersebut ke public/CDN atau memakai optimizer.
 
@@ -157,3 +157,12 @@ Verifikasi akhir berlangsung pada produksi lokal `http://127.0.0.1:3200` dengan 
 Untuk gambar/PDF, upload dahulu melalui Media, pilih pada Assets revisi dan simpan. Link editor mendukung HTTPS atau link internal ke Media yang sama dengan manifest Assets. File yang tidak diposisikan inline tampil sebagai lampiran. Alt/caption yang disetujui mengikuti snapshot, bukan perubahan metadata library. PDF dilayani sebagai attachment; optimizer gambar tetap nonaktif.
 
 Daftar artikel mengikuti PRD: default 12/maksimum 48, pencarian case-insensitive, kategori tak dikenal kosong, pagination numerik tidak valid memakai default dan halaman valid di luar rentang menampilkan empty state. Parameter API di luar allowlist tetap 400. Label pratinjau selalu terlihat; artikel fixture pengujian tidak dimasukkan ke Supabase pengembangan.
+
+
+## Rekrutmen dan homepage P0 — T037–T042
+
+CMS rekrutmen berada di `/admin/collections/recruitment-periods`: pilih periode terbit, isi posisi/persyaratan dan divisi opsional, tahapan, jadwal WIB serta URL HTTPS. Media mengajukan review; hanya Admin mengonfirmasi tujuan pendaftaran. Publikasi isi tidak mengaktifkan kampanye.
+
+Pada `/admin/globals/recruitment-state` (Aktivasi rekrutmen), pilih kampanye terbit lalu Save. Untuk pindah, kosongkan/nonaktifkan pilihan lama lalu Save dahulu, kemudian pilih target baru. Maksimum satu enabled juga berlaku untuk kampanye mendatang/selesai. Penarikan menonaktifkan otomatis; berakhirnya waktu menutup CTA tanpa mengubah pilihan Admin. `/rekrutmen?kampanye=slug` menyediakan riwayat terbit.
+
+`/kontak` dan footer memakai kontak terkonfirmasi yang sama. `/publikasi` menampilkan tiga artikel dan tiga riset terbaru. Homepage mengambil hero/blok Pages homepage, profil About, publikasi dan agenda mendatang dari snapshot approved. Panel rekrutmen memakai konfigurasi operasional dan waktu server. Galeri/prestasi/mitra dan tugas setelah T042 tetap mengikuti backlog. Tidak ada konten resmi yang diisi otomatis.

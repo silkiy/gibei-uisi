@@ -76,3 +76,6 @@ PRD §11, matriks T002 dan T005 diselaraskan. Docker yang dilaporkan sudah terpa
 
 
 **T031–T035 selesai pada 1 November 2026.** Pengurus, riset dan event memperluas engine reviewed dengan tabel revisi per jenis tanpa mengganti nama fisik audit/review lama. Pilihan periode aktif adalah satu pointer operasional dengan CAS dan audit atomik; penarikan sah mengosongkannya. Disclaimer riset tetap, tanggal analisis literal, waktu event WIB menuju UTC dan konfirmasi tujuan pendaftaran hanya Admin. Kategori Admin serta konfirmasi yang masih cocok dipertahankan saat Payload menyaring field formulir Media. Data resmi belum diisi, HTML kegiatan tetap T036. [Bukti batch](reports/T035.md).
+
+
+**T036–T042 / Fase C selesai pada 1 November 2026.** Aktivasi rekrutmen memakai satu pointer operasional Admin dengan CAS, audit atomik dan kewajiban disable sebelum ganti; waktu lewat tidak mengubah flag. CTA kegiatan/rekrutmen memakai waktu server, revalidasi sebelum tampil, deadline monotonic konservatif dan gagal secara tertutup. Kontak/footer memakai satu reader; homepage/publications menggabungkan snapshot approved tanpa menyalin konten. Tidak ada data resmi atau deployment produksi. [Bukti CP-13–CP-15](reports/T042.md).

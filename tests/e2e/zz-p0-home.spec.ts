@@ -1,0 +1,37 @@
+import { test,expect } from './fixtures';
+import { reviewedFixture } from '../support/reviewed.mjs';
+test('P0 shares confirmed contacts and approved publication feeds while private revisions stay hidden on homepage',async({page})=>{
+  test.setTimeout(120000);const f=await reviewedFixture('p0-home');
+  const settings=async()=> (await (await f.admin.request('/api/globals/site-settings')).json());
+  const update=async(data:Record<string,unknown>)=>{const response=await f.admin.request('/api/globals/site-settings',{method:'POST',data:{expectedVersion:(await settings()).expectedVersion,...data}});expect(response.status).toBe(200);};
+  await update({email:'pending@example.com',emailConfirmed:false,location:'Alamat belum disetujui',locationConfirmed:false,socials:[{label:'Belum resmi',url:'https://example.com/private',confirmed:false}]});
+  await page.goto('/kontak');await expect(page.getByText('pending@example.com',{exact:true})).toHaveCount(0);await expect(page.getByText('Alamat belum disetujui',{exact:true})).toHaveCount(0);
+  await update({email:'confirmed@example.com',emailConfirmed:true,location:'Lokasi contoh dikonfirmasi',locationConfirmed:true,socials:[{label:'Kanal contoh',url:'https://example.com/contact',confirmed:true}]});
+  await page.reload();await expect(page.getByRole('main').getByRole('link',{name:'confirmed@example.com'})).toHaveAttribute('href','mailto:confirmed@example.com');await expect(page.getByRole('contentinfo').getByRole('link',{name:'confirmed@example.com'})).toBeVisible();
+  await update({email:'updated@example.com'});await page.reload();await expect(page.getByRole('link',{name:'updated@example.com'})).toHaveCount(2);await expect(page.getByText('confirmed@example.com',{exact:true})).toHaveCount(0);
+  for(let i=0;i<4;i++) await f.publish(await f.submit(f.a,await f.draft(f.a,`p0-article-${i}`,{title:`Artikel P0 ${i}`})));
+  await f.draft(f.a,'p0-private-article',{title:'RAHASIA ARTIKEL P0'});
+  const categories=await (await f.admin.request('/api/research-categories?limit=10')).json();
+  await f.publishReviewed('research',await f.create('research','p0-research',{title:'Riset P0 disetujui',excerpt:'Ringkasan P0.',publicAuthor:'Tim Contoh',body:f.rich('Analisis contoh.'),category:categories.docs[0].id,analysisDate:'2026-11-01',sources:[{title:'Sumber',url:'https://example.com/source'}]}));
+  await f.publishReviewed('events',await f.create('events','p0-event',{title:'Agenda P0 terdekat',description:'Informasi contoh.',startAt:'2090-01-01T09:00',endAt:'2090-01-01T11:00',locationType:'offline',location:'Kampus contoh',organizer:'Tim contoh'}));
+  let home=(await (await f.admin.request('/api/pages?where[pageKey][equals]=homepage&depth=0')).json()).docs[0];
+  if(!home){const response=await f.admin.request('/api/pages',{method:'POST',data:{pageKey:'homepage',owner:f.a.user.id,title:'Beranda P0',seoTitle:'Beranda contoh',seoDescription:'Contoh teruji.',sections:[]}});expect(response.status).toBe(201);home=(await response.json()).doc;}
+  const command=async(action:string,extra={})=>{const response=await f.admin.request(`/api/editorial/pages/${home.id}/${action}`,{method:'POST',data:{expectedLockVersion:home.lockVersion,expectedRevisionId:home.workingRevision || home.publicRevision,...extra}});expect(response.status).toBe(200);const result=await response.json();home=result.doc;return result;};
+  if(!home.workingRevision)await command('create-revision');
+  let response=await f.a.request(`/api/pages/${home.id}`,{method:'PATCH',data:{expectedLockVersion:home.lockVersion,title:'Beranda P0',sections:[{blockType:'hero',heading:'Belajar bersama P0',summary:'Ringkasan dari CMS.'},{blockType:'program',heading:'Program unggulan P0',description:'Program dari snapshot disetujui.'}]}});expect(response.status).toBe(200);home=(await response.json()).doc;
+  const pending=await command('submit');await command('publish',{submissionId:pending.submission.id});
+  await page.goto('/');await expect(page.getByRole('heading',{level:1,name:'Belajar bersama P0'})).toBeVisible();await expect(page.getByRole('heading',{name:'Program unggulan P0'})).toBeVisible();
+  const articles=page.getByRole('main').locator('a[href^="/publikasi/artikel/p0-article-"]');await expect(articles).toHaveCount(3);await expect(articles.first()).toHaveText('Artikel P0 3 ↗');
+  await expect(page.getByRole('main').getByRole('link',{name:/Riset P0 disetujui/})).toBeVisible();await expect(page.getByRole('main').getByRole('link',{name:/Agenda P0 terdekat/})).toBeVisible();await expect(page.getByText('RAHASIA ARTIKEL P0',{exact:true})).toHaveCount(0);
+  await command('create-revision');response=await f.a.request(`/api/pages/${home.id}`,{method:'PATCH',data:{expectedLockVersion:home.lockVersion,sections:[{blockType:'hero',heading:'RAHASIA HERO P0',summary:'Belum disetujui.'}]}});expect(response.status).toBe(200);
+  await page.reload();await expect(page.getByRole('heading',{level:1,name:'Belajar bersama P0'})).toBeVisible();await expect(page.getByText('RAHASIA HERO P0',{exact:true})).toHaveCount(0);
+  const period=await f.publishReviewed('periods',await f.create('periods','Periode beranda P0',{startDate:'2026-01-01',endDate:'2027-01-01'}));
+  const campaign=await f.publishReviewed('recruitment',await f.create('recruitment','homepage-campaign',{title:'Kampanye beranda P0',description:'Informasi contoh.',period:period.id,positions:[{title:'Pengurus',requirements:'Persyaratan contoh.'}],selectionStages:[{title:'Seleksi',description:'Tahapan contoh.'}],opensAt:new Date(Date.now()-60000).toISOString(),closesAt:new Date(Date.now()+15000).toISOString(),registrationURL:'https://example.com/home-apply',registrationConfirmed:true}));
+  const activate=async(id:number|null)=>{const state=await (await f.admin.request('/api/globals/recruitment-state')).json();const result=await f.admin.request('/api/globals/recruitment-state',{method:'POST',data:{expectedVersion:state.expectedVersion,enabledCampaign:id}});expect(result.status).toBe(200);};
+  await activate(null);await activate(campaign.id);await page.reload();await expect(page.getByRole('main').getByRole('link',{name:/Daftar sekarang/})).toHaveAttribute('href','https://example.com/home-apply');
+  await expect(page.getByRole('main').getByRole('link',{name:/Daftar sekarang/})).toHaveCount(0,{timeout:20000});await expect(page.getByText('Ditutup',{exact:true})).toBeVisible();
+  await activate(null);await page.reload();await expect(page.getByText('Belum ada kampanye rekrutmen yang diaktifkan.',{exact:true})).toBeVisible();
+  await page.setViewportSize({width:375,height:812});await page.screenshot({path:'artifacts/T042-mobile.png',fullPage:true});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
+  await page.goto('/publikasi');await expect(page.getByRole('link',{name:'Lihat semua artikel →'})).toBeVisible();await expect(page.getByRole('link',{name:'Lihat semua riset →'})).toBeVisible();
+  await page.getByRole('link',{name:'Lihat semua riset →'}).focus();await expect(page.getByRole('link',{name:'Lihat semua riset →'})).toBeFocused();await page.keyboard.press('Enter');await expect(page).toHaveURL(/\/publikasi\/riset$/);
+});

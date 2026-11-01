@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — T035 / Fase C:** T001–T035 selesai; CP-01–CP-12 ditinjau. Pengurus per periode/arsip, pilihan periode aktif atomik, riset dengan disclaimer dan daftar/detail publik, serta CMS event dengan waktu WIB sudah tersedia. [Bukti batch T031–T035](../docs/reports/T035.md). T036 daftar/detail kegiatan menjadi tugas berikutnya; konten resmi dan kelulusan MVP tetap terbuka.
+**Status terbaru — T042 / Fase C selesai:** T001–T042 selesai; CP-01–CP-15 ditinjau. Daftar/detail kegiatan, rekrutmen dengan aktivasi tunggal, kontak/publikasi dan homepage P0 terhubung ke snapshot approved. [Bukti batch T036–T042](../docs/reports/T042.md). T043 galeri menjadi tugas berikutnya di Fase D. Konten resmi dan kelulusan MVP tetap terbuka.
 
 ## Tujuan dan kondisi awal
 
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**Status terbaru — T035 / Fase C:** T001–T035 selesai; CP-01–CP-12 ditinjau. Pengurus per periode/arsip, pilihan periode aktif atomik, riset dengan disclaimer dan daftar/detail publik, serta CMS event dengan waktu WIB sudah tersedia. [Bukti batch T031–T035](../docs/reports/T035.md). T036 daftar/detail kegiatan menjadi tugas berikutnya; konten resmi dan kelulusan MVP tetap terbuka.
+**Status terbaru — T042 / Fase C selesai:** T001–T042 selesai; CP-01–CP-15 ditinjau. Daftar/detail kegiatan, rekrutmen dengan aktivasi tunggal, kontak/publikasi dan homepage P0 terhubung ke snapshot approved. [Bukti batch T036–T042](../docs/reports/T042.md). T043 galeri menjadi tugas berikutnya di Fase D. Konten resmi dan kelulusan MVP tetap terbuka.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 

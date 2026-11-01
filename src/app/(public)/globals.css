@@ -27,6 +27,14 @@ button { font: inherit; cursor: pointer; }
 .cms-section h3 { margin-block: 1.5rem .5rem; }
 .cms-section p { white-space: pre-line; overflow-wrap: anywhere; margin-block: .5rem; }
 .cms-section a { text-decoration: underline; text-underline-offset: .25rem; }
+.cms-content { max-width: 52rem; margin-block: 2rem; overflow-wrap: anywhere; }
+.cms-content > h2 { font-size: clamp(1.6rem, 4vw, 2.25rem); margin-bottom: 1rem; }
+.cms-content p { white-space: pre-line; margin-block: .75rem; }
+.cms-content ol { list-style: decimal; padding-left: 1.5rem; }
+.public-image { max-width: 100%; height: auto; margin-block: 1.5rem; object-fit: contain; }
+.registration-state { margin-block: 1.5rem; }
+.registration-state p { margin-block: .5rem; }
+.article-row h3 { font-size: clamp(1.2rem, 2.5vw, 1.5rem); line-height: 1.3; margin-bottom: .75rem; }
 .structure-filter { display: flex; flex-wrap: wrap; gap: .75rem; align-items: center; }
 .structure-filter select { width: min(100%, 24rem); min-width: 0; min-height: 44px; padding: .5rem; background: var(--paper); color: var(--ink); border: 1px solid var(--line); }
 .structure-filter button { min-height: 44px; padding: .5rem 1rem; border: 1px solid var(--line); background: var(--ink); color: var(--paper); }

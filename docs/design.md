@@ -55,3 +55,7 @@ Halaman memakai tipografi dan warna kerangka yang sama, dengan kolom baca 64rem,
 ## Struktur dan riset — T031/T034
 
 Struktur menyediakan pilihan periode dan arsip, jabatan tanpa divisi, label contoh dan fallback foto. Riset memakai pola pencarian/pagination artikel, dengan tanggal analisis dan publikasi terpisah, referensi serta disclaimer tetap pada detail. Screenshot `artifacts/T031-mobile.png` dan `artifacts/T034-mobile.png` pada 375px telah diinspeksi tanpa overflow. Pemeriksaan ini bukan audit Lighthouse atau aksesibilitas menyeluruh; T056 tetap terbuka. Avatar CMS memakai ikon lokal agar tidak bergantung pada permintaan Gravatar.
+
+## Kegiatan, rekrutmen dan pintu masuk P0 — T036–T042
+
+Pertahankan warna kertas/hijau, Manrope dan ilustrasi buku homepage. Halaman kegiatan memakai daftar editorial, filter status dan arsip; detail menempatkan waktu WIB, lokasi, penyelenggara dan pembatalan sebelum pendaftaran. Rekrutmen memakai pilihan kampanye/riwayat, judul posisi dan persyaratan terbaca serta tahapan berurutan. CTA berada dekat status dan hilang pada deadline. Halaman kontak dan publikasi menyediakan jalur singkat tanpa formulir tambahan. Homepage mengambil isi CMS dan ringkasan aktual, dengan kondisi kosong yang jelas serta tanpa logo/nama mitra fiktif. Panjang teks serta foto/poster dibatasi lebar layar, dengan paragraf yang mempertahankan baris baru.

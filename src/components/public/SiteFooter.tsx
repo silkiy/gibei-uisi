@@ -1,3 +1,4 @@
+import { ContactLinks } from './ContactLinks';
 import type { PublicSettings } from '../../content/site-settings';
 import Link from 'next/link';
 
@@ -9,10 +10,8 @@ export function SiteFooter({ settings }: { settings: PublicSettings }) {
         <div className="footer-contact">
           <p className="footer-brand">{settings.siteName}</p>
           <p>Galeri Investasi<br />Universitas Internasional Semen Indonesia</p>
-          {settings.email && <p><a href={`mailto:${settings.email}`}>{settings.email}</a></p>}
-          {settings.location && <p style={{ whiteSpace: 'pre-line' }}>{settings.location}</p>}
-          {settings.socials.map((social, index) => <p key={index}><a href={social.url} rel="noopener noreferrer">{social.label} ↗</a></p>)}
-          {!settings.email && !settings.location && !settings.socials.length && <p className="contact-pending">Kontak dan kanal resmi sedang dikonfirmasi.</p>}
+          <Link prefetch={false} href="/kontak">Lihat halaman kontak →</Link>
+          <ContactLinks settings={settings} />
         </div>
       </div>
       {!!settings.navigation.length && <nav className="page-width footer-links" aria-label="Navigasi footer">{settings.navigation.map((item, index) => item.href.startsWith('/')
