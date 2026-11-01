@@ -1,6 +1,6 @@
 # Register Keputusan GIBEI UISI
 
-**Pembaruan QA — 1 November 2026:** [audit CP-01–CP-15](qa/CP01-CP15.md) menemukan QA-01–QA-03. Sign-off CP-10–CP-15 dibuka kembali. Pernyataan “status terbaru/terkini” T010/T025 pada catatan di bawah adalah snapshot historis; status saat ini mengikuti laporan QA dan backlog. Persetujuan baseline D-01–D-10 tidak diubah.
+**Pembaruan QA — 1 November 2026:** QA-01–QA-03 telah ditutup setelah perbaikan aplikasi dan pengujian ulang. [Bukti penutupan CP-01–CP-15](qa/CP01-CP15-fixes.md). Pernyataan status T010/T025 dan penemuan awal di bawah adalah riwayat; baseline D-01–D-10 tidak diubah.
 
 **Tanggal persetujuan:** 23 Oktober 2026 (Asia/Jakarta)  
 **Pihak penentu:** Pemilik proyek, melalui percakapan proyek ini  

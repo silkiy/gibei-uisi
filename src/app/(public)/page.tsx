@@ -9,7 +9,7 @@ import Link from 'next/link';
 export default async function HomePage() {
   const data=await publicPageData(homepageData);
   const hero=data.home?.sections.find(section=>section.blockType==='hero');
-  const sections=(data.home?.sections || []).filter(section=>section.blockType!=='hero' && (section.blockType!=='cta' || section.url!=='/rekrutmen' || data.campaign?.canRegister));
+  const sections=(data.home?.sections || []).filter(section=>section.blockType!=='hero');
   return (
     <main id="main-content" tabIndex={-1}>
       <section className="hero page-width" aria-labelledby="hero-heading">
@@ -34,10 +34,10 @@ export default async function HomePage() {
         </div>
       </section>
       <section className="about-section" id="tentang" tabIndex={-1} aria-labelledby="about-heading">
-        <div className="page-width about-grid"><p className="section-label">01 / Tentang GIBEI UISI</p><div>{data.about ? <><h2 id="about-heading">{data.about.title}</h2><PageSections sections={data.about.sections} /></> : <><h2 id="about-heading">Tempat bertemu<br />ilmu dan rasa ingin tahu.</h2><p>Galeri Investasi UISI menjadi ruang informasi dan pembelajaran pasar modal bagi komunitas kampus.</p><p className="quiet-note">Profil lengkap dan informasi organisasi akan ditampilkan setelah dikonfirmasi.</p></>}<Link prefetch={false} href="/tentang">Baca profil lengkap →</Link> · <Link prefetch={false} href="/tentang/struktur">Struktur pengurus →</Link></div></div>
+        <div className="page-width about-grid"><p className="section-label">01 / Tentang GIBEI UISI</p><div>{data.about ? <><h2 id="about-heading">{data.about.title}</h2><PageSections sections={data.about.sections} registration={data.campaign} /></> : <><h2 id="about-heading">Tempat bertemu<br />ilmu dan rasa ingin tahu.</h2><p>Galeri Investasi UISI menjadi ruang informasi dan pembelajaran pasar modal bagi komunitas kampus.</p><p className="quiet-note">Profil lengkap dan informasi organisasi akan ditampilkan setelah dikonfirmasi.</p></>}<Link prefetch={false} href="/tentang">Baca profil lengkap →</Link> · <Link prefetch={false} href="/tentang/struktur">Struktur pengurus →</Link></div></div>
       </section>
       <div className="page-width content-sections">
-        <PageSections sections={sections} />
+        <PageSections sections={sections} registration={data.campaign} />
         <section id="publikasi" tabIndex={-1} aria-labelledby="publications-heading">
           <div className="section-heading"><div><p className="section-label">02 / Publikasi</p><h2 id="publications-heading">Wawasan untuk<br />langkah berikutnya.</h2></div><span className="section-aside">Artikel &amp; riset</span></div>
           {data.articles.length ? <><h3>Artikel terbaru</h3><PublicationLinks docs={data.articles} kind="artikel" /></> : <EmptyState title="Belum ada artikel terbit.">Artikel yang telah melalui review akan ditampilkan di sini.</EmptyState>}

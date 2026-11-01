@@ -33,3 +33,8 @@ export async function recruitmentPage(req:PayloadRequest,slug?:string) {
   const choices=await recruitmentChoices(req),selected=slug || choices.find(row=>row.enabled)?.slug || choices[0]?.slug;
   return {choices,campaign:selected?await recruitmentDetail(req,selected):null};
 }
+export async function activeRecruitment(req:PayloadRequest) {
+  const {schema}=base(req);
+  const [row]=(await (await transaction(req)).execute<{slug:string}>(sql`SELECT e.slug FROM ${schema}.recruitment_state s JOIN ${schema}.recruitment_periods e ON e.id=s.enabled_campaign_id WHERE e.deleted_at IS NULL LIMIT 1`)).rows;
+  return row ? recruitmentDetail(req,row.slug) : null;
+}

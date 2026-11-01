@@ -119,7 +119,7 @@ Untuk pengujian berikutnya gunakan `pnpm test:unit`, `pnpm test:integration`, da
 
 ## Backend artikel dan media — T011–T020
 
-Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru T038 adalah `20261101_040307_recruitment_campaigns`, sesudah `20261101_024724_research_events`. Lima belas migrasi sudah diterapkan ke Supabase pengembangan. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T059.
+Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru perbaikan QA adalah `20261101_091210_page_revision_archival`, sesudah `20261101_040307_recruitment_campaigns`. Enam belas migrasi sudah diterapkan ke Supabase pengembangan. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T059.
 
 Pages T026 tersedia di `/admin/collections/pages`. Admin membuat identitas `homepage` atau `about` (masing-masing satu) dan menentukan owner/assignee. Media yang ditugaskan menyimpan blok hero/profil/program/CTA dan SEO lalu mengajukan review; Admin memberi catatan revisi atau menerbitkan melalui panel editorial. Preview privat berada di `/editorial/pages/[id]`. Teks textarea mendukung paragraf LF/CRLF; URL CTA hanya rute yang didukung atau HTTPS. About terbit dibaca di `/tentang`; homepage agregasi tetap T042.
 
@@ -166,3 +166,8 @@ CMS rekrutmen berada di `/admin/collections/recruitment-periods`: pilih periode 
 Pada `/admin/globals/recruitment-state` (Aktivasi rekrutmen), pilih kampanye terbit lalu Save. Untuk pindah, kosongkan/nonaktifkan pilihan lama lalu Save dahulu, kemudian pilih target baru. Maksimum satu enabled juga berlaku untuk kampanye mendatang/selesai. Penarikan menonaktifkan otomatis; berakhirnya waktu menutup CTA tanpa mengubah pilihan Admin. `/rekrutmen?kampanye=slug` menyediakan riwayat terbit.
 
 `/kontak` dan footer memakai kontak terkonfirmasi yang sama. `/publikasi` menampilkan tiga artikel dan tiga riset terbaru. Homepage mengambil hero/blok Pages homepage, profil About, publikasi dan agenda mendatang dari snapshot approved. Panel rekrutmen memakai konfigurasi operasional dan waktu server. Galeri/prestasi/mitra dan tugas setelah T042 tetap mengikuti backlog. Tidak ada konten resmi yang diisi otomatis.
+
+
+## Arsip dan restart setelah QA CP-15
+
+Pada panel editorial Pages dan reviewed content, Admin dapat mengisi alasan lalu memilih **Arsipkan revisi** untuk draft/revision_required setelah review tertunda dibatalkan. Hanya working revision yang diarsipkan; publikasi tetap tampil. **Mulai ulang dari arsip** hanya tersedia bagi Admin saat tidak ada publikasi/revisi kerja. Media tetap dapat memilih **Buat revisi baru** dari konten terbit yang berizin. Semua operasi ini memakai versi, transaksi dan audit; jalankan migration terbaru dahulu. CTA Pages yang menuju `/rekrutmen` memakai pemeriksaan API/deadline yang sama dengan panel rekrutmen.

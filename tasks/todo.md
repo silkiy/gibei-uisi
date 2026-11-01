@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — QA CP-01–CP-15 (1 November 2026):** implementasi tersedia sampai T042, tetapi sign-off belum seluruhnya lulus. CP-01–CP-09 lulus pada cakupan audit; CP-10–CP-15 dibuka kembali karena QA-01/02 (arsip/restart lintas modul) dan QA-03 (CTA Pages melewati waktu tutup). [Laporan dan matriks QA](../docs/qa/CP01-CP15.md). Perbaikan temuan didahulukan sebelum T043; bukti implementasi sebelumnya tetap riwayat.
+**Status terbaru — QA CP-01–CP-15 lulus ulang (1 November 2026):** T001–T042 selesai pada cakupan yang diverifikasi; QA-01, QA-02 dan QA-03 sudah ditutup. CP-10–CP-15 serta delapan tugas terkait dipulihkan setelah 32 unit, 64 integration, 33 e2e dan empat probe audit lulus. [Bukti perbaikan](../docs/qa/CP01-CP15-fixes.md). Berikutnya T043 / Fase D; konten resmi dan kelulusan MVP tetap mengikuti backlog.
 
 ## Cara menggunakan checklist
 
@@ -606,7 +606,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T026
 
-- [ ] **Buat konten Pages dengan review**
+- [x] **Buat konten Pages dengan review**
 
 **Hasil:** Tambahkan Pages dengan pageKey homepage/about dan blok isi minimum, memakai workflow artikel yang sudah terbukti.
 
@@ -623,7 +623,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes Pages draft/publish/revisi dan duplikasi pageKey; belum wajib melengkapi homepage agregasi.
 
-**QA ulang — 1 November 2026:** dibuka kembali untuk QA-01/QA-02; lihat [laporan QA CP-01–CP-15](../docs/qa/CP01-CP15.md). Catatan selesai berikut merupakan bukti implementasi sebelum audit tambahan.
+**QA ditutup — 1 November 2026:** perbaikan, regresi seluruh jenis editorial dan probe reproduksi lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md). Catatan berikut tetap menjadi riwayat implementasi.
 
 **Bukti/status historis:** Selesai setelah perbaikan review. [Laporan T026](../docs/reports/T026.md): `pnpm test:all` lulus 25 unit, 40 integration, 23 e2e; textarea LF/CRLF dan isolasi fixture singleton diperbaiki, lint/TypeScript/build lulus, migrasi Pages diterapkan ke Supabase pengembangan. Halaman publik Tentang dan homepage agregasi belum memakai Pages; masing-masing mengikuti T028/T042. T027 siap menjadi tugas berikutnya, belum dimulai.
 
@@ -650,11 +650,11 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 #### CP-10 — setelah T027
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
 - [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
-**QA ulang — 1 November 2026:** checkpoint dibuka kembali, QA-01/QA-02 belum ditutup. [Rincian audit](../docs/qa/CP01-CP15.md).
+**QA ditutup — 1 November 2026:** checkpoint diverifikasi ulang setelah koreksi QA-01–QA-03; lint/TypeScript/build, seluruh regresi dan probe awal lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md).
 
 ### T028
 
@@ -679,7 +679,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T029
 
-- [ ] **Kelola periode organisasi melalui review**
+- [x] **Kelola periode organisasi melalui review**
 
 **Hasil:** Tambahkan periode dengan label/tanggal dan riwayat terbit, tanpa menyamakan isi editorial dengan pilihan aktif.
 
@@ -696,13 +696,13 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes CRUD berizin, review, tanggal, dan referensi periode dengan fixture dependen.
 
-**QA ulang — 1 November 2026:** dibuka kembali untuk QA-01/QA-02; lihat [laporan QA CP-01–CP-15](../docs/qa/CP01-CP15.md). Catatan selesai berikut merupakan bukti implementasi sebelum audit tambahan.
+**QA ditutup — 1 November 2026:** perbaikan, regresi seluruh jenis editorial dan probe reproduksi lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md). Catatan berikut tetap menjadi riwayat implementasi.
 
 **Bukti/status historis:** Selesai. [Laporan T029](../docs/reports/T029.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. Bukti historis saat T030; status terkini ada pada laporan T035.
 
 ### T030
 
-- [ ] **Publikasikan delapan profil divisi**
+- [x] **Publikasikan delapan profil divisi**
 
 **Hasil:** Tambahkan divisi dan halaman daftar/detail dengan deskripsi serta program kerja yang bisa direview.
 
@@ -719,21 +719,21 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes review satu divisi dan browser daftar/detail; fixture meliputi delapan divisi tanpa mengklaim data pengurus resmi.
 
-**QA ulang — 1 November 2026:** dibuka kembali untuk QA-01/QA-02; lihat [laporan QA CP-01–CP-15](../docs/qa/CP01-CP15.md). Catatan selesai berikut merupakan bukti implementasi sebelum audit tambahan.
+**QA ditutup — 1 November 2026:** perbaikan, regresi seluruh jenis editorial dan probe reproduksi lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md). Catatan berikut tetap menjadi riwayat implementasi.
 
 **Bukti/status historis:** Selesai. [Laporan T030](../docs/reports/T030.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. Bukti historis saat T030; status terkini ada pada laporan T035.
 
 #### CP-11 — setelah T030
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
 - [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
-**QA ulang — 1 November 2026:** checkpoint dibuka kembali, QA-01/QA-02 belum ditutup. [Rincian audit](../docs/qa/CP01-CP15.md).
+**QA ditutup — 1 November 2026:** checkpoint diverifikasi ulang setelah koreksi QA-01–QA-03; lint/TypeScript/build, seluruh regresi dan probe awal lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md).
 
 ### T031
 
-- [ ] **Tampilkan pengurus berdasarkan periode**
+- [x] **Tampilkan pengurus berdasarkan periode**
 
 **Hasil:** Kelola anggota publik dengan periode wajib, divisi opsional, jabatan, foto, dan urutan; buat halaman struktur.
 
@@ -750,7 +750,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes anggota pada dua periode, jabatan tanpa divisi, revisi relasi, serta penarikan target periode yang masih dipakai.
 
-**QA ulang — 1 November 2026:** dibuka kembali untuk QA-01/QA-02; lihat [laporan QA CP-01–CP-15](../docs/qa/CP01-CP15.md). Catatan selesai berikut merupakan bukti implementasi sebelum audit tambahan.
+**QA ditutup — 1 November 2026:** perbaikan, regresi seluruh jenis editorial dan probe reproduksi lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md). Catatan berikut tetap menjadi riwayat implementasi.
 
 **Bukti/status historis:** Selesai. [Verifikasi batch T031–T035](../docs/reports/T035.md): 30 unit, 54 integration dan 28 e2e lulus; lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan, tanpa seed konten resmi.
 
@@ -777,7 +777,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T033
 
-- [ ] **Kelola riset dengan disclaimer wajib**
+- [x] **Kelola riset dengan disclaimer wajib**
 
 **Hasil:** Tambahkan riset beserta kategori, analisis date-only, referensi, tim publik, dan PDF opsional.
 
@@ -794,17 +794,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes publikasi tanpa tanggal/disclaimer, perubahan lampiran sebelum approval, dan date-only lintas zona waktu.
 
-**QA ulang — 1 November 2026:** dibuka kembali untuk QA-01/QA-02; lihat [laporan QA CP-01–CP-15](../docs/qa/CP01-CP15.md). Catatan selesai berikut merupakan bukti implementasi sebelum audit tambahan.
+**QA ditutup — 1 November 2026:** perbaikan, regresi seluruh jenis editorial dan probe reproduksi lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md). Catatan berikut tetap menjadi riwayat implementasi.
 
 **Bukti/status historis:** Selesai. [Verifikasi batch T031–T035](../docs/reports/T035.md): 30 unit, 54 integration dan 28 e2e lulus; lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan, tanpa seed konten resmi.
 
 #### CP-12 — setelah T033
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
 - [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
-**QA ulang — 1 November 2026:** checkpoint dibuka kembali, QA-01/QA-02 belum ditutup. [Rincian audit](../docs/qa/CP01-CP15.md).
+**QA ditutup — 1 November 2026:** checkpoint diverifikasi ulang setelah koreksi QA-01–QA-03; lint/TypeScript/build, seluruh regresi dan probe awal lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md).
 
 ### T034
 
@@ -829,7 +829,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T035
 
-- [ ] **Kelola event dan aturan waktunya**
+- [x] **Kelola event dan aturan waktunya**
 
 **Hasil:** Buat collection event, validasi waktu/lokasi/link, dan kalkulasi status memakai waktu server.
 
@@ -846,7 +846,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes tepat sebelum/saat/sesudah mulai dan selesai, pembatalan, URL tidak valid, dan input WIB ke UTC.
 
-**QA ulang — 1 November 2026:** dibuka kembali untuk QA-01/QA-02; lihat [laporan QA CP-01–CP-15](../docs/qa/CP01-CP15.md). Catatan selesai berikut merupakan bukti implementasi sebelum audit tambahan.
+**QA ditutup — 1 November 2026:** perbaikan, regresi seluruh jenis editorial dan probe reproduksi lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md). Catatan berikut tetap menjadi riwayat implementasi.
 
 **Bukti/status historis:** Selesai. [Verifikasi batch T031–T035](../docs/reports/T035.md): 30 unit, 54 integration dan 28 e2e lulus; lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan, tanpa seed konten resmi.
 
@@ -873,15 +873,15 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 #### CP-13 — setelah T036
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
 - [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
-**QA ulang — 1 November 2026:** checkpoint dibuka kembali, QA-01/QA-02 belum ditutup. [Rincian audit](../docs/qa/CP01-CP15.md).
+**QA ditutup — 1 November 2026:** checkpoint diverifikasi ulang setelah koreksi QA-01–QA-03; lint/TypeScript/build, seluruh regresi dan probe awal lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md).
 
 ### T037
 
-- [ ] **Kelola kampanye dan posisi rekrutmen**
+- [x] **Kelola kampanye dan posisi rekrutmen**
 
 **Hasil:** Tambahkan kampanye yang merujuk periode organisasi, posisi/divisi, syarat, tahapan, jadwal, dan URL.
 
@@ -898,7 +898,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes nested positions, relasi periode/divisi, jadwal, serta pengajuan/revisi rekrutmen melalui kedua role.
 
-**QA ulang — 1 November 2026:** dibuka kembali untuk QA-01/QA-02; lihat [laporan QA CP-01–CP-15](../docs/qa/CP01-CP15.md). Catatan selesai berikut merupakan bukti implementasi sebelum audit tambahan.
+**QA ditutup — 1 November 2026:** perbaikan, regresi seluruh jenis editorial dan probe reproduksi lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md). Catatan berikut tetap menjadi riwayat implementasi.
 
 **Bukti/status historis:** Selesai; [verifikasi batch T036–T042](../docs/reports/T042.md). 32 unit, 57 integration dan 32 e2e lulus tanpa retry; lint/TypeScript/build dan smoke lokal lulus. Migrasi rekrutmen diterapkan ke Supabase pengembangan tanpa konten resmi.
 
@@ -946,11 +946,11 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 #### CP-14 — setelah T039
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
 - [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
-**QA ulang — 1 November 2026:** checkpoint dibuka kembali, QA-01/QA-02 belum ditutup. [Rincian audit](../docs/qa/CP01-CP15.md).
+**QA ditutup — 1 November 2026:** checkpoint diverifikasi ulang setelah koreksi QA-01–QA-03; lint/TypeScript/build, seluruh regresi dan probe awal lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md).
 
 ### T040
 
@@ -995,7 +995,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T042
 
-- [ ] **Hubungkan homepage dengan modul P0**
+- [x] **Hubungkan homepage dengan modul P0**
 
 **Hasil:** Lengkapi homepage tahap P0 dengan isi Pages, profil/program, artikel/riset terbaru, event terdekat, dan CTA.
 
@@ -1007,26 +1007,26 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 **Kriteria selesai:**
 
 - [x] Seluruh isi editorial berasal dari versi disetujui; daftar terbaru terurut sesuai PRD.
-- [ ] CTA kegiatan/publikasi/rekrutmen menuju rute valid dan tidak menawarkan pendaftaran yang ditutup.
+- [x] CTA kegiatan/publikasi/rekrutmen menuju rute valid dan tidak menawarkan pendaftaran yang ditutup.
 - [x] Bagian prestasi/mitra yang belum tersedia ditangani tanpa informasi fiktif atau layout rusak.
 
 **Verifikasi:** Tes homepage dengan dataset kosong/terisi dan pergantian jadwal/kampanye pada cache yang sudah hangat.
 
-**QA ulang — 1 November 2026:** dibuka kembali untuk QA-03; lihat [laporan QA CP-01–CP-15](../docs/qa/CP01-CP15.md). Catatan selesai berikut merupakan bukti implementasi sebelum audit tambahan.
+**QA ditutup — 1 November 2026:** perbaikan, regresi seluruh jenis editorial dan probe reproduksi lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md). Catatan berikut tetap menjadi riwayat implementasi.
 
 **Bukti/status historis:** Selesai; [verifikasi batch T036–T042](../docs/reports/T042.md). 32 unit, 57 integration dan 32 e2e lulus tanpa retry; lint/TypeScript/build dan smoke lokal lulus. Migrasi rekrutmen diterapkan ke Supabase pengembangan tanpa konten resmi.
 
 #### CP-15 — setelah T042
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
 - [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ## Fase D — Modul P1 dan homepage lengkap
 
 Galeri, partnership, prestasi, dan agregasi homepage selesai tanpa mengurangi izin.
 
-**QA ulang — 1 November 2026:** checkpoint dibuka kembali, QA-03 belum ditutup. [Rincian audit](../docs/qa/CP01-CP15.md).
+**QA ditutup — 1 November 2026:** checkpoint diverifikasi ulang setelah koreksi QA-01–QA-03; lint/TypeScript/build, seluruh regresi dan probe awal lulus. [Bukti penutupan](../docs/qa/CP01-CP15-fixes.md).
 
 ### T043
 

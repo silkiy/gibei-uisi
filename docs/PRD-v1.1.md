@@ -677,3 +677,6 @@ Prioritasnya adalah website publik berkualitas dengan CMS dan alur persetujuan y
 
 
 **Koreksi status berdasarkan QA — 1 November 2026:** implementasi sampai T042 tersedia, tetapi pengujian tambahan mereproduksi tiga ketidaksesuaian P2 terhadap §8.4, §8.8 dan T042. CP-10–CP-15 dibuka kembali sampai aturan arsip/restart dan CTA Pages diperbaiki. [Laporan QA dan batas verifikasi](qa/CP01-CP15.md). Baseline kebutuhan tidak diubah; laporan selesai sebelumnya adalah riwayat implementasi.
+
+
+**Penutupan QA — 1 November 2026:** QA-01, QA-02 dan QA-03 sudah diperbaiki; delapan tugas terkait dan CP-10–CP-15 diverifikasi ulang. 32 unit, 64 integration, 33 e2e, empat probe audit, lint/TypeScript/build dan smoke Supabase lulus. [Bukti penutupan](qa/CP01-CP15-fixes.md). Cakupan tetap T001–T042; T043 dan kelulusan MVP/produksi tetap mengikuti backlog.

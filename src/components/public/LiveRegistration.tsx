@@ -1,12 +1,13 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export type RegistrationState = { status: string; canRegister: boolean; registrationURL: string | null; serverNow: number; refreshAt: number | null };
 const labels: Record<string, string> = { upcoming: 'Akan datang', ongoing: 'Sedang berlangsung', completed: 'Selesai', cancelled: 'Dibatalkan', not_open: 'Belum dibuka', open: 'Terbuka', closed: 'Ditutup', disabled: 'Tidak diaktifkan', unavailable: 'Tidak tersedia' };
 // A server deadline limits the lifetime of the link, including when a tab stays open.
 // Hide before refetch; a failed refresh must never keep a stale registration link.
-export function LiveRegistration({ initial, endpoint }: { initial: RegistrationState; endpoint: string }) {
+export function LiveRegistration({ initial, endpoint, linkOnly = false, linkLabel, linkHref }: { initial: RegistrationState; endpoint: string; linkOnly?: boolean; linkLabel?: string; linkHref?: string }) {
+  const linkRef = useRef<HTMLAnchorElement>(null);
   // Revalidate before exposing a link: HTML can arrive late or be restored from history.
   const [state, setState] = useState({ ...initial, canRegister: false, registrationURL: null as string | null, serverNow: 0, refreshAt: 0 as number | null });
   useEffect(() => {
@@ -36,12 +37,14 @@ export function LiveRegistration({ initial, endpoint }: { initial: RegistrationS
     const guard = (event: MouseEvent) => {
       if (state.refreshAt != null && performance.now() - started >= state.refreshAt - state.serverNow) { event.preventDefault(); void refresh(); }
     };
-    const link = document.querySelector<HTMLAnchorElement>(`a[data-registration="${endpoint}"]`);
+    const link = linkRef.current;
     link?.addEventListener('click', guard);
     return () => { alive = false; clearTimeout(timer); window.removeEventListener('pageshow', refresh); document.removeEventListener('visibilitychange', visible); link?.removeEventListener('click', guard); };
   }, [endpoint, state.serverNow, state.refreshAt]);
+  const link = state.canRegister && state.registrationURL ? <a ref={linkRef} className={linkOnly ? undefined : 'button-primary'} data-registration={endpoint} href={linkHref || state.registrationURL} rel="noopener noreferrer">{linkLabel || 'Daftar sekarang ↗'}</a> : null;
+  if (linkOnly) return link;
   return <div className="registration-state" aria-live="polite"><p>Status: <strong>{labels[state.status] || 'Tidak tersedia'}</strong></p>
-    {state.canRegister && state.registrationURL && <a className="button-primary" data-registration={endpoint} href={state.registrationURL} rel="noopener noreferrer">Daftar sekarang ↗</a>}
+    {link}
     {!state.canRegister && <p>Pendaftaran belum tersedia atau sudah ditutup.</p>}
   </div>;
 }

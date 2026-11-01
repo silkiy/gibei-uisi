@@ -18,7 +18,7 @@ test('P0 shares confirmed contacts and approved publication feeds while private 
   if(!home){const response=await f.admin.request('/api/pages',{method:'POST',data:{pageKey:'homepage',owner:f.a.user.id,title:'Beranda P0',seoTitle:'Beranda contoh',seoDescription:'Contoh teruji.',sections:[]}});expect(response.status).toBe(201);home=(await response.json()).doc;}
   const command=async(action:string,extra={})=>{const response=await f.admin.request(`/api/editorial/pages/${home.id}/${action}`,{method:'POST',data:{expectedLockVersion:home.lockVersion,expectedRevisionId:home.workingRevision || home.publicRevision,...extra}});expect(response.status).toBe(200);const result=await response.json();home=result.doc;return result;};
   if(!home.workingRevision)await command('create-revision');
-  let response=await f.a.request(`/api/pages/${home.id}`,{method:'PATCH',data:{expectedLockVersion:home.lockVersion,title:'Beranda P0',sections:[{blockType:'hero',heading:'Belajar bersama P0',summary:'Ringkasan dari CMS.'},{blockType:'program',heading:'Program unggulan P0',description:'Program dari snapshot disetujui.'}]}});expect(response.status).toBe(200);home=(await response.json()).doc;
+  let response=await f.a.request(`/api/pages/${home.id}`,{method:'PATCH',data:{expectedLockVersion:home.lockVersion,title:'Beranda P0',sections:[{blockType:'hero',heading:'Belajar bersama P0',summary:'Ringkasan dari CMS.'},{blockType:'program',heading:'Program unggulan P0',description:'Program dari snapshot disetujui.'},{blockType:'cta',heading:'Bergabung bersama',label:'Ikut rekrutmen P0',url:'/rekrutmen'},{blockType:'cta',heading:'Kenali organisasi',label:'Profil P0',url:'/tentang'}]}});expect(response.status).toBe(200);home=(await response.json()).doc;
   const pending=await command('submit');await command('publish',{submissionId:pending.submission.id});
   await page.goto('/');await expect(page.getByRole('heading',{level:1,name:'Belajar bersama P0'})).toBeVisible();await expect(page.getByRole('heading',{name:'Program unggulan P0'})).toBeVisible();
   const articles=page.getByRole('main').locator('a[href^="/publikasi/artikel/p0-article-"]');await expect(articles).toHaveCount(3);await expect(articles.first()).toHaveText('Artikel P0 3 ↗');
@@ -29,7 +29,21 @@ test('P0 shares confirmed contacts and approved publication feeds while private 
   const campaign=await f.publishReviewed('recruitment',await f.create('recruitment','homepage-campaign',{title:'Kampanye beranda P0',description:'Informasi contoh.',period:period.id,positions:[{title:'Pengurus',requirements:'Persyaratan contoh.'}],selectionStages:[{title:'Seleksi',description:'Tahapan contoh.'}],opensAt:new Date(Date.now()-60000).toISOString(),closesAt:new Date(Date.now()+15000).toISOString(),registrationURL:'https://example.com/home-apply',registrationConfirmed:true}));
   const activate=async(id:number|null)=>{const state=await (await f.admin.request('/api/globals/recruitment-state')).json();const result=await f.admin.request('/api/globals/recruitment-state',{method:'POST',data:{expectedVersion:state.expectedVersion,enabledCampaign:id}});expect(result.status).toBe(200);};
   await activate(null);await activate(campaign.id);await page.reload();await expect(page.getByRole('main').getByRole('link',{name:/Daftar sekarang/})).toHaveAttribute('href','https://example.com/home-apply');
+  const cmsCTA=page.getByRole('link',{name:'Ikut rekrutmen P0 →',exact:true});
+  await expect(cmsCTA).toHaveAttribute('href','/rekrutmen');
   await expect(page.getByRole('main').getByRole('link',{name:/Daftar sekarang/})).toHaveCount(0,{timeout:20000});await expect(page.getByText('Ditutup',{exact:true})).toBeVisible();
+  await expect(cmsCTA).toHaveCount(0);
+  await expect(page.getByRole('link',{name:'Profil P0 →',exact:true})).toBeVisible();
+  let renewed=await f.revision('recruitment',campaign);renewed=await f.save('recruitment',renewed,{closesAt:new Date(Date.now()+120000).toISOString()});await f.publishReviewed('recruitment',renewed);
+  await page.reload();await expect(cmsCTA).toBeVisible();
+  await activate(null);await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));
+  await expect(cmsCTA).toHaveCount(0);await expect(page.getByRole('link',{name:/Daftar sekarang/})).toHaveCount(0);
+  const switched=await f.publishReviewed('recruitment',await f.create('recruitment','homepage-campaign-next',{title:'Kampanye pengganti P0',description:'Informasi contoh.',period:period.id,positions:[{title:'Pengurus',requirements:'Persyaratan contoh.'}],selectionStages:[{title:'Seleksi',description:'Tahapan contoh.'}],opensAt:new Date(Date.now()-60000).toISOString(),closesAt:new Date(Date.now()+120000).toISOString(),registrationURL:'https://example.com/next-apply',registrationConfirmed:true}));
+  await activate(switched.id);await page.reload();await expect(cmsCTA).toBeVisible();await expect(page.getByRole('link',{name:/Daftar sekarang/})).toHaveAttribute('href','https://example.com/next-apply');
+  await page.route(`**/api/public/recruitment/${switched.slug}`,route=>route.fulfill({status:503,body:'Unavailable'}));
+  await page.evaluate(()=>window.dispatchEvent(new Event('pageshow')));await expect(cmsCTA).toHaveCount(0);await expect(page.getByRole('link',{name:/Daftar sekarang/})).toHaveCount(0);
+  await page.unroute(`**/api/public/recruitment/${switched.slug}`);
+  await page.evaluate(()=>document.dispatchEvent(new Event('visibilitychange')));await expect(cmsCTA).toBeVisible();
   await activate(null);await page.reload();await expect(page.getByText('Belum ada kampanye rekrutmen yang diaktifkan.',{exact:true})).toBeVisible();
   await page.setViewportSize({width:375,height:812});await page.screenshot({path:'artifacts/T042-mobile.png',fullPage:true});expect(await page.evaluate(()=>document.documentElement.scrollWidth<=innerWidth)).toBe(true);
   await page.goto('/publikasi');await expect(page.getByRole('link',{name:'Lihat semua artikel →'})).toBeVisible();await expect(page.getByRole('link',{name:'Lihat semua riset →'})).toBeVisible();

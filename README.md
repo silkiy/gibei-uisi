@@ -1,6 +1,6 @@
 # GIBEI UISI
 
-Website localhost dengan Next.js App Router, TypeScript dan Payload. Implementasi tersedia sampai T042, tetapi **QA CP-01–CP-15 menemukan tiga ketidaksesuaian P2** pada arsip/restart Pages dan shared reviewed engine serta CTA Pages di homepage. CP-10–CP-15 dan tugas terkait dibuka kembali; perbaikan didahulukan sebelum T043. Konten resmi belum diisi. Acuan: [laporan QA](docs/qa/CP01-CP15.md), [PRD](docs/PRD-v1.1.md), [backlog](tasks/todo.md).
+Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T042 / CP-01–CP-15 lulus ulang setelah perbaikan QA:** restart arsip hanya Admin, pengarsipan revisi menjaga versi publik, dan CTA Pages mengikuti waktu/aktivasi rekrutmen. Verifikasi 32 unit, 64 integration, 33 e2e serta empat probe audit lulus. Konten resmi belum diisi; berikutnya T043 / Fase D. Acuan: [bukti perbaikan QA](docs/qa/CP01-CP15-fixes.md), [PRD](docs/PRD-v1.1.md), [backlog](tasks/todo.md).
 
 ## Menjalankan
 
