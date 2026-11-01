@@ -12,6 +12,10 @@ test('anonymous visitor sees public page and is redirected from CMS to login', a
 
 test('Admin can access account management and logout', async ({ adminPage }) => {
   const errors: string[] = [];
+  const externalAvatars: string[] = [];
+  adminPage.on('request', request => {
+    if (new URL(request.url()).hostname.endsWith('gravatar.com')) externalAvatars.push('gravatar');
+  });
   adminPage.on('pageerror', () => errors.push('pageerror'));
   await adminPage.goto('/admin/collections/users');
   await expect(adminPage.getByRole('link', { name: 'Create new User', exact: true })).toBeVisible();
@@ -22,6 +26,7 @@ test('Admin can access account management and logout', async ({ adminPage }) => 
   await adminPage.goto('/admin');
   await expect(adminPage.getByLabel(/Email/i)).toBeVisible();
   expect(errors).toEqual([]);
+  expect(externalAvatars).toEqual([]);
 });
 
 test('two Media browser contexts stay isolated and cannot provision accounts', async ({ mediaAPage, mediaBPage, accounts }) => {

@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — T030 / Fase C:** T001–T030 selesai; CP-01–CP-11 ditinjau. Site Settings diaudit, Tentang/layout memakai CMS, periode dan delapan profil divisi memiliki review serta reader publik. [Bukti batch T027–T030](../docs/reports/T030.md). Konten resmi belum diisi; T031 menjadi tugas berikutnya. Modul lanjutan dan kelulusan MVP tetap terbuka.
+**Status terbaru — T035 / Fase C:** T001–T035 selesai; CP-01–CP-12 ditinjau. Pengurus per periode/arsip, pilihan periode aktif atomik, riset dengan disclaimer dan daftar/detail publik, serta CMS event dengan waktu WIB sudah tersedia. [Bukti batch T031–T035](../docs/reports/T035.md). T036 daftar/detail kegiatan menjadi tugas berikutnya; konten resmi dan kelulusan MVP tetap terbuka.
 
 ## Cara menggunakan checklist
 
@@ -644,7 +644,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Uji request role, spoofing konfirmasi, pergantian logo, dan referensi media konfigurasi terhadap penghapusan/pencabutan.
 
-**Bukti/status:** Selesai. [Laporan T027](../docs/reports/T027.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. T031 belum dimulai.
+**Bukti/status:** Selesai. [Laporan T027](../docs/reports/T027.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. Bukti historis saat T030; status terkini ada pada laporan T035.
 
 #### CP-10 — setelah T027
 
@@ -671,7 +671,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Ubah Pages dan settings melalui kedua role, bandingkan hasil publik serta menu pada mobile.
 
-**Bukti/status:** Selesai. [Laporan T028](../docs/reports/T028.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. T031 belum dimulai.
+**Bukti/status:** Selesai. [Laporan T028](../docs/reports/T028.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. Bukti historis saat T030; status terkini ada pada laporan T035.
 
 ### T029
 
@@ -692,7 +692,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes CRUD berizin, review, tanggal, dan referensi periode dengan fixture dependen.
 
-**Bukti/status:** Selesai. [Laporan T029](../docs/reports/T029.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. T031 belum dimulai.
+**Bukti/status:** Selesai. [Laporan T029](../docs/reports/T029.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. Bukti historis saat T030; status terkini ada pada laporan T035.
 
 ### T030
 
@@ -713,7 +713,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Verifikasi:** Tes review satu divisi dan browser daftar/detail; fixture meliputi delapan divisi tanpa mengklaim data pengurus resmi.
 
-**Bukti/status:** Selesai. [Laporan T030](../docs/reports/T030.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. T031 belum dimulai.
+**Bukti/status:** Selesai. [Laporan T030](../docs/reports/T030.md), [verifikasi batch](../docs/reports/T030.md): 28 unit, 47 integration, 25 e2e, lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan; data contoh hanya pada pengujian. Bukti historis saat T030; status terkini ada pada laporan T035.
 
 #### CP-11 — setelah T030
 
@@ -723,7 +723,7 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 ### T031
 
-- [ ] **Tampilkan pengurus berdasarkan periode**
+- [x] **Tampilkan pengurus berdasarkan periode**
 
 **Hasil:** Kelola anggota publik dengan periode wajib, divisi opsional, jabatan, foto, dan urutan; buat halaman struktur.
 
@@ -734,17 +734,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Jabatan organisasi tanpa divisi tetap dapat ditampilkan; periode tidak boleh kosong.
-- [ ] Halaman /tentang/struktur menampilkan pengurus terbit per periode dan menyediakan akses periode lampau.
-- [ ] Relasi wajib ke periode privat/ditarik ditolak; foto privat dan metadata akun tidak bocor.
+- [x] Jabatan organisasi tanpa divisi tetap dapat ditampilkan; periode tidak boleh kosong.
+- [x] Halaman /tentang/struktur menampilkan pengurus terbit per periode dan menyediakan akses periode lampau.
+- [x] Relasi wajib ke periode privat/ditarik ditolak; foto privat dan metadata akun tidak bocor.
 
 **Verifikasi:** Tes anggota pada dua periode, jabatan tanpa divisi, revisi relasi, serta penarikan target periode yang masih dipakai.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Verifikasi batch T031–T035](../docs/reports/T035.md): 30 unit, 54 integration dan 28 e2e lulus; lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan, tanpa seed konten resmi.
 
 ### T032
 
-- [ ] **Pilih satu periode aktif secara aman**
+- [x] **Pilih satu periode aktif secara aman**
 
 **Hasil:** Sediakan kontrol operasional Admin untuk periode aktif dengan invariant yang tahan request bersamaan.
 
@@ -755,17 +755,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Hanya periode terbit dapat dipilih; maksimum satu aktif meskipun dua request berlangsung bersamaan.
-- [ ] Pilihan aktif terpisah dari revisi isi; perpindahan tidak menghapus periode/pengurus lama.
-- [ ] Penarikan periode aktif yang sah mengosongkan pilihan; dependensi wajib tetap menghalangi penarikan.
+- [x] Hanya periode terbit dapat dipilih; maksimum satu aktif meskipun dua request berlangsung bersamaan.
+- [x] Pilihan aktif terpisah dari revisi isi; perpindahan tidak menghapus periode/pengurus lama.
+- [x] Penarikan periode aktif yang sah mengosongkan pilihan; dependensi wajib tetap menghalangi penarikan.
 
 **Verifikasi:** Tes aktivasi draft, aktivasi paralel, perpindahan, dan penarikan dengan/tanpa dependensi publik.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Verifikasi batch T031–T035](../docs/reports/T035.md): 30 unit, 54 integration dan 28 e2e lulus; lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan, tanpa seed konten resmi.
 
 ### T033
 
-- [ ] **Kelola riset dengan disclaimer wajib**
+- [x] **Kelola riset dengan disclaimer wajib**
 
 **Hasil:** Tambahkan riset beserta kategori, analisis date-only, referensi, tim publik, dan PDF opsional.
 
@@ -776,23 +776,23 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] Kategori riset awal tersedia; sumber/tanggal analisis diperiksa sebelum publikasi.
-- [ ] Disclaimer dasar tidak bisa dihapus editor; catatan tambahan tidak menggantikannya.
-- [ ] Lampiran PDF dan sampul mengikuti izin/approval versi; owner CMS terpisah dari tim publik.
+- [x] Kategori riset awal tersedia; sumber/tanggal analisis diperiksa sebelum publikasi.
+- [x] Disclaimer dasar tidak bisa dihapus editor; catatan tambahan tidak menggantikannya.
+- [x] Lampiran PDF dan sampul mengikuti izin/approval versi; owner CMS terpisah dari tim publik.
 
 **Verifikasi:** Tes publikasi tanpa tanggal/disclaimer, perubahan lampiran sebelum approval, dan date-only lintas zona waktu.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Verifikasi batch T031–T035](../docs/reports/T035.md): 30 unit, 54 integration dan 28 e2e lulus; lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan, tanpa seed konten resmi.
 
 #### CP-12 — setelah T033
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T034
 
-- [ ] **Tampilkan daftar dan detail riset**
+- [x] **Tampilkan daftar dan detail riset**
 
 **Hasil:** Bangun pencarian/filter kategori riset, detail analisis, referensi, disclaimer tetap, dan unduhan.
 
@@ -803,17 +803,17 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] /publikasi/riset dan detail menampilkan hanya versi terbit dengan pagination sesuai PRD.
-- [ ] Tanggal analisis dibedakan dari tanggal publikasi; disclaimer selalu ada pada detail.
-- [ ] PDF yang diunduh sama dengan versi yang disetujui; lampiran kosong tidak membuat tombol rusak.
+- [x] /publikasi/riset dan detail menampilkan hanya versi terbit dengan pagination sesuai PRD.
+- [x] Tanggal analisis dibedakan dari tanggal publikasi; disclaimer selalu ada pada detail.
+- [x] PDF yang diunduh sama dengan versi yang disetujui; lampiran kosong tidak membuat tombol rusak.
 
 **Verifikasi:** Uji query, mobile, revisi belum terbit, disclaimer, tanggal analisis, dan URL PDF langsung.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Verifikasi batch T031–T035](../docs/reports/T035.md): 30 unit, 54 integration dan 28 e2e lulus; lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan, tanpa seed konten resmi.
 
 ### T035
 
-- [ ] **Kelola event dan aturan waktunya**
+- [x] **Kelola event dan aturan waktunya**
 
 **Hasil:** Buat collection event, validasi waktu/lokasi/link, dan kalkulasi status memakai waktu server.
 
@@ -824,13 +824,13 @@ Pages, organisasi, riset, kegiatan, rekrutmen, kontak, dan homepage P0 terhubung
 
 **Kriteria selesai:**
 
-- [ ] startAt/endAt valid, endAt lebih besar; waktu CMS jelas dalam WIB.
-- [ ] Upcoming/ongoing/completed ditentukan batas waktu; cancelled terpisah.
-- [ ] Status pendaftaran dan URL terkonfirmasi menjadi syarat CTA; perubahan isi/status editorial mengikuti review.
+- [x] startAt/endAt valid, endAt lebih besar; waktu CMS jelas dalam WIB.
+- [x] Upcoming/ongoing/completed ditentukan batas waktu; cancelled terpisah.
+- [x] Status pendaftaran dan URL terkonfirmasi menjadi syarat CTA; perubahan isi/status editorial mengikuti review.
 
 **Verifikasi:** Tes tepat sebelum/saat/sesudah mulai dan selesai, pembatalan, URL tidak valid, dan input WIB ke UTC.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai. [Verifikasi batch T031–T035](../docs/reports/T035.md): 30 unit, 54 integration dan 28 e2e lulus; lint/TypeScript/build lulus. Migrasi tambahan diterapkan ke Supabase pengembangan, tanpa seed konten resmi.
 
 ### T036
 

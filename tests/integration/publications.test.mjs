@@ -1,0 +1,93 @@
+import assert from 'node:assert/strict';
+import { before, test } from 'node:test';
+import { reviewedFixture } from '../support/reviewed.mjs';
+import { RESEARCH_DISCLAIMER, INITIAL_RESEARCH_CATEGORIES } from '../../src/content/research-policy.mjs';
+let f, category, research, pdf, replacement;
+const detail = slug => f.anonymous.request(`/api/public/research/${slug}`);
+const query = input => f.anonymous.request(`/api/public/research?${new URLSearchParams(input)}`);
+const fields = () => ({ title: 'Riset Contoh Alpha', excerpt: 'Analisis edukasi contoh.', publicAuthor: 'Tim Riset Publik Contoh', body: f.rich('Isi analisis contoh.'), sources: [{ title: 'Sumber edukasi', url: 'https://www.idx.co.id/' }], category: category.id });
+before(async () => {
+  f = await reviewedFixture('publications');
+  const categories = (await (await f.admin.request('/api/research-categories?pagination=false')).json()).docs;
+  for (const name of INITIAL_RESEARCH_CATEGORIES) assert.ok(categories.some(item => item.name === name));
+  category = categories.find(item => item.name === 'Equity Snapshot');
+});
+test('research enforces analysis date, sources, fixed disclaimer and exact reviewed PDF approval', async () => {
+  assert.equal((await f.a.request('/api/research-categories', { method: 'POST', data: { name: 'Forbidden', slug: 'forbidden' } })).status, 403);
+  pdf = await f.upload(f.a, 'pdf'); replacement = await f.upload(f.a, 'pdf');
+  const original = Buffer.from(await (await f.admin.request(`/api/media/${pdf.key}/original`)).arrayBuffer());
+  research = await f.create('research', 'riset-contoh-alpha', { ...fields(), pdf: pdf.id, additionalNote: 'Catatan khusus contoh.' });
+  assert.equal((await f.command('research', research, 'submit', {}, f.a)).status, 400);
+  assert.equal((await f.a.request(`/api/research-publications/${research.id}`, { method: 'PATCH', data: { expectedLockVersion: research.lockVersion, baseDisclaimer: '' } })).status, 403);
+  assert.equal((await f.a.request(`/api/research-publications/${research.id}`, { method: 'PATCH', data: { expectedLockVersion: research.lockVersion, analysisDate: '2026-02-30' } })).status, 400);
+  assert.equal((await detail(research.slug)).status, 404);
+  research = await f.save('research', research, { analysisDate: '2026-10-31' });
+  research = await f.save('research', research, { sources: [] });
+  assert.equal((await f.command('research', research, 'submit', {}, f.a)).status, 400);
+  research = await f.save('research', research, { sources: fields().sources });
+  research = await f.save('research', research, { title: research.title, category: category.id });
+  assert.equal(research.category, category.id, 'A full Media form must preserve the Admin-controlled category');
+  const pending = await f.submitReviewed('research', research);
+  assert.equal((await f.a.request(`/api/research-publications/${research.id}`, { method: 'PATCH', data: { expectedLockVersion: pending.doc.lockVersion, pdf: replacement.id } })).status, 409);
+  const publication = await f.command('research', pending.doc, 'publish', { submissionId: pending.submission.id }); assert.equal(publication.status, 200); research = (await publication.json()).doc;
+  const publicDoc = await (await detail(research.slug)).json();
+  assert.equal(publicDoc.analysisDate, '2026-10-31'); assert.ok(publicDoc.publishedAt.includes('T'));
+  assert.equal(publicDoc.disclaimer, RESEARCH_DISCLAIMER); assert.equal(publicDoc.publicAuthor, 'Tim Riset Publik Contoh');
+  assert.ok(!('owner' in publicDoc) && !('reviewerId' in publicDoc));
+  const download = await f.anonymous.request(publicDoc.assets.find(item => item.mime === 'application/pdf').url); assert.equal(download.status, 200);
+  assert.deepEqual(Buffer.from(await download.arrayBuffer()), original);
+});
+test('research revision and withdrawal preserve version-bound files, historical retention and warm HTML/API privacy', async () => {
+  let draft = await f.revision('research', research);
+  draft = await f.save('research', draft, { title: 'PRIVATE RESEARCH REPLACEMENT', pdf: replacement.id });
+  assert.equal((await (await detail(research.slug)).json()).title, 'Riset Contoh Alpha');
+  assert.equal((await f.anonymous.request(`/api/media/${replacement.key}/original`)).status, 404);
+  assert.equal((await (await query({ q: 'PRIVATE RESEARCH REPLACEMENT' })).json()).totalDocs, 0);
+  research = await f.publishReviewed('research', draft);
+  assert.equal((await f.anonymous.request(`/api/media/${pdf.key}/original`)).status, 404);
+  assert.equal((await f.anonymous.request(`/api/media/${replacement.key}/original`)).status, 200);
+  assert.equal((await f.admin.request(`/api/media/${pdf.key}/manage`, { method: 'POST', data: { action: 'delete', note: 'Historical research PDF' } })).status, 409);
+  assert.equal((await f.anonymous.request(`/publikasi/riset/${research.slug}`)).status, 200);
+  assert.equal((await f.command('research', research, 'withdraw-publication', { note: 'Tarik contoh uji.' })).status, 200);
+  const html = await f.anonymous.request(`/publikasi/riset/${research.slug}`); assert.equal(html.status, 404); assert.match(html.headers.get('cache-control'), /no-store/);
+  assert.equal((await detail(research.slug)).status, 404); assert.equal((await f.anonymous.request(`/api/media/${replacement.key}/original`)).status, 404);
+});
+test('research search/category pagination uses approved counts, PRD defaults and no broken PDF for empty attachments', async () => {
+  for (let i = 0; i < 13; i++) await f.publishReviewed('research', await f.create('research', `riset-pagination-${i}`, { ...fields(), title: `Pagination Riset ${i}`, analysisDate: '2026-10-30' }));
+  const privateDraft = await f.create('research', 'riset-pagination-private', { ...fields(), title: 'Pagination Riset privat', analysisDate: '2026-10-30' });
+  let result = await (await query({ q: 'PAGINATION RISET', category: category.slug })).json();
+  assert.equal(result.totalDocs, 13); assert.equal(result.docs.length, 12); assert.equal(result.limit, 12);
+  result = await (await query({ q: 'Pagination Riset', limit: '48' })).json(); assert.equal(result.docs.length, 13);
+  result = await (await query({ q: 'Pagination Riset', page: '2' })).json(); assert.equal(result.docs.length, 1);
+  result = await (await query({ q: 'Pagination Riset', page: '999' })).json(); assert.equal(result.totalDocs, 13); assert.equal(result.docs.length, 0);
+  result = await (await query({ page: '0', limit: '1000' })).json(); assert.equal(result.page, 1); assert.equal(result.limit, 12);
+  assert.equal((await (await query({ category: 'unknown' })).json()).totalDocs, 0);
+  assert.equal((await query({ 'where[owner][equals]': '1' })).status, 400);
+  const optional = await (await detail('riset-pagination-0')).json(); assert.equal(optional.assets.length, 0);
+  assert.ok(!(await (await f.anonymous.request('/publikasi/riset/riset-pagination-0')).text()).includes('Unduh PDF:'));
+  assert.equal((await f.command('research', privateDraft, 'delete-draft', { note: 'Tidak dipakai.' }, f.a)).status, 403);
+  assert.equal((await f.command('research', privateDraft, 'delete-draft', { note: 'Hapus draft tanpa publikasi.' })).status, 200);
+  assert.equal((await f.admin.request(`/api/research-publications/${privateDraft.id}`)).status, 404);
+});
+
+test('events validate WIB/UTC, location and URLs; only confirmed reviewed registration produces a CTA', async () => {
+  const fields = { title: 'Contoh event edukasi', description: 'Contoh kegiatan.', startAt: '2099-11-01T09:00', endAt: '2099-11-01T11:00', locationType: 'offline', location: 'Lokasi contoh', organizer: 'Tim Contoh', registrationStatus: 'open', registrationURL: 'https://example.com/register', registrationConfirmed: false };
+  for (const invalid of [{ endAt: fields.startAt }, { startAt: '2099-02-30T09:00' }, { registrationURL: 'http://example.com/' }]) {
+    const result = await f.admin.request('/api/events', { method: 'POST', data: { slug: 'bad-event', ...fields, ...invalid } }); assert.equal(result.status, 400);
+  }
+  let event = await f.create('events', 'contoh-event-time', fields, f.a);
+  assert.equal((await f.a.request(`/api/events/${event.id}`, { method: 'PATCH', data: { expectedLockVersion: event.lockVersion, registrationConfirmed: true } })).status, 403);
+  assert.equal((await f.anonymous.request(`/api/public/events/${event.slug}`)).status, 404);
+  event = await f.publishReviewed('events', event);
+  let doc = await (await f.anonymous.request(`/api/public/events/${event.slug}`)).json();
+  assert.equal(doc.startAt, '2099-11-01T02:00:00.000Z'); assert.equal(doc.timeStatus, 'upcoming'); assert.equal(doc.canRegister, false); assert.equal(doc.registrationURL, null);
+  event = await f.revision('events', event); event = await f.save('events', event, { registrationConfirmed: true }, f.admin); event = await f.publishReviewed('events', event);
+  doc = await (await f.anonymous.request(`/api/public/events/${event.slug}?now=99999999999999`)).json(); assert.equal(doc.canRegister, true); assert.equal(doc.registrationURL, fields.registrationURL);
+  event = await f.revision('events', event); event = await f.save('events', event, { cancelled: true, registrationConfirmed: true });
+  assert.equal(event.registrationConfirmed, true, 'A full Media form preserves confirmation when the destination did not change');
+  assert.equal((await f.command('events', event, 'submit', {}, f.a)).status, 400);
+  event = await f.save('events', event, { cancellationNote: 'Alasan pembatalan contoh.' }); event = await f.publishReviewed('events', event);
+  doc = await (await f.anonymous.request(`/api/public/events/${event.slug}`)).json(); assert.equal(doc.cancelled, true); assert.equal(doc.status, 'cancelled'); assert.equal(doc.canRegister, false);
+  event = await f.revision('events', event); event = await f.save('events', event, { cancelled: false, registrationURL: 'https://example.com/new-destination' });
+  assert.equal(event.registrationConfirmed, false, 'Changing the destination clears previous confirmation');
+});

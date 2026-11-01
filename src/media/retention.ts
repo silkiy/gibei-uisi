@@ -16,6 +16,18 @@ export async function assetReferences(req: PayloadRequest, id: number) {
         WHERE item->>'asset'=${String(id)} OR item->'asset'->>'id'=${String(id)})
     UNION
     SELECT 'configuration',config.id,NULL,config.config_key FROM ${schema}.asset_config_references config WHERE config.asset_id=${id}
+    UNION SELECT 'member_revision',r.id,NULL,m.slug FROM ${schema}.member_revisions_assets usage
+      JOIN ${schema}.member_revisions r ON r.id=usage._parent_id JOIN ${schema}.members m ON m.id=r.entity_id WHERE usage.asset_id=${id}
+    UNION SELECT 'member_review',review.id,NULL,m.slug FROM ${schema}.organization_reviews review JOIN ${schema}.members m ON m.id=review.entity_id
+      WHERE review.kind='members' AND EXISTS(SELECT 1 FROM jsonb_array_elements(COALESCE(review.manifest->'assets','[]'::jsonb)) item WHERE item->>'asset'=${String(id)})
+    UNION SELECT 'research_revision',r.id,NULL,m.slug FROM ${schema}.research_revisions_assets usage
+      JOIN ${schema}.research_revisions r ON r.id=usage._parent_id JOIN ${schema}.research_publications m ON m.id=r.entity_id WHERE usage.asset_id=${id}
+    UNION SELECT 'research_review',review.id,NULL,m.slug FROM ${schema}.organization_reviews review JOIN ${schema}.research_publications m ON m.id=review.entity_id
+      WHERE review.kind='research' AND EXISTS(SELECT 1 FROM jsonb_array_elements(COALESCE(review.manifest->'assets','[]'::jsonb)) item WHERE item->>'asset'=${String(id)})
+    UNION SELECT 'event_revision',r.id,NULL,m.slug FROM ${schema}.event_revisions_assets usage
+      JOIN ${schema}.event_revisions r ON r.id=usage._parent_id JOIN ${schema}.events m ON m.id=r.entity_id WHERE usage.asset_id=${id}
+    UNION SELECT 'event_review',review.id,NULL,m.slug FROM ${schema}.organization_reviews review JOIN ${schema}.events m ON m.id=review.entity_id
+      WHERE review.kind='events' AND EXISTS(SELECT 1 FROM jsonb_array_elements(COALESCE(review.manifest->'assets','[]'::jsonb)) item WHERE item->>'asset'=${String(id)})
     ORDER BY kind,id`);
   return result.rows;
 }

@@ -9,6 +9,7 @@ import pg from 'pg';
 import { localTestConnection, assertOwnedTestTarget } from './database/test-config.mjs';
 import { authenticate } from '../tests/support/http.mjs';
 import { startNativePostgres } from '../tests/support/native-postgres.mjs';
+import { INITIAL_RESEARCH_CATEGORIES } from '../src/content/research-policy.mjs';
 
 const mode = process.argv[2];
 assert.ok(['integration', 'e2e', 'all'].includes(mode), 'Choose integration, e2e or all');
@@ -84,6 +85,8 @@ async function seedMediaFixtures() {
   }
   const roles = (await migration.query('SELECT role FROM payload.users ORDER BY role')).rows.map(row => row.role);
   assert.deepEqual(roles, ['admin', 'media', 'media']);
+  await assertTarget();
+  for (const name of INITIAL_RESEARCH_CATEGORIES) await migration.query('INSERT INTO payload.research_categories(name,slug) VALUES ($1,$2) ON CONFLICT (slug) DO NOTHING', [name, name.toLowerCase().replaceAll(' ', '-')]);
 }
 
 async function resetApplicationData() {
@@ -166,7 +169,7 @@ try {
   await assertTarget();
   if (mode !== 'e2e') {
     console.log('Running integration smoke tests with Admin and two Media');
-    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs', 'tests/integration/article-search.test.mjs', 'tests/integration/article-links.test.mjs', 'tests/integration/pages.test.mjs', 'tests/integration/settings.test.mjs', 'tests/integration/organization.test.mjs'], 'Integration tests');
+    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs', 'tests/integration/article-search.test.mjs', 'tests/integration/article-links.test.mjs', 'tests/integration/pages.test.mjs', 'tests/integration/settings.test.mjs', 'tests/integration/organization.test.mjs', 'tests/integration/members.test.mjs', 'tests/integration/publications.test.mjs'], 'Integration tests');
     await child(['scripts/payload.mjs', 'run', 'scripts/verify-editorial-local.ts'], 'Local editorial boundary tests');
     const beforeRestart = (await migration.query('SELECT * FROM payload.editorial_audit ORDER BY id')).rows;
     assert.ok(beforeRestart.length > 0);

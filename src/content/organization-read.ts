@@ -1,14 +1,14 @@
 import { sql } from '@payloadcms/db-postgres';
 import type { PayloadRequest } from 'payload';
 import { transaction } from '../editorial/internal';
-import { organizationModel, type OrganizationKind } from '../editorial/organization-model';
+import { editorialModel, type EditorialKind } from '../editorial/reviewed-model';
 import { divisionNames } from '../validation/organization.mjs';
 
 export type PublicDivision = { slug: string; name: string; description: string; workPrograms: string; displayOrder: number; example: boolean };
 const names = new Map<string, string>(Object.entries(divisionNames));
-export async function publishedOrganization(req: PayloadRequest, kind: OrganizationKind, slug?: string) {
+export async function publishedOrganization(req: PayloadRequest, kind: Extract<EditorialKind, 'periods' | 'divisions'>, slug?: string) {
   const schema = sql.identifier(req.payload.db.schemaName || 'payload');
-  const model = organizationModel(kind);
+  const model = editorialModel(kind);
   const root = sql.identifier(model.root.replaceAll('-', '_')), revisions = sql.identifier(model.revisions.replaceAll('-', '_'));
   const fields = kind === 'periods' ? sql`e.label,r.start_date AS "startDate",r.end_date AS "endDate"`
     : sql`e.slug,r.description,r.work_programs AS "workPrograms",r.display_order AS "displayOrder",r.example`;

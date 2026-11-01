@@ -19,7 +19,7 @@ const shapes = {
   cta: { heading: 160, description: 600, label: 100, url: 2048 },
 } as const;
 const required = { hero: ['heading', 'summary'], profile: ['heading', 'description'], program: ['heading', 'description'], cta: ['heading', 'label', 'url'] } as const;
-const internalRoutes = new Set(['/', '/tentang', '/publikasi/artikel']);
+const internalRoutes = new Set(['/', '/tentang', '/tentang/struktur', '/tentang/divisi', '/publikasi/artikel', '/publikasi/riset']);
 const multilineFields = new Set(['seoDescription', 'summary', 'description', 'history', 'vision', 'mission']);
 const invalidText = (value: string, field: string) => (multilineFields.has(field)
   ? /[<>\u0000-\u0009\u000b\u000c\u000e-\u001f\u007f]/

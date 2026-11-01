@@ -51,3 +51,7 @@ Screenshot fixture desktop 1440px/mobile 375px di `artifacts/T023-*.png` dan `T0
 ## Tentang dan divisi — T028/T030
 
 Halaman memakai tipografi dan warna kerangka yang sama, dengan kolom baca 64rem, pemisah antarbagiannya dan paragraf yang mempertahankan baris baru. About menyajikan profil/sejarah/visi/misi dari snapshot terbit; divisi menampilkan label contoh, profil dan program kerja tanpa syarat rekrutmen. Header/footer memakai satu sumber identitas, navigasi dan kontak terkonfirmasi. Screenshot About 375px dan divisi 375px/1440px telah diinspeksi pada `artifacts/T028-mobile.png` dan `T030-*.png`. Tidak ada aset/kontak/pengurus contoh yang dianggap resmi.
+
+## Struktur dan riset — T031/T034
+
+Struktur menyediakan pilihan periode dan arsip, jabatan tanpa divisi, label contoh dan fallback foto. Riset memakai pola pencarian/pagination artikel, dengan tanggal analisis dan publikasi terpisah, referensi serta disclaimer tetap pada detail. Screenshot `artifacts/T031-mobile.png` dan `artifacts/T034-mobile.png` pada 375px telah diinspeksi tanpa overflow. Pemeriksaan ini bukan audit Lighthouse atau aksesibilitas menyeluruh; T056 tetap terbuka. Avatar CMS memakai ikon lokal agar tidak bergantung pada permintaan Gravatar.

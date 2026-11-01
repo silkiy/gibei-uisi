@@ -10,5 +10,6 @@ export default async function AboutPage() {
     <h1>{page?.title || 'Tentang GIBEI UISI'}</h1>
     {page ? <PageSections sections={page.sections} /> : <p role="status">Profil, sejarah, visi, dan misi sedang disiapkan untuk publikasi.</p>}
     <p className="cms-section"><Link prefetch={false} href="/tentang/divisi">Kenali delapan divisi →</Link></p>
+    <p><Link prefetch={false} href="/tentang/struktur">Lihat kepengurusan per periode →</Link></p>
   </main>;
 }

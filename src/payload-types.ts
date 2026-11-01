@@ -78,10 +78,18 @@ export interface Config {
     'page-reviews': PageReview;
     'page-audit': PageAudit;
     'settings-audit': SettingsAudit;
+    'organization-state-audit': OrganizationStateAudit;
     'organizational-periods': OrganizationalPeriod;
     'period-revisions': PeriodRevision;
     divisions: Division;
     'division-revisions': DivisionRevision;
+    members: Member;
+    'member-revisions': MemberRevision;
+    'research-categories': ResearchCategory;
+    'research-publications': ResearchPublication;
+    'research-revisions': ResearchRevision;
+    events: Event;
+    'event-revisions': EventRevision;
     'organization-reviews': OrganizationReview;
     'organization-audit': OrganizationAudit;
     media: Media;
@@ -105,10 +113,18 @@ export interface Config {
     'page-reviews': PageReviewsSelect<false> | PageReviewsSelect<true>;
     'page-audit': PageAuditSelect<false> | PageAuditSelect<true>;
     'settings-audit': SettingsAuditSelect<false> | SettingsAuditSelect<true>;
+    'organization-state-audit': OrganizationStateAuditSelect<false> | OrganizationStateAuditSelect<true>;
     'organizational-periods': OrganizationalPeriodsSelect<false> | OrganizationalPeriodsSelect<true>;
     'period-revisions': PeriodRevisionsSelect<false> | PeriodRevisionsSelect<true>;
     divisions: DivisionsSelect<false> | DivisionsSelect<true>;
     'division-revisions': DivisionRevisionsSelect<false> | DivisionRevisionsSelect<true>;
+    members: MembersSelect<false> | MembersSelect<true>;
+    'member-revisions': MemberRevisionsSelect<false> | MemberRevisionsSelect<true>;
+    'research-categories': ResearchCategoriesSelect<false> | ResearchCategoriesSelect<true>;
+    'research-publications': ResearchPublicationsSelect<false> | ResearchPublicationsSelect<true>;
+    'research-revisions': ResearchRevisionsSelect<false> | ResearchRevisionsSelect<true>;
+    events: EventsSelect<false> | EventsSelect<true>;
+    'event-revisions': EventRevisionsSelect<false> | EventRevisionsSelect<true>;
     'organization-reviews': OrganizationReviewsSelect<false> | OrganizationReviewsSelect<true>;
     'organization-audit': OrganizationAuditSelect<false> | OrganizationAuditSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -125,9 +141,11 @@ export interface Config {
   fallbackLocale: null;
   globals: {
     'site-settings': SiteSetting;
+    'organization-state': OrganizationState;
   };
   globalsSelect: {
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
+    'organization-state': OrganizationStateSelect<false> | OrganizationStateSelect<true>;
   };
   locale: null;
   widgets: {
@@ -637,6 +655,36 @@ export interface SettingsAudit {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organization-state-audit".
+ */
+export interface OrganizationStateAudit {
+  id: number;
+  actorId: number;
+  version: number;
+  before:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  after:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  correlationId: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organizational-periods".
  */
 export interface OrganizationalPeriod {
@@ -737,15 +785,344 @@ export interface DivisionRevision {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members".
+ */
+export interface Member {
+  id: number;
+  slug: string;
+  /**
+   * Nama publik, bukan akun CMS.
+   */
+  name?: string | null;
+  position?: string | null;
+  /**
+   * Wajib terbit sebelum pengurus diajukan.
+   */
+  period?: (number | null) | OrganizationalPeriod;
+  /**
+   * Opsional untuk jabatan tingkat organisasi.
+   */
+  division?: (number | null) | Division;
+  photo?: (number | null) | Media;
+  displayOrder?: number | null;
+  example?: boolean | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | MemberRevision;
+  publicRevision?: (number | null) | MemberRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "member-revisions".
+ */
+export interface MemberRevision {
+  id: number;
+  entity: number | Member;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  /**
+   * Nama publik, bukan akun CMS.
+   */
+  name?: string | null;
+  position?: string | null;
+  /**
+   * Wajib terbit sebelum pengurus diajukan.
+   */
+  period?: (number | null) | OrganizationalPeriod;
+  /**
+   * Opsional untuk jabatan tingkat organisasi.
+   */
+  division?: (number | null) | Division;
+  photo?: (number | null) | Media;
+  displayOrder?: number | null;
+  example?: boolean | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-categories".
+ */
+export interface ResearchCategory {
+  id: number;
+  name: string;
+  slug: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-publications".
+ */
+export interface ResearchPublication {
+  id: number;
+  slug: string;
+  title?: string | null;
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Nama penulis publik atau tim; terpisah dari akun CMS.
+   */
+  publicAuthor?: string | null;
+  sources?:
+    | {
+        title?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  category?: (number | null) | ResearchCategory;
+  analysisDate?: string | null;
+  cover?: (number | null) | Media;
+  pdf?: (number | null) | Media;
+  additionalNote?: string | null;
+  baseDisclaimer?: string | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | ResearchRevision;
+  publicRevision?: (number | null) | ResearchRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-revisions".
+ */
+export interface ResearchRevision {
+  id: number;
+  entity: number | ResearchPublication;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  title?: string | null;
+  excerpt?: string | null;
+  body?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  /**
+   * Nama penulis publik atau tim; terpisah dari akun CMS.
+   */
+  publicAuthor?: string | null;
+  sources?:
+    | {
+        title?: string | null;
+        url?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  category?: (number | null) | ResearchCategory;
+  analysisDate?: string | null;
+  cover?: (number | null) | Media;
+  pdf?: (number | null) | Media;
+  additionalNote?: string | null;
+  baseDisclaimer?: string | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events".
+ */
+export interface Event {
+  id: number;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  poster?: (number | null) | Media;
+  /**
+   * WIB (Asia/Jakarta), contoh 2026-11-01T09:00. Tanpa offset dibaca sebagai WIB; penyimpanan UTC.
+   */
+  startAt?: string | null;
+  /**
+   * WIB (Asia/Jakarta), contoh 2026-11-01T09:00. Tanpa offset dibaca sebagai WIB; penyimpanan UTC.
+   */
+  endAt?: string | null;
+  locationType?: ('offline' | 'online') | null;
+  location?: string | null;
+  onlineURL?: string | null;
+  organizer?: string | null;
+  cancelled?: boolean | null;
+  cancellationNote?: string | null;
+  registrationStatus?: ('closed' | 'open') | null;
+  registrationURL?: string | null;
+  registrationConfirmed?: boolean | null;
+  /**
+   * WIB (Asia/Jakarta), contoh 2026-11-01T09:00. Tanpa offset dibaca sebagai WIB; penyimpanan UTC.
+   */
+  registrationOpensAt?: string | null;
+  /**
+   * WIB (Asia/Jakarta), contoh 2026-11-01T09:00. Tanpa offset dibaca sebagai WIB; penyimpanan UTC.
+   */
+  registrationClosesAt?: string | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | EventRevision;
+  publicRevision?: (number | null) | EventRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-revisions".
+ */
+export interface EventRevision {
+  id: number;
+  entity: number | Event;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  title?: string | null;
+  description?: string | null;
+  poster?: (number | null) | Media;
+  /**
+   * WIB (Asia/Jakarta), contoh 2026-11-01T09:00. Tanpa offset dibaca sebagai WIB; penyimpanan UTC.
+   */
+  startAt?: string | null;
+  /**
+   * WIB (Asia/Jakarta), contoh 2026-11-01T09:00. Tanpa offset dibaca sebagai WIB; penyimpanan UTC.
+   */
+  endAt?: string | null;
+  locationType?: ('offline' | 'online') | null;
+  location?: string | null;
+  onlineURL?: string | null;
+  organizer?: string | null;
+  cancelled?: boolean | null;
+  cancellationNote?: string | null;
+  registrationStatus?: ('closed' | 'open') | null;
+  registrationURL?: string | null;
+  registrationConfirmed?: boolean | null;
+  /**
+   * WIB (Asia/Jakarta), contoh 2026-11-01T09:00. Tanpa offset dibaca sebagai WIB; penyimpanan UTC.
+   */
+  registrationOpensAt?: string | null;
+  /**
+   * WIB (Asia/Jakarta), contoh 2026-11-01T09:00. Tanpa offset dibaca sebagai WIB; penyimpanan UTC.
+   */
+  registrationClosesAt?: string | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organization-reviews".
  */
 export interface OrganizationReview {
   id: number;
-  kind: 'periods' | 'divisions';
+  kind: 'periods' | 'divisions' | 'members' | 'research' | 'events';
   entityId: number;
   revisionId: number;
   period?: (number | null) | OrganizationalPeriod;
   division?: (number | null) | Division;
+  member?: (number | null) | Member;
+  research?: (number | null) | ResearchPublication;
+  event?: (number | null) | Event;
   editVersion: number;
   manifest:
     | {
@@ -771,7 +1148,7 @@ export interface OrganizationReview {
  */
 export interface OrganizationAudit {
   id: number;
-  kind: 'periods' | 'divisions';
+  kind: 'periods' | 'divisions' | 'members' | 'research' | 'events';
   entityId: number;
   revisionId: number;
   actorId: number;
@@ -1231,6 +1608,19 @@ export interface SettingsAuditSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organization-state-audit_select".
+ */
+export interface OrganizationStateAuditSelect<T extends boolean = true> {
+  actorId?: T;
+  version?: T;
+  before?: T;
+  after?: T;
+  correlationId?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organizational-periods_select".
  */
 export interface OrganizationalPeriodsSelect<T extends boolean = true> {
@@ -1307,6 +1697,249 @@ export interface DivisionRevisionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "members_select".
+ */
+export interface MembersSelect<T extends boolean = true> {
+  slug?: T;
+  name?: T;
+  position?: T;
+  period?: T;
+  division?: T;
+  photo?: T;
+  displayOrder?: T;
+  example?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "member-revisions_select".
+ */
+export interface MemberRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  name?: T;
+  position?: T;
+  period?: T;
+  division?: T;
+  photo?: T;
+  displayOrder?: T;
+  example?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-categories_select".
+ */
+export interface ResearchCategoriesSelect<T extends boolean = true> {
+  name?: T;
+  slug?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-publications_select".
+ */
+export interface ResearchPublicationsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  excerpt?: T;
+  body?: T;
+  publicAuthor?: T;
+  sources?:
+    | T
+    | {
+        title?: T;
+        url?: T;
+        id?: T;
+      };
+  category?: T;
+  analysisDate?: T;
+  cover?: T;
+  pdf?: T;
+  additionalNote?: T;
+  baseDisclaimer?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "research-revisions_select".
+ */
+export interface ResearchRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  title?: T;
+  excerpt?: T;
+  body?: T;
+  publicAuthor?: T;
+  sources?:
+    | T
+    | {
+        title?: T;
+        url?: T;
+        id?: T;
+      };
+  category?: T;
+  analysisDate?: T;
+  cover?: T;
+  pdf?: T;
+  additionalNote?: T;
+  baseDisclaimer?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "events_select".
+ */
+export interface EventsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  description?: T;
+  poster?: T;
+  startAt?: T;
+  endAt?: T;
+  locationType?: T;
+  location?: T;
+  onlineURL?: T;
+  organizer?: T;
+  cancelled?: T;
+  cancellationNote?: T;
+  registrationStatus?: T;
+  registrationURL?: T;
+  registrationConfirmed?: T;
+  registrationOpensAt?: T;
+  registrationClosesAt?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "event-revisions_select".
+ */
+export interface EventRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  title?: T;
+  description?: T;
+  poster?: T;
+  startAt?: T;
+  endAt?: T;
+  locationType?: T;
+  location?: T;
+  onlineURL?: T;
+  organizer?: T;
+  cancelled?: T;
+  cancellationNote?: T;
+  registrationStatus?: T;
+  registrationURL?: T;
+  registrationConfirmed?: T;
+  registrationOpensAt?: T;
+  registrationClosesAt?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organization-reviews_select".
  */
 export interface OrganizationReviewsSelect<T extends boolean = true> {
@@ -1315,6 +1948,9 @@ export interface OrganizationReviewsSelect<T extends boolean = true> {
   revisionId?: T;
   period?: T;
   division?: T;
+  member?: T;
+  research?: T;
+  event?: T;
   editVersion?: T;
   manifest?: T;
   manifestDigest?: T;
@@ -1478,6 +2114,18 @@ export interface SiteSetting {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organization-state".
+ */
+export interface OrganizationState {
+  id: number;
+  activePeriod?: (number | null) | OrganizationalPeriod;
+  version?: number | null;
+  expectedVersion?: number | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
@@ -1510,6 +2158,18 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   logoChecksum?: T;
   faviconVersion?: T;
   faviconChecksum?: T;
+  expectedVersion?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "organization-state_select".
+ */
+export interface OrganizationStateSelect<T extends boolean = true> {
+  activePeriod?: T;
+  version?: T;
   expectedVersion?: T;
   updatedAt?: T;
   createdAt?: T;

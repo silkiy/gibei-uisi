@@ -18,6 +18,14 @@ export async function loadAsset(req: PayloadRequest, key: string): Promise<Media
 export const privatelyAllowed = (req: PayloadRequest, asset: Media) => canEditDraft(req.user, asset);
 export async function isAssetPublic(req: PayloadRequest, asset: Media) {
   const schema = sql.identifier(req.payload.db.schemaName || 'payload');
+  const reviewedUsage = (kind: string, root: string, revision: string) => sql`EXISTS (
+    SELECT 1 FROM ${schema}.${sql.identifier(root)} m JOIN ${schema}.${sql.identifier(revision)} r ON m.public_revision_id=r.id AND r.entity_id=m.id
+    JOIN ${schema}.${sql.identifier(`${revision}_assets`)} usage ON usage._parent_id=r.id
+    WHERE m.deleted_at IS NULL AND r.state='published' AND usage.asset_id=${asset.id}
+      AND usage.file_version=${asset.fileVersion} AND usage.checksum=${asset.checksum}
+      AND EXISTS(SELECT 1 FROM ${schema}.organization_reviews review WHERE review.kind=${kind} AND review.entity_id=m.id AND review.revision_id=r.id
+        AND review.edit_version=r.edit_version AND review.status='approved' AND review.resolved_at IS NOT NULL)
+  )`;
   const result = await (await transaction(req)).execute<{ allowed: boolean }>(sql`SELECT EXISTS (
     SELECT 1 FROM ${schema}.articles a
     JOIN ${schema}.article_revisions r ON a.public_revision_id = r.id AND r.article_id = a.id
@@ -26,7 +34,9 @@ export async function isAssetPublic(req: PayloadRequest, asset: Media) {
       AND usage.file_version = ${asset.fileVersion} AND usage.checksum = ${asset.checksum}
       AND EXISTS (SELECT 1 FROM ${schema}.content_reviews approved WHERE approved.revision_id = r.id
         AND approved.status = 'approved' AND approved.edit_version = r.edit_version AND approved.resolved_at IS NOT NULL)
-  ) OR EXISTS (
+  ) OR ${reviewedUsage('members', 'members', 'member_revisions')}
+    OR ${reviewedUsage('research', 'research_publications', 'research_revisions')}
+    OR ${reviewedUsage('events', 'events', 'event_revisions')} OR EXISTS (
     SELECT 1 FROM ${schema}.site_settings s JOIN ${schema}.settings_audit audit ON audit.version = s.config_version
     WHERE (s.logo_id = ${asset.id} AND s.logo_version = ${asset.fileVersion} AND s.logo_checksum = ${asset.checksum}
       AND audit.after->>'logo' = ${String(asset.id)} AND audit.after->>'logoVersion' = ${asset.fileVersion} AND audit.after->>'logoChecksum' = ${asset.checksum})

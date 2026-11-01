@@ -31,7 +31,7 @@ export async function normalizeAssets(req: PayloadRequest, rows: ArticleRevision
   }
   return result;
 }
-export async function verifyReferencedFiles(req: PayloadRequest, revision: ArticleRevision) {
+export async function verifyReferencedFiles(req: PayloadRequest, revision: Pick<ArticleRevision, 'assets'>) {
   for (const reference of revision.assets || []) {
     let asset: Media;
     try { asset = await referencedAsset(req, Number(relationId(reference.asset))); }

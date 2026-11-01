@@ -1,0 +1,32 @@
+import { test, expect } from './fixtures';
+
+test('Media creates event times in WIB; registration confirmation and cancellation require reviewed publication', async ({ adminPage, mediaAPage, page, baseURL }) => {
+  test.setTimeout(120000); mediaAPage.setDefaultTimeout(10000); adminPage.setDefaultTimeout(10000);
+  const headers = { Origin: baseURL! };
+  await mediaAPage.goto('/admin/collections/events/create');
+  await mediaAPage.getByLabel(/^Slug/).fill('contoh-event-browser'); await mediaAPage.getByLabel(/^Title/).fill('Contoh event browser');
+  await mediaAPage.getByLabel(/^Description/).fill('Kegiatan contoh untuk pengujian.');
+  await mediaAPage.getByLabel('Mulai (WIB)', { exact: true }).fill('2099-11-02T09:30'); await mediaAPage.getByLabel('Selesai (WIB)', { exact: true }).fill('2099-11-02T11:00');
+  await mediaAPage.getByLabel(/^Location$/).fill('Lokasi contoh'); await mediaAPage.getByLabel(/^Organizer/).fill('Tim Contoh');
+  const creating = mediaAPage.waitForResponse(response => new URL(response.url()).pathname === '/api/events' && response.request().method() === 'POST');
+  await mediaAPage.getByRole('button', { name: 'Save', exact: true }).click(); const created = await creating; expect(created.status()).toBe(201); const doc = (await created.json()).doc;
+  const editor = `/admin/collections/events/${doc.id}`;
+  expect((await page.request.get('/api/public/events/contoh-event-browser')).status()).toBe(404);
+  const confirmed = await adminPage.request.patch(`/api/events/${doc.id}`, { headers, data: { expectedLockVersion: doc.lockVersion, registrationStatus: 'open', registrationURL: 'https://example.com/register', registrationConfirmed: true } });
+  expect(confirmed.status()).toBe(200);
+  await mediaAPage.goto(editor); await mediaAPage.getByRole('button', { name: 'Ajukan review', exact: true }).click();
+  await expect(mediaAPage.getByText('Status editorial: in_review', { exact: true })).toBeVisible();
+  await adminPage.goto(editor); await adminPage.getByRole('button', { name: 'Terbitkan', exact: true }).click();
+  await expect(adminPage.getByText('Status editorial: published', { exact: true })).toBeVisible();
+  let published = await (await page.request.get('/api/public/events/contoh-event-browser')).json();
+  expect(published.startAt).toBe('2099-11-02T02:30:00.000Z'); expect(published.canRegister).toBe(true);
+  await mediaAPage.reload(); await mediaAPage.getByRole('button', { name: 'Buat revisi baru', exact: true }).click();
+  await expect(mediaAPage.getByText('Status editorial: draft', { exact: true })).toBeVisible();
+  await mediaAPage.getByLabel(/^Cancelled$/).check(); await mediaAPage.getByLabel(/^Cancellation Note/).fill('Alasan pembatalan contoh.');
+  const saving = mediaAPage.waitForResponse(response => new URL(response.url()).pathname === `/api/events/${doc.id}` && response.request().method() === 'PATCH');
+  await mediaAPage.getByRole('button', { name: 'Save', exact: true }).click(); expect((await saving).status()).toBe(200);
+  published = await (await page.request.get('/api/public/events/contoh-event-browser')).json(); expect(published.canRegister).toBe(true);
+  await mediaAPage.getByRole('button', { name: 'Ajukan review', exact: true }).click(); await expect(mediaAPage.getByText('Status editorial: in_review', { exact: true })).toBeVisible();
+  await adminPage.reload(); await adminPage.getByRole('button', { name: 'Terbitkan', exact: true }).click(); await expect(adminPage.getByText('Status editorial: published', { exact: true })).toBeVisible();
+  published = await (await page.request.get('/api/public/events/contoh-event-browser')).json(); expect(published.status).toBe('cancelled'); expect(published.registrationURL).toBeNull();
+});

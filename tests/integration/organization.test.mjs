@@ -31,7 +31,7 @@ test('period identity and calendar dates are validated; private ownership cannot
   assert.equal((await f.b.request(`/api/organizational-periods/${period.id}`)).status, 404);
   assert.equal((await f.anonymous.request('/api/organizational-periods')).status, 403);
   const docs = (await (await f.anonymous.request('/api/public/organization/periods')).json()).docs;
-  assert.equal(docs.length, 0);
+  assert.equal(docs.filter(row => row.label === period.label).length, 0);
   for (const data of [{ publicRevision: 999 }, { owner: f.b.user.id }, { state: 'published' }, { deletedAt: new Date().toISOString() }]) assert.equal((await f.a.request(`/api/organizational-periods/${period.id}`, { method: 'PATCH', data: { expectedLockVersion: period.lockVersion, ...data } })).status, 403);
   const saved = await f.a.request(`/api/organizational-periods/${period.id}`, { method: 'PATCH', data: { expectedLockVersion: period.lockVersion, deletedAt: null, startDate: period.startDate } });
   assert.equal(saved.status, 200, 'A normal full CMS form includes a null tombstone'); period = (await saved.json()).doc;
@@ -46,12 +46,12 @@ test('period revisions preserve approved calendar days and require a fresh Admin
   assert.equal((await f.a.request(`/api/organization-reviews/${submitted.submission.id}`)).status, 200);
   response = await f.a.request(`/api/organizational-periods/${period.id}`, { method: 'PATCH', data: { expectedLockVersion: requested.lockVersion, endDate: '2027-06-30' } });
   assert.equal(response.status, 200); period = await publish('periods', (await response.json()).doc);
-  const published = (await (await f.anonymous.request('/api/public/organization/periods')).json()).docs[0];
+  const published = (await (await f.anonymous.request('/api/public/organization/periods')).json()).docs.find(row => row.label === period.label);
   assert.deepEqual(published, { label: period.label, startDate: '2026-01-01', endDate: '2027-06-30' });
   response = await command(f.a, 'periods', period, 'create-revision'); assert.equal(response.status, 200); period = (await response.json()).doc;
   const concurrent = await Promise.all(['2027-08-01', '2027-09-01'].map(endDate => f.a.request(`/api/organizational-periods/${period.id}`, { method: 'PATCH', data: { expectedLockVersion: period.lockVersion, endDate } })));
   assert.deepEqual(concurrent.map(result => result.status).sort(), [200, 409]); period = await read('periods', period.id);
-  assert.equal((await (await f.anonymous.request('/api/public/organization/periods')).json()).docs[0].endDate, '2027-06-30');
+  assert.equal((await (await f.anonymous.request('/api/public/organization/periods')).json()).docs.find(row => row.label === period.label).endDate, '2027-06-30');
   assert.equal((await command(f.admin, 'periods', submitted.doc, 'publish', { submissionId: submitted.submission.id })).status, 409);
 });
 

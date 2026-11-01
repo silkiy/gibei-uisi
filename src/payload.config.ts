@@ -15,7 +15,10 @@ import { PageReviews } from './collections/PageReviews';
 import { PageAudit } from './collections/PageAudit';
 import { SettingsAudit } from './collections/SettingsAudit';
 import { SiteSettings } from './globals/SiteSettings';
-import { organizationCollections, OrganizationReviews, OrganizationAudit } from './collections/Organization';
+import { OrganizationState } from './organization/active-period';
+import { OrganizationStateAudit } from './collections/OrganizationStateAudit';
+import { ResearchCategories } from './collections/ResearchCategories';
+import { reviewedCollections, OrganizationReviews, OrganizationAudit } from './collections/Reviewed';
 import { EditorialAudit } from './collections/EditorialAudit';
 import { Media, MediaAudit } from './collections/Media';
 import { ContentReviews } from './collections/ContentReviews';
@@ -39,9 +42,9 @@ export default buildConfig({
   serverURL,
   cors: [serverURL],
   csrf: [serverURL],
-  admin: { user: 'users', importMap: { baseDir: dirname } },
-  collections: [Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit, Pages, PageRevisions, PageReviews, PageAudit, SettingsAudit, ...organizationCollections('periods'), ...organizationCollections('divisions'), OrganizationReviews, OrganizationAudit, Media, MediaAudit, ContentReviews, AssetConfigReferences],
-  globals: [SiteSettings],
+  admin: { user: 'users', avatar: 'default', importMap: { baseDir: dirname } },
+  collections: [Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit, Pages, PageRevisions, PageReviews, PageAudit, SettingsAudit, OrganizationStateAudit, ...reviewedCollections('periods'), ...reviewedCollections('divisions'), ...reviewedCollections('members'), ResearchCategories, ...reviewedCollections('research'), ...reviewedCollections('events'), OrganizationReviews, OrganizationAudit, Media, MediaAudit, ContentReviews, AssetConfigReferences],
+  globals: [SiteSettings, OrganizationState],
   onInit: async payload => {
     // Payload JWT resolves the current user and session from the database on every request.
     // Reject inactive accounts before any CMS/API authorization or /me response.

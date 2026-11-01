@@ -9,6 +9,9 @@ import * as migration_20261031_070403_safe_deletion from './20261031_070403_safe
 import * as migration_20261031_112626_pages_editorial from './20261031_112626_pages_editorial';
 import * as migration_20261031_154513_site_settings from './20261031_154513_site_settings';
 import * as migration_20261031_155431_organization_profiles from './20261031_155431_organization_profiles';
+import * as migration_20261101_022923_public_members from './20261101_022923_public_members';
+import * as migration_20261101_023219_active_period from './20261101_023219_active_period';
+import * as migration_20261101_024724_research_events from './20261101_024724_research_events';
 
 export const migrations = [
   {
@@ -64,6 +67,21 @@ export const migrations = [
   {
     up: migration_20261031_155431_organization_profiles.up,
     down: migration_20261031_155431_organization_profiles.down,
-    name: '20261031_155431_organization_profiles'
+    name: '20261031_155431_organization_profiles',
+  },
+  {
+    up: migration_20261101_022923_public_members.up,
+    down: migration_20261101_022923_public_members.down,
+    name: '20261101_022923_public_members',
+  },
+  {
+    up: migration_20261101_023219_active_period.up,
+    down: migration_20261101_023219_active_period.down,
+    name: '20261101_023219_active_period',
+  },
+  {
+    up: migration_20261101_024724_research_events.up,
+    down: migration_20261101_024724_research_events.down,
+    name: '20261101_024724_research_events'
   },
 ];
