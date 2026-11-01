@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — T042 / Fase C selesai:** T001–T042 selesai; CP-01–CP-15 ditinjau. Daftar/detail kegiatan, rekrutmen dengan aktivasi tunggal, kontak/publikasi dan homepage P0 terhubung ke snapshot approved. [Bukti batch T036–T042](../docs/reports/T042.md). T043 galeri menjadi tugas berikutnya di Fase D. Konten resmi dan kelulusan MVP tetap terbuka.
+**Status terbaru — QA CP-01–CP-15 (1 November 2026):** implementasi tersedia sampai T042, tetapi sign-off belum seluruhnya lulus. CP-01–CP-09 lulus pada cakupan audit; CP-10–CP-15 dibuka kembali karena QA-01/02 (arsip/restart lintas modul) dan QA-03 (CTA Pages melewati waktu tutup). [Laporan dan matriks QA](../docs/qa/CP01-CP15.md). Perbaikan temuan didahulukan sebelum T043; bukti implementasi sebelumnya tetap riwayat.
 
 ## Tujuan dan kondisi awal
 
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**Status terbaru — T042 / Fase C selesai:** T001–T042 selesai; CP-01–CP-15 ditinjau. Daftar/detail kegiatan, rekrutmen dengan aktivasi tunggal, kontak/publikasi dan homepage P0 terhubung ke snapshot approved. [Bukti batch T036–T042](../docs/reports/T042.md). T043 galeri menjadi tugas berikutnya di Fase D. Konten resmi dan kelulusan MVP tetap terbuka.
+**Status terbaru — QA CP-01–CP-15 (1 November 2026):** implementasi tersedia sampai T042, tetapi sign-off belum seluruhnya lulus. CP-01–CP-09 lulus pada cakupan audit; CP-10–CP-15 dibuka kembali karena QA-01/02 (arsip/restart lintas modul) dan QA-03 (CTA Pages melewati waktu tutup). [Laporan dan matriks QA](../docs/qa/CP01-CP15.md). Perbaikan temuan didahulukan sebelum T043; bukti implementasi sebelumnya tetap riwayat.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 
