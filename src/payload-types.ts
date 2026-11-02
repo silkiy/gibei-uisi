@@ -67,6 +67,7 @@ export interface Config {
   };
   blocks: {};
   collections: {
+    'partner-logo-permissions': PartnerLogoPermission;
     users: User;
     'account-audit': AccountAudit;
     'article-categories': ArticleCategory;
@@ -93,6 +94,12 @@ export interface Config {
     'event-revisions': EventRevision;
     'recruitment-periods': RecruitmentPeriod;
     'recruitment-revisions': RecruitmentRevision;
+    galleries: Gallery;
+    'gallery-revisions': GalleryRevision;
+    partners: Partner;
+    'partner-revisions': PartnerRevision;
+    achievements: Achievement;
+    'achievement-revisions': AchievementRevision;
     'organization-reviews': OrganizationReview;
     'organization-audit': OrganizationAudit;
     media: Media;
@@ -105,6 +112,7 @@ export interface Config {
   };
   collectionsJoins: {};
   collectionsSelect: {
+    'partner-logo-permissions': PartnerLogoPermissionsSelect<false> | PartnerLogoPermissionsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'account-audit': AccountAuditSelect<false> | AccountAuditSelect<true>;
     'article-categories': ArticleCategoriesSelect<false> | ArticleCategoriesSelect<true>;
@@ -131,6 +139,12 @@ export interface Config {
     'event-revisions': EventRevisionsSelect<false> | EventRevisionsSelect<true>;
     'recruitment-periods': RecruitmentPeriodsSelect<false> | RecruitmentPeriodsSelect<true>;
     'recruitment-revisions': RecruitmentRevisionsSelect<false> | RecruitmentRevisionsSelect<true>;
+    galleries: GalleriesSelect<false> | GalleriesSelect<true>;
+    'gallery-revisions': GalleryRevisionsSelect<false> | GalleryRevisionsSelect<true>;
+    partners: PartnersSelect<false> | PartnersSelect<true>;
+    'partner-revisions': PartnerRevisionsSelect<false> | PartnerRevisionsSelect<true>;
+    achievements: AchievementsSelect<false> | AchievementsSelect<true>;
+    'achievement-revisions': AchievementRevisionsSelect<false> | AchievementRevisionsSelect<true>;
     'organization-reviews': OrganizationReviewsSelect<false> | OrganizationReviewsSelect<true>;
     'organization-audit': OrganizationAuditSelect<false> | OrganizationAuditSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -185,6 +199,84 @@ export interface UserAuthOperations {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partner-logo-permissions".
+ */
+export interface PartnerLogoPermission {
+  id: number;
+  partner: number | Partner;
+  assetId: number;
+  fileVersion: string;
+  checksum: string;
+  allowed: boolean;
+  actorId: number;
+  note: string;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners".
+ */
+export interface Partner {
+  id: number;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  example?: boolean | null;
+  collaboration?: string | null;
+  website?: string | null;
+  logo?: (number | null) | Media;
+  showOnHomepage?: boolean | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | PartnerRevision;
+  publicRevision?: (number | null) | PartnerRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "media".
+ */
+export interface Media {
+  id: number;
+  key: string;
+  name: string;
+  alt: string;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  state: 'ready' | 'revoked' | 'deleted';
+  fileVersion: string;
+  checksum: string;
+  mime: string;
+  extension: string;
+  size: number;
+  width?: number | null;
+  height?: number | null;
+  hasThumbnail: boolean;
+  thumbnailChecksum?: string | null;
+  revokedAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "users".
  */
 export interface User {
@@ -211,6 +303,36 @@ export interface User {
     | null;
   password?: string | null;
   collection: 'users';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partner-revisions".
+ */
+export interface PartnerRevision {
+  id: number;
+  entity: number | Partner;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  title?: string | null;
+  description?: string | null;
+  example?: boolean | null;
+  collaboration?: string | null;
+  website?: string | null;
+  logo?: (number | null) | Media;
+  showOnHomepage?: boolean | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -319,31 +441,6 @@ export interface Article {
   expectedLockVersion?: number | null;
   expectedRevisionId?: number | null;
   state?: string | null;
-  updatedAt: string;
-  createdAt: string;
-}
-/**
- * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "media".
- */
-export interface Media {
-  id: number;
-  key: string;
-  name: string;
-  alt: string;
-  owner: number | User;
-  assignedTo?: (number | User)[] | null;
-  state: 'ready' | 'revoked' | 'deleted';
-  fileVersion: string;
-  checksum: string;
-  mime: string;
-  extension: string;
-  size: number;
-  width?: number | null;
-  height?: number | null;
-  hasThumbnail: boolean;
-  thumbnailChecksum?: string | null;
-  revokedAt?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -1239,11 +1336,168 @@ export interface RecruitmentRevision {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "galleries".
+ */
+export interface Gallery {
+  id: number;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  example?: boolean | null;
+  date?: string | null;
+  event?: (number | null) | Event;
+  photos?:
+    | {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  videoURL?: string | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | GalleryRevision;
+  publicRevision?: (number | null) | GalleryRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-revisions".
+ */
+export interface GalleryRevision {
+  id: number;
+  entity: number | Gallery;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  title?: string | null;
+  description?: string | null;
+  example?: boolean | null;
+  date?: string | null;
+  event?: (number | null) | Event;
+  photos?:
+    | {
+        asset?: (number | null) | Media;
+        alt?: string | null;
+        caption?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  videoURL?: string | null;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "achievements".
+ */
+export interface Achievement {
+  id: number;
+  slug: string;
+  title?: string | null;
+  description?: string | null;
+  example?: boolean | null;
+  date?: string | null;
+  category?: string | null;
+  recipient?: string | null;
+  documentation?: (number | null) | Media;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  createdBy: number | User;
+  owner: number | User;
+  assignedTo?: (number | User)[] | null;
+  workingRevision?: (number | null) | AchievementRevision;
+  publicRevision?: (number | null) | AchievementRevision;
+  lockVersion: number;
+  deletedAt?: string | null;
+  expectedLockVersion?: number | null;
+  expectedRevisionId?: number | null;
+  state?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "achievement-revisions".
+ */
+export interface AchievementRevision {
+  id: number;
+  entity: number | Achievement;
+  number: number;
+  editVersion: number;
+  state: 'draft' | 'in_review' | 'revision_required' | 'published' | 'archived';
+  title?: string | null;
+  description?: string | null;
+  example?: boolean | null;
+  date?: string | null;
+  category?: string | null;
+  recipient?: string | null;
+  documentation?: (number | null) | Media;
+  assets?:
+    | {
+        asset: number | Media;
+        alt?: string | null;
+        caption?: string | null;
+        fileVersion?: string | null;
+        checksum?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organization-reviews".
  */
 export interface OrganizationReview {
   id: number;
-  kind: 'periods' | 'divisions' | 'members' | 'research' | 'events' | 'recruitment';
+  kind:
+    | 'periods'
+    | 'divisions'
+    | 'members'
+    | 'research'
+    | 'events'
+    | 'recruitment'
+    | 'galleries'
+    | 'partners'
+    | 'achievements';
   entityId: number;
   revisionId: number;
   period?: (number | null) | OrganizationalPeriod;
@@ -1252,6 +1506,9 @@ export interface OrganizationReview {
   research?: (number | null) | ResearchPublication;
   event?: (number | null) | Event;
   recruitment?: (number | null) | RecruitmentPeriod;
+  gallery?: (number | null) | Gallery;
+  partner?: (number | null) | Partner;
+  achievement?: (number | null) | Achievement;
   editVersion: number;
   manifest:
     | {
@@ -1277,7 +1534,16 @@ export interface OrganizationReview {
  */
 export interface OrganizationAudit {
   id: number;
-  kind: 'periods' | 'divisions' | 'members' | 'research' | 'events' | 'recruitment';
+  kind:
+    | 'periods'
+    | 'divisions'
+    | 'members'
+    | 'research'
+    | 'events'
+    | 'recruitment'
+    | 'galleries'
+    | 'partners'
+    | 'achievements';
   entityId: number;
   revisionId: number;
   actorId: number;
@@ -1415,6 +1681,21 @@ export interface PayloadMigration {
   batch?: number | null;
   updatedAt: string;
   createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partner-logo-permissions_select".
+ */
+export interface PartnerLogoPermissionsSelect<T extends boolean = true> {
+  partner?: T;
+  assetId?: T;
+  fileVersion?: T;
+  checksum?: T;
+  allowed?: T;
+  actorId?: T;
+  note?: T;
+  updatedAt?: T;
+  createdAt?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -2157,6 +2438,215 @@ export interface RecruitmentRevisionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "galleries_select".
+ */
+export interface GalleriesSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  description?: T;
+  example?: T;
+  date?: T;
+  event?: T;
+  photos?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        id?: T;
+      };
+  videoURL?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "gallery-revisions_select".
+ */
+export interface GalleryRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  title?: T;
+  description?: T;
+  example?: T;
+  date?: T;
+  event?: T;
+  photos?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        id?: T;
+      };
+  videoURL?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partners_select".
+ */
+export interface PartnersSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  description?: T;
+  example?: T;
+  collaboration?: T;
+  website?: T;
+  logo?: T;
+  showOnHomepage?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "partner-revisions_select".
+ */
+export interface PartnerRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  title?: T;
+  description?: T;
+  example?: T;
+  collaboration?: T;
+  website?: T;
+  logo?: T;
+  showOnHomepage?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "achievements_select".
+ */
+export interface AchievementsSelect<T extends boolean = true> {
+  slug?: T;
+  title?: T;
+  description?: T;
+  example?: T;
+  date?: T;
+  category?: T;
+  recipient?: T;
+  documentation?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  createdBy?: T;
+  owner?: T;
+  assignedTo?: T;
+  workingRevision?: T;
+  publicRevision?: T;
+  lockVersion?: T;
+  deletedAt?: T;
+  expectedLockVersion?: T;
+  expectedRevisionId?: T;
+  state?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "achievement-revisions_select".
+ */
+export interface AchievementRevisionsSelect<T extends boolean = true> {
+  entity?: T;
+  number?: T;
+  editVersion?: T;
+  state?: T;
+  title?: T;
+  description?: T;
+  example?: T;
+  date?: T;
+  category?: T;
+  recipient?: T;
+  documentation?: T;
+  assets?:
+    | T
+    | {
+        asset?: T;
+        alt?: T;
+        caption?: T;
+        fileVersion?: T;
+        checksum?: T;
+        id?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "organization-reviews_select".
  */
 export interface OrganizationReviewsSelect<T extends boolean = true> {
@@ -2169,6 +2659,9 @@ export interface OrganizationReviewsSelect<T extends boolean = true> {
   research?: T;
   event?: T;
   recruitment?: T;
+  gallery?: T;
+  partner?: T;
+  achievement?: T;
   editVersion?: T;
   manifest?: T;
   manifestDigest?: T;

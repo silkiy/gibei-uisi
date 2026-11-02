@@ -28,6 +28,9 @@ export async function assetReferences(req: PayloadRequest, id: number) {
       JOIN ${schema}.event_revisions r ON r.id=usage._parent_id JOIN ${schema}.events m ON m.id=r.entity_id WHERE usage.asset_id=${id}
     UNION SELECT 'event_review',review.id,NULL,m.slug FROM ${schema}.organization_reviews review JOIN ${schema}.events m ON m.id=review.entity_id
       WHERE review.kind='events' AND EXISTS(SELECT 1 FROM jsonb_array_elements(COALESCE(review.manifest->'assets','[]'::jsonb)) item WHERE item->>'asset'=${String(id)})
+    UNION SELECT 'galleries_revision',r.id,NULL,m.slug FROM ${schema}.gallery_revisions_assets usage JOIN ${schema}.gallery_revisions r ON r.id=usage._parent_id JOIN ${schema}.galleries m ON m.id=r.entity_id WHERE usage.asset_id=${id}
+    UNION SELECT 'partners_revision',r.id,NULL,m.slug FROM ${schema}.partner_revisions_assets usage JOIN ${schema}.partner_revisions r ON r.id=usage._parent_id JOIN ${schema}.partners m ON m.id=r.entity_id WHERE usage.asset_id=${id}
+    UNION SELECT 'achievements_revision',r.id,NULL,m.slug FROM ${schema}.achievement_revisions_assets usage JOIN ${schema}.achievement_revisions r ON r.id=usage._parent_id JOIN ${schema}.achievements m ON m.id=r.entity_id WHERE usage.asset_id=${id}
     ORDER BY kind,id`);
   return result.rows;
 }

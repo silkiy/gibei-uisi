@@ -66,6 +66,14 @@ export function ReviewedActions({ kind, collectionSlug }: { kind: EditorialKind;
     } catch (cause) { setError((cause as Error).message); setBusy(false); }
   }
 
+  async function recordLogo(allowed: boolean) {
+    setBusy(true); setError('');
+    try {
+      const result = await fetch(`/api/editorial/partners/${pageId}/logo-permission`, { method: 'POST', headers: { 'Content-Type':'application/json' }, body: JSON.stringify({ allowed, note, expectedLockVersion:doc!.lockVersion }) });
+      if (!result.ok) throw Error('Izin logo gagal disimpan. Pastikan logo tersimpan, isi alasan dan muat ulang.');
+      window.location.reload();
+    } catch (cause) { setError((cause as Error).message); setBusy(false); }
+  }
   const button = (action: string, label: string, reason = false) =>
     <button type="button" disabled={disabled || (reason && !note.trim())} onClick={() => command(action)}>{label}</button>;
 
@@ -77,6 +85,7 @@ export function ReviewedActions({ kind, collectionSlug }: { kind: EditorialKind;
     {error && <p role="alert">{error}</p>}
     {admin && <label style={{ display: 'grid', gap: 8, marginBlock: 12 }}>Alasan editorial<textarea value={note} maxLength={2000} rows={3} onChange={event => setNote(event.target.value)} /></label>}
     <div style={{ display: 'flex', flexWrap: 'wrap', gap: 12 }}>
+      {admin && kind === 'partners' && <><button type="button" disabled={disabled || !note.trim()} onClick={() => recordLogo(true)}>Catat izin logo</button><button type="button" disabled={disabled || !note.trim()} onClick={() => recordLogo(false)}>Cabut izin logo</button></>}
       {workingId && ['draft', 'revision_required'].includes(doc.state || '') && button('submit', 'Ajukan review')}
       {pending && doc.state === 'in_review' && button('withdraw-submission', 'Tarik pengajuan')}
       {admin && pending && doc.state === 'in_review' && <>{button('request-revision', 'Minta revisi', true)}{button('publish', 'Terbitkan')}</>}

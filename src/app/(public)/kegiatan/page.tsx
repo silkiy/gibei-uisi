@@ -1,3 +1,4 @@
+import { routeMetadata } from '@/seo/metadata';
 import Link from 'next/link';
 import { publicPageData } from '../../../content/public-pages';
 import { publicEvents } from '../../../content/event-read';
@@ -16,3 +17,5 @@ export default async function Events({ searchParams }: { searchParams: Promise<R
     <nav className="article-pagination" aria-label="Halaman kegiatan">{result.page>1 && <Link prefetch={false} href={url(result.page-1)}>Sebelumnya</Link>}<span>Halaman {result.page} dari {result.totalPages}</span>{result.page<result.totalPages && <Link prefetch={false} href={url(result.page+1)}>Berikutnya</Link>}</nav>
   </main>;
 }
+
+export async function generateMetadata() {return routeMetadata('/kegiatan');}

@@ -11,7 +11,7 @@ export function reviewedCollections(kind: EditorialKind): CollectionConfig[] {
   return [{
     slug: model.root, lockDocuments: false, disableBulkEdit: true, disableDuplicate: true,
     admin: { useAsTitle: model.identity, defaultColumns: [model.identity, 'owner', 'updatedAt'] },
-    access: { create: ({ req }) => isActiveAdmin(req.user) || ['members', 'research', 'events', 'recruitment'].includes(kind) && isActiveUser(req.user), read: orgScope, update: orgScope, delete: () => false }, hooks: reviewedHooks(kind),
+    access: { create: ({ req }) => isActiveAdmin(req.user) || ['members', 'research', 'events', 'recruitment', 'galleries', 'partners', 'achievements'].includes(kind) && isActiveUser(req.user), read: orgScope, update: orgScope, delete: () => false }, hooks: reviewedHooks(kind),
     fields: [
       { name: 'editorialActions', type: 'ui', admin: { components: { Field: { path: '/components/ReviewedActions#ReviewedActions', clientProps: { kind, collectionSlug: model.root } } } } },
       kind === 'periods' ? { name: 'label', type: 'text', unique: true, required: true, maxLength: 120 }
@@ -43,7 +43,7 @@ export function reviewedCollections(kind: EditorialKind): CollectionConfig[] {
 const reviewAccess: Access = ({ req }) => {
   if (isActiveAdmin(req.user)) return true;
   if (!isActiveUser(req.user)) return false;
-  return { or: ['period', 'division', 'member', 'research', 'event', 'recruitment'].flatMap(key => ['owner', 'assignedTo'].map(field => ({ and: [{ [`${key}.deletedAt`]: { exists: false } }, { [`${key}.${field}`]: field === 'owner' ? { equals: req.user!.id } : { in: [req.user!.id] } }] }))) } as Where;
+  return { or: ['period', 'division', 'member', 'research', 'event', 'recruitment', 'gallery', 'partner', 'achievement'].flatMap(key => ['owner', 'assignedTo'].map(field => ({ and: [{ [`${key}.deletedAt`]: { exists: false } }, { [`${key}.${field}`]: field === 'owner' ? { equals: req.user!.id } : { in: [req.user!.id] } }] }))) } as Where;
 };
 export const OrganizationReviews: CollectionConfig = {
   slug: 'organization-reviews', lockDocuments: false, admin: { hidden: true }, hooks: internalHooks,
@@ -55,6 +55,9 @@ export const OrganizationReviews: CollectionConfig = {
     { name: 'member', type: 'relationship', relationTo: 'members', maxDepth: 0 },
     { name: 'research', type: 'relationship', relationTo: 'research-publications', maxDepth: 0 }, { name: 'event', type: 'relationship', relationTo: 'events', maxDepth: 0 },
     { name: 'recruitment', type: 'relationship', relationTo: 'recruitment-periods', maxDepth: 0 },
+    { name: 'gallery', type: 'relationship', relationTo: 'galleries', maxDepth: 0 },
+    { name: 'partner', type: 'relationship', relationTo: 'partners', maxDepth: 0 },
+    { name: 'achievement', type: 'relationship', relationTo: 'achievements', maxDepth: 0 },
     { name: 'editVersion', type: 'number', required: true }, { name: 'manifest', type: 'json', required: true }, { name: 'manifestDigest', type: 'text', required: true },
     { name: 'status', type: 'select', required: true, options: ['pending', 'approved', 'changes_requested', 'cancelled'] },
     { name: 'submittedBy', type: 'number', required: true }, { name: 'reviewerId', type: 'number' }, { name: 'note', type: 'textarea', maxLength: 2000 }, { name: 'resolvedAt', type: 'date' },

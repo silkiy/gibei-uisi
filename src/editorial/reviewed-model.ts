@@ -1,3 +1,5 @@
+import { p1Fields } from './p1-fields';
+import { validateP1 } from '../content/p1-policy.mjs';
 import { recruitmentFields } from '../recruitment/fields';
 import { validateRecruitment } from '../recruitment/policy.mjs';
 import type { Field } from 'payload';
@@ -15,9 +17,12 @@ export function revisionAssetsField(virtual: boolean): Extract<Field, { type: 'a
   return { ...field, admin: { hidden: true, readOnly: true } };
 }
 
-export const editorialKinds = ['periods', 'divisions', 'members', 'research', 'events', 'recruitment'] as const;
+export const editorialKinds = ['periods', 'divisions', 'members', 'research', 'events', 'recruitment', 'galleries', 'partners', 'achievements'] as const;
 export type EditorialKind = typeof editorialKinds[number];
 export const editorialModel = (kind: EditorialKind) => ({
+  galleries: { root: 'galleries' as const, revisions: 'gallery-revisions' as const, identity: 'slug' as const, reference: 'gallery' as const, keys: ['title','description','date','event','photos','videoURL','example','assets'] },
+  partners: { root: 'partners' as const, revisions: 'partner-revisions' as const, identity: 'slug' as const, reference: 'partner' as const, keys: ['title','description','collaboration','website','logo','showOnHomepage','example','assets'] },
+  achievements: { root: 'achievements' as const, revisions: 'achievement-revisions' as const, identity: 'slug' as const, reference: 'achievement' as const, keys: ['title','description','date','category','recipient','documentation','example','assets'] },
   periods: { root: 'organizational-periods' as const, revisions: 'period-revisions' as const, identity: 'label' as const, reference: 'period' as const, keys: ['startDate', 'endDate'] },
   divisions: { root: 'divisions' as const, revisions: 'division-revisions' as const, identity: 'slug' as const, reference: 'division' as const, keys: ['description', 'workPrograms', 'displayOrder', 'example', 'period'] },
   members: { root: 'members' as const, revisions: 'member-revisions' as const, identity: 'slug' as const, reference: 'member' as const, keys: ['name', 'position', 'period', 'division', 'photo', 'displayOrder', 'example', 'assets'] },
@@ -31,12 +36,13 @@ export function editorialKind(value: string): EditorialKind {
 }
 export function validateIdentity(kind: EditorialKind, value: unknown) {
   if (typeof value !== 'string' || !value.trim() || value.length > 120 || /[<>\u0000-\u001f\u007f]/.test(value) || kind === 'divisions' && !Object.hasOwn(divisionNames, value)) throw new APIError('Invalid organization identity', 400);
-  if (['members', 'research', 'events', 'recruitment'].includes(kind) && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) throw new APIError('Use a stable lowercase slug', 400);
+  if (['members', 'research', 'events', 'recruitment', 'galleries', 'partners', 'achievements'].includes(kind) && !/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(value)) throw new APIError('Use a stable lowercase slug', 400);
   return value.trim();
 }
 export function validateDraft(kind: EditorialKind, data: Record<string, unknown>, complete = false) {
   try {
-    if (kind === 'recruitment') validateRecruitment(data, complete);
+    if (['galleries','partners','achievements'].includes(kind)) validateP1(kind, data, complete);
+    else if (kind === 'recruitment') validateRecruitment(data, complete);
     else if (kind === 'members') {
       for (const key of ['name', 'position']) if (!settingsText(data[key], 160) || complete && (typeof data[key] !== 'string' || !data[key].trim())) throw Error('Public name and position required');
       if (!Number.isSafeInteger(data.period) || Number(data.period) < 1) throw Error('Published period is required');
@@ -46,6 +52,7 @@ export function validateDraft(kind: EditorialKind, data: Record<string, unknown>
   } catch (error) { throw new APIError((error as Error).message, 400); }
 }
 export function reviewedFields(kind: EditorialKind, virtual = false): Field[] {
+  if (['galleries','partners','achievements'].includes(kind)) return p1Fields(kind, virtual);
   if (kind === 'recruitment') return recruitmentFields(virtual);
   if (kind === 'research' || kind === 'events') return publicationFields(kind, virtual);
   if (kind === 'members') return [

@@ -1,3 +1,4 @@
+import { routeMetadata } from '@/seo/metadata';
 import Image from 'next/image';
 import { publicPageData } from '../../../../content/public-pages';
 import { structureData } from '../../../../content/members-read';
@@ -24,3 +25,5 @@ export default async function Structure({ searchParams }: { searchParams: Promis
     </article>)}
   </main>;
 }
+
+export async function generateMetadata() {return routeMetadata('/tentang/struktur');}

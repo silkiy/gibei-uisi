@@ -1,3 +1,4 @@
+import { routeMetadata } from '@/seo/metadata';
 import { publicPageData } from '../../../content/public-pages';
 import { recruitmentPage } from '../../../content/recruitment-read';
 import { EmptyState } from '../../../components/public/EmptyState';
@@ -15,3 +16,5 @@ export default async function Recruitment({searchParams}:{searchParams:Promise<R
     </article>}
   </main>;
 }
+
+export async function generateMetadata() {return routeMetadata('/rekrutmen');}

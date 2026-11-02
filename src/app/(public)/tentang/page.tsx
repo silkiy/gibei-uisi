@@ -1,3 +1,4 @@
+import { routeMetadata } from '@/seo/metadata';
 import Link from 'next/link';
 import { publicPageData } from '../../../content/public-pages';
 import { publishedPage } from '../../../content/pages-read';
@@ -18,3 +19,5 @@ export default async function AboutPage() {
     <p><Link prefetch={false} href="/tentang/struktur">Lihat kepengurusan per periode →</Link></p>
   </main>;
 }
+
+export async function generateMetadata() {return routeMetadata('/tentang');}

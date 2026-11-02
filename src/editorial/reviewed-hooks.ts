@@ -35,7 +35,7 @@ export async function verifyDraftFiles(req: PayloadRequest, revision: EditorialR
 }
 
 export async function normalizeDraft(req: PayloadRequest, kind: EditorialKind, draft: Record<string, unknown>) {
-  for (const key of ['period', 'division', 'photo', 'cover', 'pdf', 'poster', 'category']) if (draft[key]) draft[key] = Number(relationId(draft[key] as number));
+  for (const key of ['event', 'logo', 'documentation', 'period', 'division', 'photo', 'cover', 'pdf', 'poster', ...(kind === 'research' ? ['category'] : [])]) if (draft[key]) draft[key] = Number(relationId(draft[key] as number));
   if (['members', 'research', 'events'].includes(kind)) {
     const rows = [];
     for (const key of kind === 'members' ? ['photo'] : kind === 'research' ? ['cover', 'pdf'] : ['poster']) if (draft[key]) {
@@ -43,6 +43,22 @@ export async function normalizeDraft(req: PayloadRequest, kind: EditorialKind, d
       if (key === 'pdf' ? asset.mime !== 'application/pdf' : !asset.mime.startsWith('image/')) throw new APIError('Media type does not match its field', 400);
       rows.push({ asset: asset.id });
     }
+    draft.assets = await normalizeAssets(req, rows);
+  }
+  if (['galleries','partners','achievements'].includes(kind)) {
+    draft.example ??= true;
+    if (kind === 'partners') draft.showOnHomepage ??= false;
+    const rows: { asset: number; alt?: string; caption?: string }[] = [];
+    if (kind === 'galleries') {
+      if (draft.photos != null && (!Array.isArray(draft.photos) || draft.photos.length > 30 || draft.photos.some(row => !row || typeof row !== 'object'))) throw new APIError('Invalid photos',400);
+      draft.photos = Array.isArray(draft.photos) ? draft.photos.map(row => ({ asset: Number(relationId(row.asset)), alt: row.alt, caption: row.caption ?? null })) : [];
+      rows.push(...draft.photos as typeof rows);
+      if (draft.event) {
+        const target = await req.payload.db.findOne({ collection: 'events', req, where: { id: { equals: draft.event } } }) as unknown as EditorialDoc | null;
+        if (!target?.publicRevision || target.deletedAt) throw new APIError('Event must be published',409);
+      }
+    } else if (kind === 'partners' ? draft.logo : draft.documentation) rows.push({ asset: Number(kind === 'partners' ? draft.logo : draft.documentation) });
+    for (const row of rows) if (!(await referencedAsset(req,row.asset)).mime.startsWith('image/')) throw new APIError('Image required',400);
     draft.assets = await normalizeAssets(req, rows);
   }
   if (kind === 'research') {
@@ -105,7 +121,7 @@ export function reviewedHooks(kind: EditorialKind): CollectionConfig['hooks'] {
         assignedTo: (originalDoc.assignedTo || []).map((value: number | { id: number }) => Number(relationId(value))),
         workingRevision: relationId(originalDoc.workingRevision), publicRevision: relationId(originalDoc.publicRevision),
       } as EditorialDoc;
-      if (creating ? !isActiveAdmin(req.user) && !['members', 'research', 'events', 'recruitment'].includes(kind) : root.deletedAt || !canEditDraft(req.user, root)) throw new NotFound();
+      if (creating ? !isActiveAdmin(req.user) && !['members', 'research', 'events', 'recruitment', 'galleries', 'partners', 'achievements'].includes(kind) : root.deletedAt || !canEditDraft(req.user, root)) throw new NotFound();
       const revision = !creating && root.workingRevision ? await orgRevision(req, kind, root.workingRevision) : undefined;
       if (!creating && (!revision || revision.entity !== root.id || !['draft', 'revision_required'].includes(revision.state))) throw new APIError('Working revision unavailable', 409);
       if (!creating && change.raw.expectedLockVersion !== root.lockVersion) throw new APIError('Entity changed; reload before saving', 409);

@@ -1,3 +1,5 @@
+import { routeMetadata } from '@/seo/metadata';
+import { P1Content } from '@/components/public/P1Content';
 import { publicPageData } from '../../content/public-pages';
 import { homepageData } from '../../content/homepage';
 import { PageSections } from '../../components/public/PageSections';
@@ -50,9 +52,11 @@ export default async function HomePage() {
           <Link prefetch={false} className="text-link" href="/kegiatan">Semua kegiatan & arsip →</Link>
         </section>
         <section aria-labelledby="recruitment-heading"><p className="section-label">04 / Bertumbuh bersama</p><h2 id="recruitment-heading">Rekrutmen</h2>{data.campaign ? <><h3>{data.campaign.title}</h3><LiveRegistration initial={data.campaign} endpoint={`/api/public/recruitment/${data.campaign.slug}`}/></> : <p>Belum ada kampanye rekrutmen yang diaktifkan.</p>}<Link prefetch={false} className="text-link" href="/rekrutmen">Informasi posisi & riwayat →</Link></section>
-        <section aria-labelledby="community-heading"><h2 id="community-heading">Jejak &amp; kolaborasi</h2><p>Informasi prestasi dan mitra akan ditampilkan setelah tersedia dan disetujui.</p></section>
+        <section aria-labelledby="community-heading"><h2 id="community-heading">Jejak &amp; kolaborasi</h2><h3>Prestasi terbaru</h3>{data.achievements.length ? data.achievements.map(item=><article className="cms-section" key={item.id}><h4>{item.title}</h4><P1Content item={item}/></article>) : <p>Belum ada prestasi terbit.</p>}<Link href="/prestasi" prefetch={false}>Semua prestasi →</Link><h3>Mitra pilihan</h3>{data.partners.length ? data.partners.map(item=><article className="cms-section" key={item.id}><h4>{item.title}</h4><P1Content item={item}/></article>) : <p>Belum ada mitra terpilih.</p>}<Link href="/partnership" prefetch={false}>Semua partnership →</Link> · <Link href="/galeri" prefetch={false}>Galeri dokumentasi →</Link></section>
       </div>
       <div className="page-width education-note"><span>Catatan edukasi</span><p>Materi di website ini ditujukan untuk pembelajaran, bukan rekomendasi membeli atau menjual efek.</p></div>
     </main>
   );
 }
+
+export async function generateMetadata() {return routeMetadata('/');}

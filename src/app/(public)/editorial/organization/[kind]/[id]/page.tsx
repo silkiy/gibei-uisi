@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import { headers } from 'next/headers';
 import { notFound, redirect } from 'next/navigation';
 import { atomic, requestContext } from '../../../../../../server/request';
@@ -23,8 +24,9 @@ export default async function OrganizationPreview({ params }: { params: Promise<
   if (!doc) notFound();
   return <main id="main-content" tabIndex={-1} className="page-width cms-page">
     <p className="section-label">Preview privat · {String(doc.state)}</p><h1>{String(doc[model.identity])}</h1>
-    {model.keys.filter(key => !['period', 'body', 'assets', 'sources', 'positions', 'selectionStages'].includes(key)).map(key => <section className="cms-section" key={key}><h2>{key}</h2><p>{String(doc[key] ?? '')}</p></section>)}
+    {model.keys.filter(key => !['period', 'body', 'assets', 'sources', 'positions', 'selectionStages', 'photos'].includes(key)).map(key => <section className="cms-section" key={key}><h2>{key}</h2><p>{String(doc[key] ?? '')}</p></section>)}
     {['positions','selectionStages'].map(key=>Array.isArray(doc[key]) && <section className="cms-section" key={key}><h2>{key==='positions'?'Posisi & persyaratan':'Tahapan seleksi'}</h2><ol>{doc[key].map((row:Record<string,unknown>,i:number)=><li key={i}><h3>{String(row.title || '')}</h3><p>{String(row.requirements || row.description || '')}</p>{row.division!=null && <p>Divisi: {String(row.division)}</p>}</li>)}</ol></section>)}
+    {['galleries','partners','achievements'].includes(kind) && <div className="gallery-grid">{assets.map((asset,index)=><figure key={`${asset.id}-${index}`}>{asset.available && asset.url && asset.mime.startsWith('image/') ? <Image unoptimized src={asset.url} alt={asset.alt} width={asset.width||640} height={asset.height||480} className="public-image"/> : <p>Gambar tidak tersedia.</p>}{asset.caption && <figcaption>{asset.caption}</figcaption>}</figure>)}</div>}
     <div className="article-body"><RichText body={doc.body} assets={assets} /></div>
     {Array.isArray(doc.sources) && !!doc.sources.length && <section className="cms-section"><h2>Sumber</h2><ul>{doc.sources.map((source, i) => {
       const url = safeExternalURL(source.url);

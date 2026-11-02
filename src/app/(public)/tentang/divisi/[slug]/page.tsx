@@ -1,3 +1,4 @@
+import { routeMetadata } from '@/seo/metadata';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { publicPageData } from '../../../../../content/public-pages';
@@ -15,3 +16,5 @@ export default async function DivisionPage({ params }: { params: Promise<{ slug:
     <p className="cms-section"><Link prefetch={false} href="/tentang/divisi">← Semua divisi</Link></p>
   </main>;
 }
+
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}) {return routeMetadata('/tentang/divisi/'+(await params).slug);}

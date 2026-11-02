@@ -1,3 +1,5 @@
+import { StructuredData } from '@/seo/StructuredData';
+import { routeMetadata } from '@/seo/metadata';
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { publicPageData } from '../../../../../content/public-pages';
@@ -8,7 +10,7 @@ export default async function ArticleDetail({ params }: { params: Promise<{ slug
   const slug = (await params).slug;
   const doc = await publicPageData(req => findPublicArticle(req, slug));
   if (!doc) notFound();
-  return <main id="main-content" tabIndex={-1} className="page-width publication-main">
+  return <><StructuredData path={`/publikasi/artikel/${doc.slug}`} title={doc.title} description={doc.excerpt} type="Article"/><main id="main-content" tabIndex={-1} className="page-width publication-main">
     <article className="article-detail">
       <Link prefetch={false} className="article-back" href="/publikasi/artikel">← Semua artikel</Link>
       <p className="section-label">{doc.category?.name || 'Artikel & edukasi'}</p>
@@ -20,5 +22,7 @@ export default async function ArticleDetail({ params }: { params: Promise<{ slug
       <aside className="education-note"><span>Catatan edukasi</span><p>Publikasi ini untuk edukasi dan informasi, bukan rekomendasi membeli atau menjual efek. Keputusan investasi dan risikonya menjadi tanggung jawab masing-masing pembaca.</p></aside>
       {doc.related.length ? <section className="article-sources" aria-labelledby="related-heading"><h2 id="related-heading">Baca juga</h2><ul>{doc.related.map(target => <li key={target.id}><Link prefetch={false} href={`/publikasi/artikel/${target.slug}`}>{target.title}</Link></li>)}</ul></section> : null}
     </article>
-  </main>;
+  </main></>;
 }
+
+export async function generateMetadata({params}:{params:Promise<{slug:string}>}) {return routeMetadata('/publikasi/artikel/'+(await params).slug);}

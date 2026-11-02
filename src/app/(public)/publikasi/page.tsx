@@ -1,3 +1,4 @@
+import { routeMetadata } from '@/seo/metadata';
 import Link from 'next/link';
 import { publicPageData } from '../../../content/public-pages';
 import { publicationIndex } from '../../../content/publication-index';
@@ -9,3 +10,5 @@ export default async function Publications() {
     {(['artikel','riset'] as const).map(kind=>{const docs=kind==='artikel'?data.articles:data.research;return <section className="cms-section" key={kind}><h2>{kind==='artikel'?'Artikel terbaru':'Riset terbaru'}</h2><Link prefetch={false} className="text-link" href={`/publikasi/${kind}`}>Lihat semua {kind} →</Link>{docs.length?<PublicationLinks docs={docs} kind={kind}/>:<EmptyState title={`Belum ada ${kind} terbit.`}>Publikasi yang telah disetujui akan ditampilkan di sini.</EmptyState>}</section>;})}
   </main>;
 }
+
+export async function generateMetadata() {return routeMetadata('/publikasi');}

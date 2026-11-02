@@ -23,6 +23,7 @@ export async function isAssetPublic(req: PayloadRequest, asset: Media) {
     JOIN ${schema}.${sql.identifier(`${revision}_assets`)} usage ON usage._parent_id=r.id
     WHERE m.deleted_at IS NULL AND r.state='published' AND usage.asset_id=${asset.id}
       AND usage.file_version=${asset.fileVersion} AND usage.checksum=${asset.checksum}
+      ${kind === 'partners' ? sql`AND (SELECT p.allowed FROM ${schema}.partner_logo_permissions p WHERE p.partner_id=m.id AND p.asset_id=${asset.id} AND p.file_version=${asset.fileVersion} AND p.checksum=${asset.checksum} ORDER BY p.id DESC LIMIT 1)=true` : sql``}
       AND EXISTS(SELECT 1 FROM ${schema}.organization_reviews review WHERE review.kind=${kind} AND review.entity_id=m.id AND review.revision_id=r.id
         AND review.edit_version=r.edit_version AND review.status='approved' AND review.resolved_at IS NOT NULL)
   )`;
@@ -36,7 +37,10 @@ export async function isAssetPublic(req: PayloadRequest, asset: Media) {
         AND approved.status = 'approved' AND approved.edit_version = r.edit_version AND approved.resolved_at IS NOT NULL)
   ) OR ${reviewedUsage('members', 'members', 'member_revisions')}
     OR ${reviewedUsage('research', 'research_publications', 'research_revisions')}
-    OR ${reviewedUsage('events', 'events', 'event_revisions')} OR EXISTS (
+    OR ${reviewedUsage('events', 'events', 'event_revisions')}
+    OR ${reviewedUsage('galleries', 'galleries', 'gallery_revisions')}
+    OR ${reviewedUsage('achievements', 'achievements', 'achievement_revisions')}
+    OR ${reviewedUsage('partners', 'partners', 'partner_revisions')} OR EXISTS (
     SELECT 1 FROM ${schema}.site_settings s JOIN ${schema}.settings_audit audit ON audit.version = s.config_version
     WHERE (s.logo_id = ${asset.id} AND s.logo_version = ${asset.fileVersion} AND s.logo_checksum = ${asset.checksum}
       AND audit.after->>'logo' = ${String(asset.id)} AND audit.after->>'logoVersion' = ${asset.fileVersion} AND audit.after->>'logoChecksum' = ${asset.checksum})

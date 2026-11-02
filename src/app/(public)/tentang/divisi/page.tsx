@@ -1,3 +1,4 @@
+import { routeMetadata } from '@/seo/metadata';
 import Link from 'next/link';
 import { publicPageData } from '../../../../content/public-pages';
 import { publicDivisions } from '../../../../content/organization-read';
@@ -14,3 +15,5 @@ export default async function DivisionsPage() {
     </article>)}
   </main>;
 }
+
+export async function generateMetadata() {return routeMetadata('/tentang/divisi');}

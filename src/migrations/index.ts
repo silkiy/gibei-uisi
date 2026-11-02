@@ -14,6 +14,7 @@ import * as migration_20261101_023219_active_period from './20261101_023219_acti
 import * as migration_20261101_024724_research_events from './20261101_024724_research_events';
 import * as migration_20261101_040307_recruitment_campaigns from './20261101_040307_recruitment_campaigns';
 import * as migration_20261101_091210_page_revision_archival from './20261101_091210_page_revision_archival';
+import * as migration_20261102_034955_p1_modules from './20261102_034955_p1_modules';
 
 export const migrations = [
   {
@@ -94,6 +95,11 @@ export const migrations = [
   {
     up: migration_20261101_091210_page_revision_archival.up,
     down: migration_20261101_091210_page_revision_archival.down,
-    name: '20261101_091210_page_revision_archival'
+    name: '20261101_091210_page_revision_archival',
+  },
+  {
+    up: migration_20261102_034955_p1_modules.up,
+    down: migration_20261102_034955_p1_modules.down,
+    name: '20261102_034955_p1_modules'
   },
 ];

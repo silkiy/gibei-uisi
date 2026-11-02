@@ -12,5 +12,5 @@ export async function publishedPage(req: PayloadRequest, pageKey: PageKey) {
   const decision = await req.payload.db.findOne({ collection: 'page-reviews', where: { and: [{ page: { equals: page.id } }, { revision: { equals: revision.id } }, { editVersion: { equals: revision.editVersion } }, { status: { equals: 'approved' } }, { resolvedAt: { exists: true } }] }, req });
   if (!decision) return null;
   validatePageDraft(revision, true);
-  return { title: revision.title || '', sections: revision.sections || [] };
+  return { seoTitle:revision.seoTitle, seoDescription:revision.seoDescription, title: revision.title || '', sections: revision.sections || [] };
 }

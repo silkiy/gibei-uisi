@@ -67,3 +67,10 @@ Skenario artikel R1/P1 → revisi R2/P2 → revisi pending R3 → withdraw terda
 **Perluasan T027:** Site Settings menyimpan versi/checksum logo dan favicon dari Media ready yang tervalidasi. Izin publik konfigurasi memerlukan kecocokan slot saat ini dan snapshot audit pada configVersion yang sama; ledger retensi saja tidak pernah memberi izin publik. Konfigurasi, audit dan ledger disimpan atomik. Referensi historis tetap menahan penghapusan, sementara pergantian slot menutup URL lama jika tidak ada pemakaian publik lain. Revoke tetap menutup semua jalur. Lihat [T027](../reports/T027.md).
 
 **Perluasan T031–T035:** Foto pengurus, sampul/PDF riset dan poster event mengikuti manifest reviewed. Gateway memerlukan pointer publik, review approved pada editVersion yang sama, versi/checksum yang cocok dan file ready. Semua revisi serta manifest review historis menahan penghapusan tanpa memberi izin publik. Withdrawal/revoke menutup URL kecuali ada pemakaian publik lain yang sah. Tidak ada salinan melalui optimizer publik. Bukti lintas modul ada pada [T035](../reports/T035.md).
+
+
+## Perluasan P1 dan SEO — T043–T051
+
+Album, mitra dan prestasi memakai manifest aset dan retensi revisi yang sama. Penarikan referensi publik terakhir menutup file; referensi revisi lama tetap menghalangi delete. Revoke tetap menutup seluruh turunan dan memberi fallback, termasuk gambar pada galeri/homepage. Izin logo adalah catatan khusus Admin, terikat mitra dan ID/versi/checksum file. Logo tanpa izin tidak menjadi pemakaian publik pada mitra, walaupun byte yang sama sah pada album lain. DTO mitra juga memeriksa izin, sehingga byte publik pada konteks lain tidak cukup untuk menampilkan logo.
+
+Metadata dan sitemap memakai pointer publik/keputusan approval. OG berupa summary teks dan tidak menyimpan salinan aset, sehingga revoke tidak meninggalkan gambar pada metadata. JSON-LD tidak menyertakan URL file privat/bukti izin. [Kontrak SEO](seo.md) dan [laporan T051](../reports/T051.md) mencatat verifikasi serta batasnya. Catatan tugas sebelum bagian ini merupakan riwayat implementasi.

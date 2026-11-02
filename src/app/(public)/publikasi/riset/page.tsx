@@ -1,3 +1,4 @@
+import { routeMetadata } from '@/seo/metadata';
 import { publicPageData } from '../../../../content/public-pages';
 import { publicResearch, researchCategories } from '../../../../content/research-read';
 import { articleSearch } from '../../../../content/article-search';
@@ -34,3 +35,5 @@ export default async function ResearchList({ searchParams }: { searchParams: Pro
     <div className="education-note"><span>Catatan edukasi</span><p>Materi ditujukan untuk pembelajaran, bukan rekomendasi membeli atau menjual efek.</p></div>
   </main>;
 }
+
+export async function generateMetadata() {return routeMetadata('/publikasi/riset');}

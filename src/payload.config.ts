@@ -1,3 +1,5 @@
+import { canonicalURL } from './seo/policy.mjs';
+import { PartnerLogoPermissions } from './collections/PartnerLogoPermissions';
 import path from 'node:path';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
@@ -31,6 +33,7 @@ import { localTestConnection } from '../scripts/database/test-config.mjs';
 
 const dirname = path.dirname(fileURLToPath(import.meta.url));
 const serverURL = process.env.SERVER_URL || 'http://127.0.0.1:3000';
+canonicalURL('/',serverURL);
 const origin = new URL(serverURL);
 if (origin.protocol !== 'https:' && !['127.0.0.1', 'localhost'].includes(origin.hostname)) throw new Error('Non-local CMS requires HTTPS');
 if (!process.env.PAYLOAD_SECRET || process.env.PAYLOAD_SECRET.length < 32) throw new Error('Configure a strong PAYLOAD_SECRET');
@@ -45,7 +48,7 @@ export default buildConfig({
   cors: [serverURL],
   csrf: [serverURL],
   admin: { user: 'users', avatar: 'default', importMap: { baseDir: dirname } },
-  collections: [Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit, Pages, PageRevisions, PageReviews, PageAudit, SettingsAudit, OrganizationStateAudit, RecruitmentStateAudit, ...reviewedCollections('periods'), ...reviewedCollections('divisions'), ...reviewedCollections('members'), ResearchCategories, ...reviewedCollections('research'), ...reviewedCollections('events'), ...reviewedCollections('recruitment'), OrganizationReviews, OrganizationAudit, Media, MediaAudit, ContentReviews, AssetConfigReferences],
+  collections: [PartnerLogoPermissions, Users, AccountAudit, Categories, Articles, ArticleRevisions, EditorialAudit, Pages, PageRevisions, PageReviews, PageAudit, SettingsAudit, OrganizationStateAudit, RecruitmentStateAudit, ...reviewedCollections('periods'), ...reviewedCollections('divisions'), ...reviewedCollections('members'), ResearchCategories, ...reviewedCollections('research'), ...reviewedCollections('events'), ...reviewedCollections('recruitment'), ...reviewedCollections('galleries'), ...reviewedCollections('partners'), ...reviewedCollections('achievements'), OrganizationReviews, OrganizationAudit, Media, MediaAudit, ContentReviews, AssetConfigReferences],
   globals: [SiteSettings, OrganizationState, RecruitmentState],
   onInit: async payload => {
     // Payload JWT resolves the current user and session from the database on every request.

@@ -1,0 +1,48 @@
+import assert from 'node:assert/strict';
+import { before,test } from 'node:test';
+import { reviewedFixture } from '../support/reviewed.mjs';
+let f;
+before(async()=>{f=await reviewedFixture('p1');});
+const common={title:'Contoh dokumentasi',description:'Data contoh, bukan informasi resmi.',example:true};
+const list=async(kind,query='')=>{const r=await f.anonymous.request(`/api/public/p1/${kind}${query}`);assert.equal(r.status,200);return r.json();};
+test('gallery freezes ordered photos and captions, rejects foreign private assets, hides optional withdrawn event',async()=>{
+ const image=await f.upload(f.a),foreign=await f.upload(f.b);
+ assert.equal((await f.a.request('/api/galleries',{method:'POST',data:{slug:'foreign-gallery',...common,date:'2026-12-31',photos:[{asset:foreign.id,alt:'Private'}]}})).status,404);
+ const event=await f.publishReviewed('events',await f.create('events','album-event',{title:'Contoh event',description:'Contoh',startAt:'2099-01-01T09:00',endAt:'2099-01-01T10:00',location:'Kampus',organizer:'Tim contoh'}));
+ let album=await f.create('galleries','album-contoh',{...common,date:'2026-12-31',event:event.id,photos:[{asset:image.id,alt:'Foto pertama',caption:'Caption awal'},{asset:image.id,alt:'Foto kedua'}],videoURL:'https://example.com/video'});
+ assert.ok(!(await list('galleries')).docs.some(d=>d.slug===album.slug));
+ assert.equal((await f.anonymous.request(`/api/media/${image.key}/original`)).status,404);
+ album=await f.publishReviewed('galleries',album);let dto=(await list('galleries')).docs.find(d=>d.slug===album.slug);
+ assert.equal(dto.assets.length,2);assert.equal(dto.assets[0].caption,'Caption awal');assert.equal(dto.date,'2026-12-31');assert.equal(dto.event.slug,event.slug);assert.ok(!('owner' in dto));
+ const revision=await f.save('galleries',await f.revision('galleries',album),{photos:[{asset:image.id,alt:'Draft alt',caption:'Draft caption'}]});
+ assert.equal((await list('galleries')).docs.find(d=>d.slug===album.slug).assets[0].alt,'Foto pertama');
+ assert.equal((await f.command('events',event,'withdraw-publication',{note:'Optional relation removed'})).status,200);
+ assert.equal((await list('galleries')).docs.find(d=>d.slug===album.slug).event,null);
+ assert.equal((await f.command('galleries',revision,'withdraw-publication',{note:'Withdraw album'})).status,200);
+ assert.equal((await f.anonymous.request(`/api/media/${image.key}/original`)).status,404);
+});
+test('partner logo permission requires Admin, binds exact file and stays private; homepage updates after revocation',async()=>{
+ const image=await f.upload(f.a);let partner=await f.create('partners','mitra-demo',{...common,collaboration:'Contoh edukasi',website:'https://example.com',logo:image.id,showOnHomepage:true});
+ const endpoint=`/api/editorial/partners/${partner.id}/logo-permission`;
+ assert.equal((await f.a.request(endpoint,{method:'POST',data:{expectedLockVersion:partner.lockVersion,allowed:true,note:'Spoof'}})).status,403);
+ assert.equal((await f.a.request(`/api/partners/${partner.id}`,{method:'PATCH',data:{expectedLockVersion:partner.lockVersion,logoAllowed:true}})).status,403);
+ partner=await f.publishReviewed('partners',partner);assert.deepEqual((await list('partners')).docs.find(d=>d.slug===partner.slug).assets,[]);
+ assert.equal((await f.anonymous.request(`/api/media/${image.key}/original`)).status,404);
+ assert.equal((await f.admin.request(endpoint,{method:'POST',data:{expectedLockVersion:partner.lockVersion,allowed:true,note:'Izin contoh Admin, bukan mitra resmi'}})).status,200);
+ assert.equal((await f.anonymous.request('/api/partner-logo-permissions')).status,403);
+ assert.equal((await list('partners')).docs.find(d=>d.slug===partner.slug).assets[0].available,true);
+ assert.equal((await f.anonymous.request(`/api/media/${image.key}/original`)).status,200);
+ partner=await f.read('partners',partner);
+ assert.equal((await f.admin.request(endpoint,{method:'POST',data:{expectedLockVersion:partner.lockVersion,allowed:false,note:'Izin dicabut'}})).status,200);
+ assert.deepEqual((await list('partners')).docs.find(d=>d.slug===partner.slug).assets,[]);
+ assert.equal((await f.anonymous.request(`/api/media/${image.key}/original`)).status,404);
+});
+test('achievement date-only year filters and withdrawal preserve review history',async()=>{
+ let one=await f.publishReviewed('achievements',await f.create('achievements','prestasi-2025',{...common,date:'2025-12-31',category:'Edukasi',recipient:'Tim contoh'}));
+ await f.publishReviewed('achievements',await f.create('achievements','prestasi-2026',{...common,date:'2026-01-01',category:'Edukasi'}));
+ const filtered=await list('achievements','?year=2025');assert.deepEqual(filtered.docs.map(d=>d.slug),[one.slug]);assert.deepEqual(filtered.years,['2026','2025']);
+ assert.equal((await list('achievements','?year=2024')).docs.length,0);
+ assert.equal((await f.command('achievements',one,'withdraw-publication',{note:'Withdraw example'})).status,200);
+ assert.equal((await list('achievements','?year=2025')).docs.length,0);
+ assert.equal((await f.a.request('/api/achievements')).status,200);
+});

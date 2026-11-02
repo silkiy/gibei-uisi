@@ -181,3 +181,8 @@ h2 { font-size: clamp(1.9rem, 3vw, 2.8rem); line-height: 1.2; font-weight: 600; 
   html { scroll-behavior: auto; }
   *, *::before, *::after { animation: none !important; transition: none !important; }
 }
+
+.gallery-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr)); gap:1.5rem; margin-block:1.5rem; }
+.gallery-grid figure { margin:0; min-width:0; }
+.gallery-grid figcaption { margin-top:.6rem; overflow-wrap:anywhere; }
+.p1-list { margin-block:2rem; }
