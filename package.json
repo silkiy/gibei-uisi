@@ -22,6 +22,8 @@
     "bootstrap:admin": "node scripts/payload.mjs run scripts/bootstrap-admin.ts",
     "test:cms": "node --env-file=.env.local scripts/verify-cms.mjs",
     "test:accounts": "node --env-file=.env.local scripts/verify-accounts.mjs",
+    "demo": "node scripts/run-tests.mjs demo",
+    "seed:demo": "node scripts/seed-demo.mjs",
     "test:unit": "node --test src/auth/*.test.mjs scripts/database/config.test.mjs tests/unit/*.test.mjs",
     "test:integration": "node scripts/run-tests.mjs integration",
     "test:e2e": "node scripts/run-tests.mjs e2e",

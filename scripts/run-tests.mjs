@@ -1,5 +1,6 @@
+import { seedDemo } from './seed-demo.mjs';
 import assert from 'node:assert/strict';
-import { randomBytes } from 'node:crypto';
+import { randomBytes, createHash } from 'node:crypto';
 import { execFileSync, spawn } from 'node:child_process';
 import { mkdirSync, openSync, closeSync, readFileSync, writeFileSync, existsSync } from 'node:fs';
 import { loadEnvFile } from 'node:process';
@@ -12,9 +13,9 @@ import { startNativePostgres } from '../tests/support/native-postgres.mjs';
 import { INITIAL_RESEARCH_CATEGORIES } from '../src/content/research-policy.mjs';
 
 const mode = process.argv[2];
-assert.ok(['integration', 'e2e', 'all'].includes(mode), 'Choose integration, e2e or all');
+assert.ok(['integration', 'e2e', 'all', 'demo'].includes(mode), 'Choose integration, e2e or all');
 const browserSpec = process.argv[3];
-if (browserSpec) assert.ok(mode === 'e2e' && /^tests\/e2e\/[a-z-]+\.spec\.ts$/.test(browserSpec) && existsSync(browserSpec), 'Choose an existing browser spec within tests/e2e');
+if (browserSpec && mode !== 'demo') assert.ok(mode === 'e2e' && /^tests\/e2e\/[a-z-]+\.spec\.ts$/.test(browserSpec) && existsSync(browserSpec), 'Choose an existing browser spec within tests/e2e');
 if (existsSync('.env.test.local')) loadEnvFile('.env.test.local');
 const runId = randomBytes(6).toString('hex');
 const name = `gibei-test-${runId}`;
@@ -167,13 +168,32 @@ try {
   await startTestServer();
   await seedMediaFixtures();
   await assertTarget();
+  if(mode==='demo') {
+    await seedDemo({env,adminEmail:accounts.admin.email,adminPassword:accounts.admin.password,mediaEmail:accounts.mediaA.email,mediaPassword:accounts.mediaA.password,benchmark:process.argv.includes('--benchmark')});
+    const credentialsPath=`.tools/test-databases/${runId}/demo.env`;
+    const demoEnv={SERVER_URL:env.SERVER_URL,GIBEI_TEST_RUN_ID:runId,TEST_DATABASE_URL:runtimeURL,TEST_MIGRATION_DATABASE_URL:migrationURL,DEMO_ADMIN_EMAIL:accounts.admin.email,DEMO_ADMIN_PASSWORD:accounts.admin.password,DEMO_MEDIA_EMAIL:accounts.mediaA.email,DEMO_MEDIA_PASSWORD:accounts.mediaA.password};
+    writeFileSync(credentialsPath,Object.entries(demoEnv).map(([key,value])=>`${key}=${value}`).join('\n'),{mode:0o600});
+    console.log(`Demo contoh: ${env.SERVER_URL} | CMS: ${env.SERVER_URL}/admin`);
+    console.log(`Kredensial hanya di berkas lokal privat ${credentialsPath}. Ctrl+C membersihkan target sementara ini.`);
+    await new Promise(resolve=>{process.once('SIGINT',resolve);process.once('SIGTERM',resolve);});
+  } else {
   if (mode !== 'e2e') {
     console.log('Running integration smoke tests with Admin and two Media');
-    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs', 'tests/integration/article-search.test.mjs', 'tests/integration/article-links.test.mjs', 'tests/integration/pages.test.mjs', 'tests/integration/settings.test.mjs', 'tests/integration/organization.test.mjs', 'tests/integration/members.test.mjs', 'tests/integration/publications.test.mjs', 'tests/integration/recruitment.test.mjs', 'tests/integration/z-archival.test.mjs'], 'Integration tests');
+    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs', 'tests/integration/article-search.test.mjs', 'tests/integration/article-links.test.mjs', 'tests/integration/pages.test.mjs', 'tests/integration/settings.test.mjs', 'tests/integration/organization.test.mjs', 'tests/integration/members.test.mjs', 'tests/integration/publications.test.mjs', 'tests/integration/recruitment.test.mjs', 'tests/integration/z-archival.test.mjs', 'tests/integration/p1.test.mjs', 'tests/integration/zz-seed.test.mjs'], 'Integration tests');
     await child(['scripts/payload.mjs', 'run', 'scripts/verify-editorial-local.ts'], 'Local editorial boundary tests');
     const beforeRestart = (await migration.query('SELECT * FROM payload.editorial_audit ORDER BY id')).rows;
     assert.ok(beforeRestart.length > 0);
-    stop(server); await startTestServer();
+    const seedBefore=(await migration.query("SELECT slug, public_revision_id FROM payload.articles WHERE slug LIKE 'demo-%' ORDER BY slug")).rows;
+    const files=(await migration.query("SELECT key FROM payload.media WHERE alt IN ('Ilustrasi geometris orisinal GIBEI demo 01','Dokumen edukasi contoh orisinal') ORDER BY key")).rows;
+    const fileDigests=await Promise.all(files.map(async ({key})=>{const r=await fetch(`${env.SERVER_URL}/api/media/${key}/original`);assert.equal(r.status,200);return createHash('sha256').update(Buffer.from(await r.arrayBuffer())).digest('hex');}));
+    stop(server);
+    if(native){await migration.end();migration=undefined;native.restart();migration=new pg.Pool(localTestConnection(env,migrationURL));console.log('Run-owned PostgreSQL restarted without resetting data or storage');}
+    await startTestServer();
+    assert.deepEqual((await migration.query("SELECT slug, public_revision_id FROM payload.articles WHERE slug LIKE 'demo-%' ORDER BY slug")).rows,seedBefore);
+    for(let i=0;i<files.length;i++){const r=await fetch(`${env.SERVER_URL}/api/media/${files[i].key}/original`);assert.equal(r.status,200);assert.equal(createHash('sha256').update(Buffer.from(await r.arrayBuffer())).digest('hex'),fileDigests[i]);}
+    const seedAgain=await seedDemo({env,adminEmail:accounts.admin.email,adminPassword:accounts.admin.password,mediaEmail:accounts.mediaA.email,mediaPassword:accounts.mediaA.password,benchmark:true});
+    assert.equal(seedAgain.created,0);
+    console.log('Demo seed, user edits and original asset bytes survive database/application restart');
     const restartedAdmin = await authenticate(accounts.admin, env.SERVER_URL);
     const audit = await restartedAdmin.request('/api/editorial-audit?limit=1');
     assert.equal(audit.status, 200); assert.equal((await audit.json()).totalDocs, beforeRestart.length);
@@ -194,6 +214,7 @@ try {
   if (mode !== 'integration') {
     console.log('Running isolated Chromium browser tests');
     await child(['node_modules/@playwright/test/cli.js', 'test', ...(browserSpec ? [browserSpec] : [])], 'E2E tests');
+  }
   }
   stop(server);
   await resetApplicationData();

@@ -42,6 +42,10 @@ export async function startNativePostgres({ runId, database, password, port, log
     command('pg_ctl', ['-D', data, '-l', path.join(directory, 'postgres.log'), '-o', `-h 127.0.0.1 -p ${port}`, '-w', 'start']);
     const operator = new pg.Pool({ host: '127.0.0.1', port, user: 'postgres', password, database: 'postgres', max: 1, ssl: false });
     try { await operator.query(`CREATE DATABASE "${database}"`); } finally { await operator.end(); }
-    return { port, dispose };
+    return { port, dispose, restart: () => {
+      assert.equal(realpathSync(directory), path.join(realpathSync(root), runId));
+      assert.deepEqual(JSON.parse(readFileSync(marker, 'utf8')), { runId, database });
+      command('pg_ctl', ['-D', data, '-m', 'fast', '-w', 'restart']);
+    } };
   } catch (error) { dispose(); throw error; }
 }
