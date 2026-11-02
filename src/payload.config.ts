@@ -1,3 +1,4 @@
+import { safeLogRecord } from './logging/safe.mjs';
 import { canonicalURL } from './seo/policy.mjs';
 import { PartnerLogoPermissions } from './collections/PartnerLogoPermissions';
 import path from 'node:path';
@@ -43,6 +44,7 @@ if (testSchema && (process.env.NODE_ENV === 'production' || !/^payload_test_t007
 
 export default buildConfig({
   telemetry: false,
+  logger: { options: { hooks: { logMethod(args,method,level) { method.apply(this,[safeLogRecord(args,level)]); } } } },
   secret: process.env.PAYLOAD_SECRET,
   serverURL,
   cors: [serverURL],

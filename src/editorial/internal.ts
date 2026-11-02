@@ -2,7 +2,10 @@ import { Forbidden, type CollectionConfig, type PayloadRequest } from 'payload';
 import { sql, type PostgresAdapter } from '@payloadcms/db-postgres';
 import { isActiveAdmin, isActiveUser } from '../auth/policy';
 
-export const editorialWrite = Symbol('editorial-write');
+// Next can initialize Payload from an SSR bundle before an API bundle loads.
+// Keep the trusted context key identical across server module instances.
+// HTTP JSON cannot construct symbol keys; domain authorization still runs first.
+export const editorialWrite = Symbol.for('gibei.editorial-write.v1');
 export const internalHooks: CollectionConfig['hooks'] = {
   beforeChange: [({ req, data }) => { if (Reflect.get(req.context, editorialWrite) !== true) throw new Forbidden(); return data; }],
   beforeDelete: [() => { throw new Forbidden(); }],

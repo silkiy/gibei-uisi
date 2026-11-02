@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — 2 November 2026:** T001–T051 selesai; CP-01–CP-18 telah diverifikasi pada cakupan backlog. Batch T043–T051 menambahkan galeri, partnership/izin logo, prestasi, homepage lengkap, seed demo dan SEO. `pnpm test:all` lulus 36 unit, 68 integration dan 35 e2e tanpa retry; lint/TypeScript/build lulus. [Bukti T051](../docs/reports/T051.md). Berikutnya T052; audit MVP dan produksi tetap terbuka.
+**Status terbaru — 2 November 2026:** T001–T063 / CP-01–CP-23 selesai secara teknis untuk demo localhost. 39 unit, 80 integration dan 42 browser lulus tanpa retry; lint/TypeScript/build, clean start, pemulihan dan naskah demo lulus. Median Lighthouse mobile 88/87/86/89 (target ≥85). [Bukti final T063](../docs/reports/T063.md) dan [matriks FR/AC](../docs/qa/mvp-acceptance.md). Penerimaan pemilik proyek belum diberikan. Produksi dan konten resmi tetap terpisah; persiapan direncanakan minggu mulai 9 November 2026.
 
 ## Tujuan dan kondisi awal
 
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**Status terbaru — 2 November 2026:** T001–T051 selesai; CP-01–CP-18 telah diverifikasi pada cakupan backlog. Batch T043–T051 menambahkan galeri, partnership/izin logo, prestasi, homepage lengkap, seed demo dan SEO. `pnpm test:all` lulus 36 unit, 68 integration dan 35 e2e tanpa retry; lint/TypeScript/build lulus. [Bukti T051](../docs/reports/T051.md). Berikutnya T052; audit MVP dan produksi tetap terbuka.
+**Status terbaru — 2 November 2026:** T001–T063 / CP-01–CP-23 selesai secara teknis untuk demo localhost. 39 unit, 80 integration dan 42 browser lulus tanpa retry; lint/TypeScript/build, clean start, pemulihan dan naskah demo lulus. Median Lighthouse mobile 88/87/86/89 (target ≥85). [Bukti final T063](../docs/reports/T063.md) dan [matriks FR/AC](../docs/qa/mvp-acceptance.md). Penerimaan pemilik proyek belum diberikan. Produksi dan konten resmi tetap terpisah; persiapan direncanakan minggu mulai 9 November 2026.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 

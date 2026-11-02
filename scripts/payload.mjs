@@ -2,7 +2,8 @@ import { loadEnvFile } from 'node:process';
 import { spawnSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
 
-loadEnvFile('.env.local');
+// Isolated launchers provide every credential explicitly and must work without .env.local.
+if (!process.env.GIBEI_TEST_RUN_ID) loadEnvFile('.env.local');
 const args = process.argv.slice(2);
 const allowed = ['generate:types', 'generate:importmap', 'migrate:create', 'migrate', 'migrate:status', 'run'];
 if (!allowed.includes(args[0])) throw new Error('Use an explicitly supported non-destructive Payload command');

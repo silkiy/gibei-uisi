@@ -1,3 +1,4 @@
+import { randomUUID } from 'node:crypto';
 import { APIError, Forbidden, createLocalReq, getPayload, initTransaction, commitTransaction, killTransaction, type PayloadRequest } from 'payload';
 import config from '../payload.config';
 import { isActiveUser } from '../auth/policy';
@@ -29,8 +30,10 @@ export async function readJSON(request: Request, limit = 16384): Promise<Record<
 }
 export function failure(error: unknown) {
   const status = error instanceof APIError ? error.status : 500;
+  const correlationId=randomUUID();
+  if(status>=500) console.error(JSON.stringify({event:'request_failed',correlationId,status}));
   const message = status < 500 && error instanceof Error ? error.message : 'Operation failed';
   const data = error instanceof APIError ? error.data : null;
   const references = data && typeof data === 'object' && 'references' in data && Array.isArray(data.references) ? data.references : undefined;
-  return Response.json({ errors: [{ message }], ...(references ? { references } : {}) }, { status, headers: { 'Cache-Control': 'private, no-store' } });
+  return Response.json({ errors: [{ message }], ...(status>=500?{correlationId}:{}), ...(references ? { references } : {}) }, { status, headers: { 'Cache-Control': 'private, no-store', 'X-Request-ID':correlationId } });
 }

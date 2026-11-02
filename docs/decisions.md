@@ -1,6 +1,6 @@
 # Register Keputusan GIBEI UISI
 
-**Status terbaru — 2 November 2026:** T043–T051 dan CP-16–CP-18 selesai; [bukti implementasi dan pengujian](reports/T051.md). Baseline tidak berubah. Seed hanya pada target lokal terisolasi; belum ada persetujuan produksi. Berikutnya T052.
+**Status terbaru — 2 November 2026:** Demo localhost T001–T063 / CP-01–CP-23 selesai secara teknis; [bukti final](reports/T063.md). Baseline tetap. Penerimaan pemilik proyek belum diberikan. Persiapan produksi direncanakan minggu mulai 9 November 2026; belum ada deployment.
 
 **Pembaruan QA — 1 November 2026:** QA-01–QA-03 telah ditutup setelah perbaikan aplikasi dan pengujian ulang. [Bukti penutupan CP-01–CP-15](qa/CP01-CP15-fixes.md). Pernyataan status T010/T025 dan penemuan awal di bawah adalah riwayat; baseline D-01–D-10 tidak diubah.
 

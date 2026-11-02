@@ -7,7 +7,7 @@ import { relationId } from '../editorial/policy';
 import { orgRevision } from '../editorial/reviewed-hooks';
 import type { EditorialDoc } from '../editorial/reviewed-model';
 
-const cause = Symbol('recruitment-state-cause');
+const cause = Symbol.for('gibei.recruitment-state-cause.v1');
 const inputs = new WeakMap<PayloadRequest, Record<string, unknown>>();
 export async function approvedCampaign(req: PayloadRequest, id: number) {
   const root = await req.payload.db.findOne({ collection: 'recruitment-periods', req, where: { id: { equals: id } } }) as unknown as EditorialDoc | null;

@@ -1,7 +1,7 @@
 import { Forbidden, type CollectionConfig } from 'payload';
 import { isActiveAdmin } from '../auth/policy';
 
-export const accountAuditCapability = Symbol('account-audit');
+export const accountAuditCapability = Symbol.for('gibei.account-audit.v1');
 
 export const AccountAudit: CollectionConfig = {
   slug: 'account-audit',

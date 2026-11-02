@@ -165,7 +165,7 @@ CMS rekrutmen berada di `/admin/collections/recruitment-periods`: pilih periode 
 
 Pada `/admin/globals/recruitment-state` (Aktivasi rekrutmen), pilih kampanye terbit lalu Save. Untuk pindah, kosongkan/nonaktifkan pilihan lama lalu Save dahulu, kemudian pilih target baru. Maksimum satu enabled juga berlaku untuk kampanye mendatang/selesai. Penarikan menonaktifkan otomatis; berakhirnya waktu menutup CTA tanpa mengubah pilihan Admin. `/rekrutmen?kampanye=slug` menyediakan riwayat terbit.
 
-`/kontak` dan footer memakai kontak terkonfirmasi yang sama. `/publikasi` menampilkan tiga artikel dan tiga riset terbaru. Homepage mengambil hero/blok Pages homepage, profil About, publikasi dan agenda mendatang dari snapshot approved. Panel rekrutmen memakai konfigurasi operasional dan waktu server. Galeri, prestasi dan mitra tersedia sejak T043–T048. T052 dan sesudahnya tetap mengikuti backlog. Tidak ada konten resmi yang diisi otomatis.
+`/kontak` dan footer memakai kontak terkonfirmasi yang sama. `/publikasi` menampilkan tiga artikel dan tiga riset terbaru. Homepage mengambil hero/blok Pages homepage, profil About, publikasi dan agenda mendatang dari snapshot approved. Panel rekrutmen memakai konfigurasi operasional dan waktu server. Galeri, prestasi dan mitra tersedia sejak T043–T048. Finalisasi T052–T063 telah lulus; lihat [laporan final](reports/T063.md). Tidak ada konten resmi yang diisi otomatis.
 
 
 ## Arsip dan restart setelah QA CP-15
@@ -179,4 +179,9 @@ Collections Galleries, Partners dan Achievements memakai panel editorial yang sa
 
 Partner memakai nama/deskripsi/kolaborasi, website, logo opsional dan pilihan homepage. Admin mengisi alasan pada panel lalu memilih **Catat izin logo** atau **Cabut izin logo**. Pemberian izin memakai logo revisi kerja jika tersedia; pencabutan memprioritaskan logo publik. Izin terikat versi/checksum file dan dicatat dengan actor/waktu privat; isi mitra tetap harus melalui review. Logo baru tidak mewarisi izin file lama. Tanpa izin, hanya nama/deskripsi yang telah disetujui tampil. API izin adalah POST `/api/editorial/partners/:id/logo-permission` dengan `expectedLockVersion`, `allowed` dan `note`; Media ditolak.
 
-Rute publik `/galeri`, `/galeri/[slug]`, `/partnership` dan `/prestasi` membaca versi approved. Pencabutan aset memberi fallback; menghapus file yang masih dirujuk ditolak. [Seed/demo](demo-data.md) memakai target sementara terisolasi, tidak memuat `.env.local` atau mengisi Supabase otomatis. [SEO](technical/seo.md) tetap noindex, termasuk pada tunnel/staging. Periksa [laporan T051](reports/T051.md) sebelum melanjutkan T052.
+Rute publik `/galeri`, `/galeri/[slug]`, `/partnership` dan `/prestasi` membaca versi approved. Pencabutan aset memberi fallback; menghapus file yang masih dirujuk ditolak. [Seed/demo](demo-data.md) memakai target sementara terisolasi, tidak memuat `.env.local` atau mengisi Supabase otomatis. [SEO](technical/seo.md) tetap noindex, termasuk pada tunnel/staging. Periksa [laporan final T063](reports/T063.md) dan [clean start](qa/clean-start.md) untuk bukti akhir.
+
+
+## Finalisasi demo — T063
+
+Demo teknis selesai 2 November 2026. [Clean start](qa/clean-start.md) membuktikan source baru → frozen install → migration/bootstrap/seed → production build/start tanpa environment utama. Gunakan `pnpm demo --benchmark` untuk dataset lengkap dan baca URL/kredensial privat run dari launcher; port berubah setiap run. Bukti terakhir: `http://127.0.0.1:59497`, CMS `/admin`. `pnpm demo:check PATH_DEMO_ENV` menjalankan naskah empat aktor; `pnpm benchmark:demo http://127.0.0.1:PORT` menyimpan benchmark tanpa kredensial. Jangan masukkan isi demo.env ke chat/Git. [CMS](cms-guide.md), [handover](handover.md), [backup/restore](operations/backup-restore.md) dan [audit MVP](qa/mvp-acceptance.md) menjadi acuan. Produksi dan materi resmi belum diselesaikan oleh demo.

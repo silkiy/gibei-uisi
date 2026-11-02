@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — 2 November 2026:** T001–T051 selesai; CP-01–CP-18 telah diverifikasi pada cakupan backlog. Batch T043–T051 menambahkan galeri, partnership/izin logo, prestasi, homepage lengkap, seed demo dan SEO. `pnpm test:all` lulus 36 unit, 68 integration dan 35 e2e tanpa retry; lint/TypeScript/build lulus. [Bukti T051](../docs/reports/T051.md). Berikutnya T052; audit MVP dan produksi tetap terbuka.
+**Status terbaru — 2 November 2026:** T001–T063 / CP-01–CP-23 selesai secara teknis untuk demo localhost. 39 unit, 80 integration dan 42 browser lulus tanpa retry; lint/TypeScript/build, clean start, pemulihan dan naskah demo lulus. Median Lighthouse mobile 88/87/86/89 (target ≥85). [Bukti final T063](../docs/reports/T063.md) dan [matriks FR/AC](../docs/qa/mvp-acceptance.md). Penerimaan pemilik proyek belum diberikan. Produksi dan konten resmi tetap terpisah; persiapan direncanakan minggu mulai 9 November 2026.
 
 ## Cara menggunakan checklist
 
@@ -1240,7 +1240,7 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 ### T052
 
-- [ ] **Lengkapi error handling dan log aman**
+- [x] **Lengkapi error handling dan log aman**
 
 **Hasil:** Tambahkan error boundary/status publik, pencatatan kegagalan, dan korelasi request yang tidak mengungkap secret.
 
@@ -1251,17 +1251,19 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Error database/storage tidak mengirim stack trace, token, atau connection string ke publik.
-- [ ] Kegagalan publikasi/audit/invalidation tertangani sesuai desain tanpa publikasi parsial.
-- [ ] Halaman loading/error/404 memiliki pesan dan navigasi pemulihan; log tetap berguna untuk diagnosis.
+- [x] Error database/storage tidak mengirim stack trace, token, atau connection string ke publik.
+- [x] Kegagalan publikasi/audit/invalidation tertangani sesuai desain tanpa publikasi parsial.
+- [x] Halaman loading/error/404 memiliki pesan dan navigasi pemulihan; log tetap berguna untuk diagnosis.
 
 **Verifikasi:** Simulasikan kegagalan terkendali pada database/storage/publish dan inspeksi respons/log; jangan matikan layanan di luar lingkungan uji.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/security.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
+
+**Subtugas T052:** T052.1 safe logger/CMS; T052.2 API/public-read errors; T052.3 loading/error/404 UI; T052.4 lima trusted marker antar-bundle; T052.5 regresi dua instance modul/harness CMS-first. Semuanya lulus pada suite final; [rincian](../docs/reports/T063.md#regresi-startup-cms).
 
 ### T053
 
-- [ ] **Periksa sesi, login, dan input berbahaya**
+- [x] **Periksa sesi, login, dan input berbahaya**
 
 **Hasil:** Lengkapi pemeriksaan keamanan request lintas situs, cookie/origin, login berulang, rich text, URL, dan input upload.
 
@@ -1272,17 +1274,17 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Percobaan login berulang dibatasi; cookie dan origin sesuai localhost/produksi terdokumentasi.
-- [ ] Request lintas situs tidak sah dan input aktif berbahaya tidak mengubah data atau menjalankan script.
-- [ ] Role/owner/audit/global settings tidak dapat dimanipulasi melalui jalur API yang diekspos.
+- [x] Percobaan login berulang dibatasi; cookie dan origin sesuai localhost/produksi terdokumentasi.
+- [x] Request lintas situs tidak sah dan input aktif berbahaya tidak mengubah data atau menjalankan script.
+- [x] Role/owner/audit/global settings tidak dapat dimanipulasi melalui jalur API yang diekspos.
 
 **Verifikasi:** Tes request langsung dan browser dengan origin berbeda serta payload berbahaya; lakukan pengecekan dependency pada versi yang benar-benar terpasang saat itu.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/security.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 ### T054
 
-- [ ] **Uji matriks izin lintas semua collection**
+- [x] **Uji matriks izin lintas semua collection**
 
 **Hasil:** Jalankan kontrak akses/workflow yang sama terhadap seluruh collection editorial dan aset, bukan hanya artikel.
 
@@ -1293,23 +1295,25 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Matriks public/owner/assignee/Media lain/Admin mencakup baca, tulis, review, publish, tarik, dan hapus yang relevan.
-- [ ] Nested relations, metadata/count, preview, original/derivative/PDF, dan pemalsuan ID aset tetap aman.
-- [ ] Relasi membaca target publik terkini; target wajib tidak dapat ditarik saat dirujuk; audit privat tetap terlindungi.
+- [x] Matriks public/owner/assignee/Media lain/Admin mencakup baca, tulis, review, publish, tarik, dan hapus yang relevan.
+- [x] Nested relations, metadata/count, preview, original/derivative/PDF, dan pemalsuan ID aset tetap aman.
+- [x] Relasi membaca target publik terkini; target wajib tidak dapat ditarik saat dirujuk; audit privat tetap terlindungi.
 
 **Verifikasi:** Jalankan suite integrasi terparameterisasi dengan request langsung; catat kegagalan per collection dan perbaiki tanpa menurunkan aturan.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/access-matrix.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 #### CP-19 — setelah T054
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+
+**Bukti checkpoint — 2 November 2026:** Hasil tugas, regresi gabungan dan batas scope ditelusuri dalam [laporan T063](../docs/reports/T063.md) dan [audit MVP](../docs/qa/mvp-acceptance.md). Tidak ada deployment produksi.
 
 ### T055
 
-- [ ] **Uji batas waktu dan request bersamaan**
+- [x] **Uji batas waktu dan request bersamaan**
 
 **Hasil:** Verifikasi waktu server, date-only, cache, dan invariant aktivasi/review dengan pengujian terkendali.
 
@@ -1320,17 +1324,17 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Batas event/rekrutmen benar sebelum/saat/sesudah transisi meskipun cache hangat.
-- [ ] Tidak ada dua periode aktif, dua kampanye enabled, atau persetujuan usang yang berhasil bersamaan.
-- [ ] Tanggal analisis/prestasi/album tidak berubah hari; konflik terlihat dan tidak menimpa perubahan.
+- [x] Batas event/rekrutmen benar sebelum/saat/sesudah transisi meskipun cache hangat.
+- [x] Tidak ada dua periode aktif, dua kampanye enabled, atau persetujuan usang yang berhasil bersamaan.
+- [x] Tanggal analisis/prestasi/album tidak berubah hari; konflik terlihat dan tidak menimpa perubahan.
 
 **Verifikasi:** Gunakan clock terkendali dan barrier request paralel pada integrasi; periksa efek database serta UI.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/time.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 ### T056
 
-- [ ] **Uji responsivitas dan aksesibilitas**
+- [x] **Uji responsivitas dan aksesibilitas**
 
 **Hasil:** Periksa seluruh keluarga halaman pada ukuran target dan kemampuan akses dasar, lalu perbaiki temuan terukur.
 
@@ -1341,17 +1345,17 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Lebar 320/375/768/1024/1440 px tidak menyebabkan scroll halaman horizontal; zoom 200% tetap dapat digunakan.
-- [ ] Keyboard, fokus, label/error, heading, alt, kontras, menu/dialog, serta reduced motion diperiksa.
-- [ ] Hasil pemeriksaan dan keterbatasan dicatat; alat otomatis tidak dipakai sebagai satu-satunya bukti aksesibilitas.
+- [x] Lebar 320/375/768/1024/1440 px tidak menyebabkan scroll halaman horizontal; zoom 200% tetap dapat digunakan.
+- [x] Keyboard, fokus, label/error, heading, alt, kontras, menu/dialog, serta reduced motion diperiksa.
+- [x] Hasil pemeriksaan dan keterbatasan dicatat; alat otomatis tidak dipakai sebagai satu-satunya bukti aksesibilitas.
 
 **Verifikasi:** Jalankan browser nyata, pemeriksaan otomatis yang relevan, dan manual keyboard/zoom; jika perbaikan menyentuh >5 file, pecah menjadi subtugas bernomor turunan.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/accessibility.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 ### T057
 
-- [ ] **Ukur performa sesuai kondisi PRD**
+- [x] **Ukur performa sesuai kondisi PRD**
 
 **Hasil:** Benchmark empat halaman target pada build production dan dataset demo tetap.
 
@@ -1362,23 +1366,25 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Versi browser/Lighthouse, mesin, throttling, dataset, dan waktu pengukuran dicatat.
-- [ ] Tiga pengukuran setelah warm-up per halaman menghasilkan median; target minimal 85 per halaman.
-- [ ] Hasil mentah dan hambatan utama disimpan tanpa mengubah kondisi uji agar skor terlihat lulus.
+- [x] Versi browser/Lighthouse, mesin, throttling, dataset, dan waktu pengukuran dicatat.
+- [x] Tiga pengukuran setelah warm-up per halaman menghasilkan median; target minimal 85 per halaman.
+- [x] Hasil mentah dan hambatan utama disimpan tanpa mengubah kondisi uji agar skor terlihat lulus.
 
 **Verifikasi:** Jalankan Lighthouse mobile untuk /, daftar artikel, satu detail artikel, dan /kegiatan pada production server lokal.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/performance.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 #### CP-20 — setelah T057
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+
+**Bukti checkpoint — 2 November 2026:** Hasil tugas, regresi gabungan dan batas scope ditelusuri dalam [laporan T063](../docs/reports/T063.md) dan [audit MVP](../docs/qa/mvp-acceptance.md). Tidak ada deployment produksi.
 
 ### T058
 
-- [ ] **Perbaiki hanya hambatan performa terukur**
+- [x] **Perbaiki hanya hambatan performa terukur**
 
 **Hasil:** Jika ada halaman gagal target, optimalkan penyebab yang terbukti; jika sudah lulus, catat tidak ada perubahan yang diperlukan.
 
@@ -1389,27 +1395,29 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Perbaikan berdasarkan profil hasil T057; tidak mengurangi konten, aksesibilitas, atau kontrol akses.
-- [ ] Median seluruh halaman mencapai minimal 85 dengan kondisi/dataset yang sama setelah perubahan.
-- [ ] Jika >5 file dibutuhkan, buat subtugas; setiap perubahan runtime diuji regresi relevan.
+- [x] Perbaikan berdasarkan profil hasil T057; tidak mengurangi konten, aksesibilitas, atau kontrol akses.
+- [x] Median seluruh halaman mencapai minimal 85 dengan kondisi/dataset yang sama setelah perubahan.
+- [x] Jika >5 file dibutuhkan, buat subtugas; setiap perubahan runtime diuji regresi relevan.
 
 **Verifikasi:** Ulangi benchmark hanya untuk halaman terdampak lalu konfirmasi target empat halaman; uji media/cache dan fungsionalitas yang disentuh.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/performance.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 #### CP-21 — setelah T058
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ## Fase F — Dokumentasi dan demo localhost
 
 Setup dapat diulang, panduan serah terima tersedia, dan MVP dinilai terhadap PRD.
 
+**Bukti checkpoint — 2 November 2026:** Hasil tugas, regresi gabungan dan batas scope ditelusuri dalam [laporan T063](../docs/reports/T063.md) dan [audit MVP](../docs/qa/mvp-acceptance.md). Tidak ada deployment produksi.
+
 ### T059
 
-- [ ] **Tulis panduan setup dan buktikan clean start**
+- [x] **Tulis panduan setup dan buktikan clean start**
 
 **Hasil:** Dokumentasikan environment, runtime, port, database, migration, bootstrap Admin, seed, dev/build/start, serta perintah uji yang benar-benar ada.
 
@@ -1420,17 +1428,17 @@ Setup dapat diulang, panduan serah terima tersedia, dan MVP dinilai terhadap PRD
 
 **Kriteria selesai:**
 
-- [ ] Pengembang dapat mengikuti setup dari folder/data kosong pada lingkungan uji tanpa secret bawaan.
-- [ ] Port dapat dikonfigurasi; proses lain tidak dihentikan otomatis; data bertahan setelah restart.
-- [ ] Perintah dokumentasi diverifikasi persis, termasuk cara membuat akun Media dan reset password lokal oleh Admin.
+- [x] Pengembang dapat mengikuti setup dari folder/data kosong pada lingkungan uji tanpa secret bawaan.
+- [x] Port dapat dikonfigurasi; proses lain tidak dihentikan otomatis; data bertahan setelah restart.
+- [x] Perintah dokumentasi diverifikasi persis, termasuk cara membuat akun Media dan reset password lokal oleh Admin.
 
 **Verifikasi:** Ikuti README pada lingkungan uji bersih; jalankan build/production start dan satu alur publish; catat prasyarat aktual.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/clean-start.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 ### T060
 
-- [ ] **Tulis prosedur backup dan restore**
+- [x] **Tulis prosedur backup dan restore**
 
 **Hasil:** Sediakan panduan backup database+media yang konsisten dan prosedur pemulihan ke target terpisah.
 
@@ -1441,23 +1449,25 @@ Setup dapat diulang, panduan serah terima tersedia, dan MVP dinilai terhadap PRD
 
 **Kriteria selesai:**
 
-- [ ] Panduan menjelaskan urutan konsistensi database/file, lokasi backup, dan pemeriksaan izin setelah restore.
-- [ ] Tidak ada reset/restore destruktif ke database kerja/produksi tanpa target eksplisit.
-- [ ] Kebutuhan retensi, frekuensi, target pemulihan, dan bukti restore wajib sebelum produksi ditandai belum diputuskan jika memang belum ada.
+- [x] Panduan menjelaskan urutan konsistensi database/file, lokasi backup, dan pemeriksaan izin setelah restore.
+- [x] Tidak ada reset/restore destruktif ke database kerja/produksi tanpa target eksplisit.
+- [x] Kebutuhan retensi, frekuensi, target pemulihan, dan bukti restore wajib sebelum produksi ditandai belum diputuskan jika memang belum ada.
 
 **Verifikasi:** Periksa langkah di lingkungan demo; restore percobaan hanya ke database/storage terpisah bila lingkungan tersedia. Jika belum diuji, catat jujur dan jangan klaim siap produksi.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/recovery-status.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 #### CP-22 — setelah T060
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+
+**Bukti checkpoint — 2 November 2026:** Hasil tugas, regresi gabungan dan batas scope ditelusuri dalam [laporan T063](../docs/reports/T063.md) dan [audit MVP](../docs/qa/mvp-acceptance.md). Tidak ada deployment produksi.
 
 ### T061
 
-- [ ] **Tulis panduan CMS dan naskah demo**
+- [x] **Tulis panduan CMS dan naskah demo**
 
 **Hasil:** Buat panduan singkat bagi dua role dan pengurus berikutnya, beserta urutan demo alur normal dan penolakan akses.
 
@@ -1468,17 +1478,17 @@ Setup dapat diulang, panduan serah terima tersedia, dan MVP dinilai terhadap PRD
 
 **Kriteria selesai:**
 
-- [ ] Panduan mencakup draft/review/revisi/publish/withdraw, media, periode, kampanye, serta assignment.
-- [ ] Ada langkah serah terima akun, penonaktifan, dan penggantian kontak tanpa membagikan password di dokumen.
-- [ ] Demo membedakan contoh dengan informasi resmi dan tidak mengklaim pekerjaan produksi selesai.
+- [x] Panduan mencakup draft/review/revisi/publish/withdraw, media, periode, kampanye, serta assignment.
+- [x] Ada langkah serah terima akun, penonaktifan, dan penggantian kontak tanpa membagikan password di dokumen.
+- [x] Demo membedakan contoh dengan informasi resmi dan tidak mengklaim pekerjaan produksi selesai.
 
 **Verifikasi:** Jalankan naskah menggunakan Admin, dua Media, serta browser anonim; cocokkan screenshot/langkah dengan aplikasi terkini.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [panduan CMS](../docs/cms-guide.md) dan [naskah demo](../docs/demo-script.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 ### T062
 
-- [ ] **Audit kelulusan MVP terhadap PRD**
+- [x] **Audit kelulusan MVP terhadap PRD**
 
 **Hasil:** Susun bukti final untuk sebelas modul, seluruh skenario penerimaan, dan Definition of Done tanpa menyamakan checklist dengan hasil uji.
 
@@ -1489,17 +1499,17 @@ Setup dapat diulang, panduan serah terima tersedia, dan MVP dinilai terhadap PRD
 
 **Kriteria selesai:**
 
-- [ ] Setiap FR-01–FR-11 dan AC-01–AC-29 mempunyai bukti hasil aktual, bukan hanya tautan tugas.
-- [ ] Lint/typecheck/build dan suite relevan lulus; hambatan/penyimpangan memiliki status nyata dan tidak ditutup diam-diam.
-- [ ] Hasil performa menggunakan seed final; perubahan data/kode sesudah benchmark memicu pengecekan ulang yang terdampak.
+- [x] Setiap FR-01–FR-11 dan AC-01–AC-29 mempunyai bukti hasil aktual, bukan hanya tautan tugas.
+- [x] Lint/typecheck/build dan suite relevan lulus; hambatan/penyimpangan memiliki status nyata dan tidak ditutup diam-diam.
+- [x] Hasil performa menggunakan seed final; perubahan data/kode sesudah benchmark memicu pengecekan ulang yang terdampak.
 
 **Verifikasi:** Jalankan pemeriksaan final terintegrasi dan telusuri matriks PRD→tugas→tes/bukti; kegagalan berarti belum selesai.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/mvp-acceptance.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 ### T063
 
-- [ ] **Serahkan demo localhost yang dapat diulang**
+- [x] **Serahkan demo localhost yang dapat diulang**
 
 **Hasil:** Jalankan demo lengkap dari panduan dan serahkan daftar prasyarat produksi yang masih terbuka.
 
@@ -1510,24 +1520,26 @@ Setup dapat diulang, panduan serah terima tersedia, dan MVP dinilai terhadap PRD
 
 **Kriteria selesai:**
 
-- [ ] Website dan /admin dapat dibuka melalui URL lokal aktual; dua role menjalankan alur lengkap dengan data contoh.
-- [ ] Ringkasan hasil, keterbatasan, keputusan yang disetujui, serta pekerjaan produksi berikutnya tersedia.
-- [ ] Tidak ada deployment, domain, publikasi internet, atau secret produksi yang dibuat sebagai bagian tugas ini.
+- [x] Website dan /admin dapat dibuka melalui URL lokal aktual; dua role menjalankan alur lengkap dengan data contoh.
+- [x] Ringkasan hasil, keterbatasan, keputusan yang disetujui, serta pekerjaan produksi berikutnya tersedia.
+- [x] Tidak ada deployment, domain, publikasi internet, atau secret produksi yang dibuat sebagai bagian tugas ini.
 
 **Verifikasi:** Ikuti naskah demo T061 dan cocokkan hasil dengan audit T062; catat penerimaan pemilik proyek saat benar-benar diberikan.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai 2 November 2026 untuk demo localhost. [Laporan final T063](../docs/reports/T063.md); [bukti terarah](../docs/qa/mvp-acceptance.md). Suite gabungan 39 unit/80 integration/42 browser lulus; lint/typecheck/build lulus. Penerimaan pemilik proyek dan produksi tetap terpisah.
 
 #### CP-23 — setelah T063
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+
+**Bukti checkpoint — 2 November 2026:** Hasil tugas, regresi gabungan dan batas scope ditelusuri dalam [laporan T063](../docs/reports/T063.md) dan [audit MVP](../docs/qa/mvp-acceptance.md). Tidak ada deployment produksi.
 
 ## Penutupan backlog
 
-- [ ] T001–T063 beserta subtugas tambahan selesai dan bukti dapat ditelusuri.
-- [ ] Seluruh FR/AC dalam [plan.md](plan.md) ditautkan ke bukti aktual pada T062.
+- [x] T001–T063 beserta subtugas tambahan selesai dan bukti dapat ditelusuri.
+- [x] Seluruh FR/AC dalam [plan.md](plan.md) ditautkan ke bukti aktual pada T062.
 - [ ] Pemilik proyek meninjau hasil demo; penerimaan dicatat ketika benar-benar diberikan.
-- [ ] Kebutuhan produksi tetap memiliki status terpisah; tidak ada deployment otomatis dari checklist ini.
+- [x] Kebutuhan produksi tetap memiliki status terpisah; tidak ada deployment otomatis dari checklist ini.
 

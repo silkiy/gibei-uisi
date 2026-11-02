@@ -1,6 +1,6 @@
 type Identity = { id?: number | string; role?: string; status?: string } | null | undefined;
 
-export const bootstrapCapability = Symbol('local-admin-bootstrap');
+export const bootstrapCapability = Symbol.for('gibei.local-admin-bootstrap.v1');
 
 export function isActiveAdmin(user: Identity): boolean {
   return user?.role === 'admin' && user.status === 'active';

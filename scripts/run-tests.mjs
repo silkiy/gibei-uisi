@@ -1,3 +1,4 @@
+import { recoveryProof } from './database/recovery-proof.mjs';
 import { seedDemo } from './seed-demo.mjs';
 import assert from 'node:assert/strict';
 import { randomBytes, createHash } from 'node:crypto';
@@ -44,7 +45,7 @@ async function freePort() {
 async function child(args, label) {
   const command = spawn(process.execPath, args, { env, stdio: ['ignore', log, log], windowsHide: true });
   let timedOut = false;
-  const timer = setTimeout(() => { timedOut = true; stop(command); }, 240000);
+  const timer = setTimeout(() => { timedOut = true; stop(command); }, label === 'E2E tests' ? 480000 : 240000);
   try {
     const code = await new Promise((resolve, reject) => { command.once('error', reject); command.once('exit', resolve); });
     assert.ok(!timedOut, `${label} exceeded the test timeout; inspect artifacts/test-run.log locally`);
@@ -71,7 +72,9 @@ async function startTestServer() {
   server = spawn(process.execPath, ['node_modules/next/dist/bin/next', 'start', '--hostname', '127.0.0.1', '--port', new URL(env.SERVER_URL).port], { env, stdio: ['ignore', log, log], windowsHide: true });
   for (let attempt = 0; attempt < 60; attempt++) {
     if (server.exitCode !== null) throw new Error('Run-owned server stopped');
-    try { if ((await fetch(`${env.SERVER_URL}/api/users`, { signal: AbortSignal.timeout(2000) })).status === 403) return; } catch { /* Starting */ }
+    // Initialize Payload from SSR first, as a user opening the CMS does.
+    // API-first readiness masks capability identity bugs between Next bundles.
+    try { if ((await fetch(`${env.SERVER_URL}/admin/login`, { signal: AbortSignal.timeout(2000) })).status === 200 && (await fetch(`${env.SERVER_URL}/api/users`, { signal: AbortSignal.timeout(2000) })).status === 403) return; } catch { /* Starting */ }
     await delay(1000);
   }
   throw new Error('Test application must become ready');
@@ -171,7 +174,7 @@ try {
   if(mode==='demo') {
     await seedDemo({env,adminEmail:accounts.admin.email,adminPassword:accounts.admin.password,mediaEmail:accounts.mediaA.email,mediaPassword:accounts.mediaA.password,benchmark:process.argv.includes('--benchmark')});
     const credentialsPath=`.tools/test-databases/${runId}/demo.env`;
-    const demoEnv={SERVER_URL:env.SERVER_URL,GIBEI_TEST_RUN_ID:runId,TEST_DATABASE_URL:runtimeURL,TEST_MIGRATION_DATABASE_URL:migrationURL,DEMO_ADMIN_EMAIL:accounts.admin.email,DEMO_ADMIN_PASSWORD:accounts.admin.password,DEMO_MEDIA_EMAIL:accounts.mediaA.email,DEMO_MEDIA_PASSWORD:accounts.mediaA.password};
+    const demoEnv={SERVER_URL:env.SERVER_URL,GIBEI_TEST_RUN_ID:runId,TEST_DATABASE_URL:runtimeURL,TEST_MIGRATION_DATABASE_URL:migrationURL,DEMO_ADMIN_EMAIL:accounts.admin.email,DEMO_ADMIN_PASSWORD:accounts.admin.password,DEMO_MEDIA_EMAIL:accounts.mediaA.email,DEMO_MEDIA_PASSWORD:accounts.mediaA.password,DEMO_OTHER_EMAIL:accounts.mediaB.email,DEMO_OTHER_PASSWORD:accounts.mediaB.password};
     writeFileSync(credentialsPath,Object.entries(demoEnv).map(([key,value])=>`${key}=${value}`).join('\n'),{mode:0o600});
     console.log(`Demo contoh: ${env.SERVER_URL} | CMS: ${env.SERVER_URL}/admin`);
     console.log(`Kredensial hanya di berkas lokal privat ${credentialsPath}. Ctrl+C membersihkan target sementara ini.`);
@@ -179,7 +182,7 @@ try {
   } else {
   if (mode !== 'e2e') {
     console.log('Running integration smoke tests with Admin and two Media');
-    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs', 'tests/integration/article-search.test.mjs', 'tests/integration/article-links.test.mjs', 'tests/integration/pages.test.mjs', 'tests/integration/settings.test.mjs', 'tests/integration/organization.test.mjs', 'tests/integration/members.test.mjs', 'tests/integration/publications.test.mjs', 'tests/integration/recruitment.test.mjs', 'tests/integration/z-archival.test.mjs', 'tests/integration/p1.test.mjs', 'tests/integration/zz-seed.test.mjs'], 'Integration tests');
+    await child(['--test', '--test-concurrency=1', 'tests/integration/accounts.test.mjs', 'tests/integration/articles.test.mjs', 'tests/integration/uploads.test.mjs', 'tests/integration/media-read.test.mjs', 'tests/integration/media-reuse.test.mjs', 'tests/integration/review-submit.test.mjs', 'tests/integration/publish.test.mjs', 'tests/integration/public-read.test.mjs', 'tests/integration/published-revision.test.mjs', 'tests/integration/unpublish.test.mjs', 'tests/integration/deletion.test.mjs', 'tests/integration/editorial-races.test.mjs', 'tests/integration/article-search.test.mjs', 'tests/integration/article-links.test.mjs', 'tests/integration/pages.test.mjs', 'tests/integration/settings.test.mjs', 'tests/integration/organization.test.mjs', 'tests/integration/members.test.mjs', 'tests/integration/publications.test.mjs', 'tests/integration/recruitment.test.mjs', 'tests/integration/z-archival.test.mjs', 'tests/integration/p1.test.mjs', 'tests/integration/zz-seed.test.mjs', 'tests/integration/zzz-final-contract.test.mjs'], 'Integration tests');
     await child(['scripts/payload.mjs', 'run', 'scripts/verify-editorial-local.ts'], 'Local editorial boundary tests');
     const beforeRestart = (await migration.query('SELECT * FROM payload.editorial_audit ORDER BY id')).rows;
     assert.ok(beforeRestart.length > 0);
@@ -199,6 +202,7 @@ try {
     assert.equal(audit.status, 200); assert.equal((await audit.json()).totalDocs, beforeRestart.length);
     assert.deepEqual((await migration.query('SELECT * FROM payload.editorial_audit ORDER BY id')).rows, beforeRestart);
     console.log('Editorial audit persistence verified after production-server restart');
+    if(native){const proof=await recoveryProof({env,adminPassword,log,stopSource:async()=>stop(server)});writeFileSync('artifacts/recovery-proof.json',JSON.stringify(proof,null,2));console.log('Database + private media restored into an independent owned target; ACL and byte access verified');await startTestServer();}
     if (mode === 'all') {
       // Both suites own singleton fixtures (Pages); give e2e the same clean
       // baseline as standalone mode, only after the restart assertion above.

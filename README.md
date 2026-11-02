@@ -1,6 +1,6 @@
 # GIBEI UISI
 
-Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T051 / CP-01–CP-18 selesai:** seluruh modul P0/P1, workflow editorial, seed demo aman serta metadata/sitemap tersedia. Verifikasi 36 unit, 68 integration dan 35 e2e, lint/TypeScript/build lulus. Berikutnya T052; QA menyeluruh dan kelulusan MVP tetap mengikuti backlog. Konten resmi belum diisi dan situs belum dipublikasikan. Acuan: [laporan T051](docs/reports/T051.md), [PRD](docs/PRD-v1.1.md), [backlog](tasks/todo.md).
+Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T063 / CP-01–CP-23 selesai secara teknis untuk demo:** 11 modul PRD, workflow Admin/Media, seed dan SEO tersedia. 39 unit, 80 integration, 42 browser serta lint/typecheck/build lulus. Median Lighthouse 88/87/86/89; clean start dan restore terbukti. [Laporan final](docs/reports/T063.md), [audit FR/AC](docs/qa/mvp-acceptance.md), [backlog](tasks/todo.md). Penerimaan pemilik proyek, konten resmi dan produksi tetap terbuka.
 
 
 ## Menjalankan
@@ -11,7 +11,7 @@ Gunakan Node **24.22.1** dan pnpm **10.24.0**, sesuai `.node-version` dan `packa
 $env:Path = "$PWD\.tools\node-v24.22.1;$env:Path"
 node --version
 pnpm --version
-pnpm install --frozen-lockfile
+pnpm install --frozen-lockfile --store-dir .pnpm-store
 pnpm dev
 ```
 
@@ -38,11 +38,14 @@ Pengujian: `pnpm test:unit`, `pnpm test:integration`, `pnpm test:e2e`, atau `pnp
 
 Ikuti [panduan setup](docs/setup.md) untuk database, migration Payload, bootstrap Admin dan alur CMS. CMS: `http://127.0.0.1:3000/admin`; gunakan kredensial BOOTSTRAP_ADMIN_EMAIL/BOOTSTRAP_ADMIN_PASSWORD pada `.env.local`. Jangan membagikan nilainya di chat atau Git. `pnpm bootstrap:admin` tidak menimpa akun yang sudah ada; `pnpm test:cms` memeriksa login/logout pada server berjalan. Admin mengelola akun/reset lokal lewat Users; perubahan role/status/email/password memerlukan login ulang target. Articles memuat panel Alur editorial dan antrean review Admin; Pages memuat panel review untuk homepage/about (Admin membuat, Media berizin menyunting dan mengajukan). Preview privat memerlukan login/izin. Upload berada pada Media. Endpoint revoke/delete tetap dijelaskan pada panduan setup. Draft/file tetap privat sampai review yang sesuai disetujui. Audit tidak dapat diubah/dihapus. Data fixture tidak di-seed ke Supabase; daftar pengembangan tetap kosong sampai konten diterbitkan melalui CMS.
 
-Jalankan `pnpm db:check`, `pnpm db:verify`, `pnpm test:db-config` dan `pnpm test:auth-policy` untuk pemeriksaan terkait. Jangan menaruh kredensial di `NEXT_PUBLIC_*`; PAYLOAD_SECRET hanya di environment server. File upload, runtime portable, dependency dan output build diabaikan Git. Temuan audit yang tersisa dan batas verifikasi tercatat pada [laporan T006](docs/reports/T006.md).
+Jalankan `pnpm db:check`, `pnpm db:verify`, `pnpm test:db-config` dan `pnpm test:auth-policy` untuk pemeriksaan terkait. Jangan menaruh kredensial di `NEXT_PUBLIC_*`; PAYLOAD_SECRET hanya di environment server. File upload, runtime portable, dependency dan output build diabaikan Git. Temuan audit yang tersisa dan batas verifikasi terbaru tercatat pada [audit keamanan](docs/qa/security.md).
 
-Fondasi publik memakai Tailwind 4.3.3, font Manrope lokal dan token sementara; lihat [panduan desain](docs/design.md). Menu mobile, keyboard dan reduced motion telah diuji. Logo/foto/kontak resmi serta konten CMS final tetap menunggu tugas berikutnya. Robot metadata disetel noindex/nofollow untuk pratinjau. Situs belum diterbitkan ke internet.
+Fondasi publik memakai Tailwind 4.3.3, font Manrope lokal dan token sementara; lihat [panduan desain](docs/design.md). Menu mobile, keyboard dan reduced motion telah diuji. Logo/foto/kontak resmi serta konten CMS final tetap menunggu konfirmasi pemilik proyek. Robot metadata disetel noindex/nofollow untuk pratinjau. Situs belum diterbitkan ke internet.
 
 
 ## Demo berisi data contoh
 
 `pnpm demo` menyiapkan database/media lokal terpisah dan membuka server production pada port bebas. `pnpm demo --benchmark` memakai dataset tetap 24 artikel. URL dan lokasi berkas kredensial privat ditampilkan pada terminal; tidak ada password default. Ctrl+C membersihkan hanya target sementara milik launcher. Jangan jalankan bersamaan dengan harness tes. [Panduan seed dan demo](docs/demo-data.md) menjelaskan pengulangan tanpa menimpa edit pengguna. Supabase utama tetap tidak diisi seed.
+
+
+Pemeriksaan serah terima: `pnpm demo:check PATH_KE_DEMO_ENV`. Benchmark PRD: `pnpm benchmark:demo http://127.0.0.1:PORT` pada fresh seed `--benchmark`, ketika tidak ada tes/build lain berjalan. Panduan: [CMS](docs/cms-guide.md), [naskah demo](docs/demo-script.md), [handover](docs/handover.md), [backup/restore](docs/operations/backup-restore.md), [audit MVP](docs/qa/mvp-acceptance.md). Status final mengikuti bukti pada audit tersebut.
