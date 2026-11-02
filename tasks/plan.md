@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan produk: [PRD v1.1](../docs/PRD-v1.1.md), 20 Oktober 2026.
 
-**Status terbaru — QA CP-01–CP-15 lulus ulang (1 November 2026):** T001–T042 selesai pada cakupan yang diverifikasi; QA-01, QA-02 dan QA-03 sudah ditutup. CP-10–CP-15 serta delapan tugas terkait dipulihkan setelah 32 unit, 64 integration, 33 e2e dan empat probe audit lulus. [Bukti perbaikan](../docs/qa/CP01-CP15-fixes.md). Berikutnya T043 / Fase D; konten resmi dan kelulusan MVP tetap mengikuti backlog.
+**Status terbaru — 2 November 2026:** T001–T051 selesai; CP-01–CP-18 telah diverifikasi pada cakupan backlog. Batch T043–T051 menambahkan galeri, partnership/izin logo, prestasi, homepage lengkap, seed demo dan SEO. `pnpm test:all` lulus 36 unit, 68 integration dan 35 e2e tanpa retry; lint/TypeScript/build lulus. [Bukti T051](../docs/reports/T051.md). Berikutnya T052; audit MVP dan produksi tetap terbuka.
 
 ## Tujuan dan kondisi awal
 
@@ -243,7 +243,7 @@ Tabel menautkan skenario ke tugas yang mengimplementasikan atau menguji perilaku
 
 ## Urutan mulai dan batas serah terima
 
-**Status terbaru — QA CP-01–CP-15 lulus ulang (1 November 2026):** T001–T042 selesai pada cakupan yang diverifikasi; QA-01, QA-02 dan QA-03 sudah ditutup. CP-10–CP-15 serta delapan tugas terkait dipulihkan setelah 32 unit, 64 integration, 33 e2e dan empat probe audit lulus. [Bukti perbaikan](../docs/qa/CP01-CP15-fixes.md). Berikutnya T043 / Fase D; konten resmi dan kelulusan MVP tetap mengikuti backlog.
+**Status terbaru — 2 November 2026:** T001–T051 selesai; CP-01–CP-18 telah diverifikasi pada cakupan backlog. Batch T043–T051 menambahkan galeri, partnership/izin logo, prestasi, homepage lengkap, seed demo dan SEO. `pnpm test:all` lulus 36 unit, 68 integration dan 35 e2e tanpa retry; lint/TypeScript/build lulus. [Bukti T051](../docs/reports/T051.md). Berikutnya T052; audit MVP dan produksi tetap terbuka.
 
 Tidak ada sub-agent, thread baru, issue eksternal, instalasi dependency, atau perubahan aplikasi yang dibuat oleh dokumen rencana ini. Pelaksanaan dapat dilakukan berurutan. Bila kelak dikerjakan beberapa orang, pisahkan modul setelah kontrak T025 stabil; perubahan migration, konfigurasi shared, dan lifecycle media tetap dikoordinasikan.
 

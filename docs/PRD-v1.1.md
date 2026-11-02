@@ -680,3 +680,6 @@ Prioritasnya adalah website publik berkualitas dengan CMS dan alur persetujuan y
 
 
 **Penutupan QA — 1 November 2026:** QA-01, QA-02 dan QA-03 sudah diperbaiki; delapan tugas terkait dan CP-10–CP-15 diverifikasi ulang. 32 unit, 64 integration, 33 e2e, empat probe audit, lint/TypeScript/build dan smoke Supabase lulus. [Bukti penutupan](qa/CP01-CP15-fixes.md). Cakupan tetap T001–T042; T043 dan kelulusan MVP/produksi tetap mengikuti backlog.
+
+
+**Pembaruan implementasi — 2 November 2026:** T043–T051 / CP-16–CP-18 selesai. Galeri, partnership dengan izin logo Admin, prestasi/filter tahun, agregasi homepage P1, seed demo terisolasi dan SEO dinamis tersedia. 36 unit, 68 integration dan 35 e2e serta lint/TypeScript/build lulus; seed berulang dan restart PostgreSQL/media dibuktikan. Supabase pengembangan memuat 17 migrasi, tanpa seed contoh P1. [Laporan T051](reports/T051.md), [panduan demo](demo-data.md), [kontrak SEO](technical/seo.md). Baseline tidak diubah; berikutnya T052, audit/kelulusan MVP dan produksi tetap terbuka.

@@ -2,7 +2,7 @@
 
 Tanggal: 21 Oktober 2026. Acuan: [PRD v1.1](../docs/PRD-v1.1.md). Peta pengerjaan: [plan.md](plan.md).
 
-**Status terbaru — QA CP-01–CP-15 lulus ulang (1 November 2026):** T001–T042 selesai pada cakupan yang diverifikasi; QA-01, QA-02 dan QA-03 sudah ditutup. CP-10–CP-15 serta delapan tugas terkait dipulihkan setelah 32 unit, 64 integration, 33 e2e dan empat probe audit lulus. [Bukti perbaikan](../docs/qa/CP01-CP15-fixes.md). Berikutnya T043 / Fase D; konten resmi dan kelulusan MVP tetap mengikuti backlog.
+**Status terbaru — 2 November 2026:** T001–T051 selesai; CP-01–CP-18 telah diverifikasi pada cakupan backlog. Batch T043–T051 menambahkan galeri, partnership/izin logo, prestasi, homepage lengkap, seed demo dan SEO. `pnpm test:all` lulus 36 unit, 68 integration dan 35 e2e tanpa retry; lint/TypeScript/build lulus. [Bukti T051](../docs/reports/T051.md). Berikutnya T052; audit MVP dan produksi tetap terbuka.
 
 ## Cara menggunakan checklist
 
@@ -1030,7 +1030,7 @@ Galeri, partnership, prestasi, dan agregasi homepage selesai tanpa mengurangi iz
 
 ### T043
 
-- [ ] **Kelola album dokumentasi privat**
+- [x] **Kelola album dokumentasi privat**
 
 **Hasil:** Tambahkan galeri, relasi event opsional, urutan foto/alt/caption, tanggal kegiatan, dan tautan video HTTPS.
 
@@ -1041,17 +1041,17 @@ Galeri, partnership, prestasi, dan agregasi homepage selesai tanpa mengurangi iz
 
 **Kriteria selesai:**
 
-- [ ] Album menggunakan workflow versi/review dan izin media yang sama; foto informatif wajib alt.
-- [ ] Relasi event opsional yang tidak publik tidak membocorkan draft; file tidak dapat dipasang dengan ID privat tanpa izin.
-- [ ] Video hanya tautan; tanggal kegiatan tidak bergeser hari.
+- [x] Album menggunakan workflow versi/review dan izin media yang sama; foto informatif wajib alt.
+- [x] Relasi event opsional yang tidak publik tidak membocorkan draft; file tidak dapat dipasang dengan ID privat tanpa izin.
+- [x] Video hanya tautan; tanggal kegiatan tidak bergeser hari.
 
 **Verifikasi:** Tes album multi-foto, revisi caption, aset lintas owner, event ditarik, serta video URL berbahaya.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 ### T044
 
-- [ ] **Tampilkan daftar dan detail galeri**
+- [x] **Tampilkan daftar dan detail galeri**
 
 **Hasil:** Bangun /galeri dan detail album yang responsif dengan gambar yang diizinkan.
 
@@ -1062,17 +1062,17 @@ Galeri, partnership, prestasi, dan agregasi homepage selesai tanpa mengurangi iz
 
 **Kriteria selesai:**
 
-- [ ] Daftar/detail hanya membaca album terbit dan versi foto/alt yang disetujui.
-- [ ] Grid dapat dibaca pada mobile; navigasi gambar, bila disediakan, mendukung keyboard dan fokus.
-- [ ] Aset dicabut mendapat fallback; video eksternal dibuka aman tanpa embed bebas.
+- [x] Daftar/detail hanya membaca album terbit dan versi foto/alt yang disetujui.
+- [x] Grid dapat dibaca pada mobile; navigasi gambar, bila disediakan, mendukung keyboard dan fokus.
+- [x] Aset dicabut mendapat fallback; video eksternal dibuka aman tanpa embed bebas.
 
 **Verifikasi:** Uji album kosong/multi-foto, revisi draft, pencabutan foto, mobile, dan keyboard.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 ### T045
 
-- [ ] **Kelola mitra dengan izin logo**
+- [x] **Kelola mitra dengan izin logo**
 
 **Hasil:** Tambahkan mitra, kolaborasi, website, pilihan homepage, dan pencatatan izin logo yang privat.
 
@@ -1083,23 +1083,23 @@ Galeri, partnership, prestasi, dan agregasi homepage selesai tanpa mengurangi iz
 
 **Kriteria selesai:**
 
-- [ ] Nama/deskripsi mengikuti review; hanya Admin mencatat izin logo beserta pelaksana/waktu.
-- [ ] Bukti izin tidak masuk respons/relasi publik; Media tidak dapat memalsukan konfirmasi.
-- [ ] Logo tidak ditampilkan jika izin belum ada, meskipun file tersebut sudah publik untuk konteks lain.
+- [x] Nama/deskripsi mengikuti review; hanya Admin mencatat izin logo beserta pelaksana/waktu.
+- [x] Bukti izin tidak masuk respons/relasi publik; Media tidak dapat memalsukan konfirmasi.
+- [x] Logo tidak ditampilkan jika izin belum ada, meskipun file tersebut sudah publik untuk konteks lain.
 
 **Verifikasi:** Tes approval konten tanpa izin logo, pemalsuan flag melalui API, dan pembacaan bukti privat secara anonim.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 #### CP-16 — setelah T045
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T046
 
-- [ ] **Tampilkan partnership publik**
+- [x] **Tampilkan partnership publik**
 
 **Hasil:** Buat /partnership dengan nama, kolaborasi, website, dan logo yang memenuhi izin.
 
@@ -1110,16 +1110,16 @@ Galeri, partnership, prestasi, dan agregasi homepage selesai tanpa mengurangi iz
 
 **Kriteria selesai:**
 
-- [ ] Hanya mitra terbit ditampilkan; nama/deskripsi tanpa logo tetap terbaca bila disetujui.
-- [ ] Website memakai HTTPS valid/rel aman; contoh tidak menyiratkan kemitraan resmi.
+- [x] Hanya mitra terbit ditampilkan; nama/deskripsi tanpa logo tetap terbaca bila disetujui.
+- [x] Website memakai HTTPS valid/rel aman; contoh tidak menyiratkan kemitraan resmi.
 
 **Verifikasi:** Uji mitra dengan/tanpa izin logo, URL kosong, draft, serta label contoh.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 ### T047
 
-- [ ] **Kelola dan tampilkan prestasi**
+- [x] **Kelola dan tampilkan prestasi**
 
 **Hasil:** Buat collection serta halaman prestasi dengan tanggal, kategori, penerima/tim, dokumentasi, dan filter tahun.
 
@@ -1130,17 +1130,17 @@ Galeri, partnership, prestasi, dan agregasi homepage selesai tanpa mengurangi iz
 
 **Kriteria selesai:**
 
-- [ ] Admin/Media menjalankan review prestasi; hanya versi terbit muncul di /prestasi.
-- [ ] Filter tahun memakai tanggal kalender yang benar; revisi/penarikan tidak menghapus audit.
-- [ ] Dokumentasi mengikuti izin media; contoh prestasi diberi label.
+- [x] Admin/Media menjalankan review prestasi; hanya versi terbit muncul di /prestasi.
+- [x] Filter tahun memakai tanggal kalender yang benar; revisi/penarikan tidak menghapus audit.
+- [x] Dokumentasi mengikuti izin media; contoh prestasi diberi label.
 
 **Verifikasi:** Tes dua tahun, hasil kosong, tanggal di batas tahun, review, dan penarikan dokumentasi.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 ### T048
 
-- [ ] **Lengkapi homepage dengan modul P1**
+- [x] **Lengkapi homepage dengan modul P1**
 
 **Hasil:** Tambahkan prestasi dan mitra terpilih pada homepage dengan kondisi publikasi/izin yang benar.
 
@@ -1151,19 +1151,19 @@ Galeri, partnership, prestasi, dan agregasi homepage selesai tanpa mengurangi iz
 
 **Kriteria selesai:**
 
-- [ ] Bagian prestasi/mitra bersumber dari data CMS terbit; logo selalu mengikuti izin.
-- [ ] Homepage lengkap memenuhi semua bagian FR-01 tanpa menambah statistik yang belum dikonfirmasi.
-- [ ] Penarikan mitra/prestasi atau pencabutan logo memperbarui homepage termasuk cache.
+- [x] Bagian prestasi/mitra bersumber dari data CMS terbit; logo selalu mengikuti izin.
+- [x] Homepage lengkap memenuhi semua bagian FR-01 tanpa menambah statistik yang belum dikonfirmasi.
+- [x] Penarikan mitra/prestasi atau pencabutan logo memperbarui homepage termasuk cache.
 
 **Verifikasi:** Periksa homepage lengkap di browser; tarik data/izin lalu periksa hasil dan empty state.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 #### CP-17 — setelah T048
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ## Fase E — Seed dan verifikasi menyeluruh
 
@@ -1171,7 +1171,7 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 ### T049
 
-- [ ] **Siapkan seed demo lengkap yang aman**
+- [x] **Siapkan seed demo lengkap yang aman**
 
 **Hasil:** Lengkapi seed seluruh modul dengan konten contoh, delapan divisi, dua periode, dua role, dan aset yang sah digunakan.
 
@@ -1182,17 +1182,17 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Seed aman dijalankan ulang tanpa duplikasi/penimpaan edit; akun memakai secret input, bukan password tetap.
-- [ ] Label contoh tampil pada kartu/detail dan metadata berbagi; kontak/mitra/prestasi tidak diklaim resmi.
-- [ ] Dataset benchmark deterministik; reset memerlukan opsi eksplisit dan tidak menyasar database produksi.
+- [x] Seed aman dijalankan ulang tanpa duplikasi/penimpaan edit; akun memakai secret input, bukan password tetap.
+- [x] Label contoh tampil pada kartu/detail dan metadata berbagi; kontak/mitra/prestasi tidak diklaim resmi.
+- [x] Dataset benchmark deterministik; reset memerlukan opsi eksplisit dan tidak menyasar database produksi.
 
 **Verifikasi:** Jalankan seed dua kali, ubah satu konten, seed ulang, restart database/storage, lalu bandingkan data dan file.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 ### T050
 
-- [ ] **Lengkapi metadata dan canonical**
+- [x] **Lengkapi metadata dan canonical**
 
 **Hasil:** Buat judul/deskripsi unik, canonical dari base URL, Open Graph, dan metadata aman pada halaman publik.
 
@@ -1203,17 +1203,17 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Seluruh rute publik memiliki metadata sesuai isi; draft/404 tidak membocorkan judul/excerpt/aset privat.
-- [ ] Canonical mengikuti environment; localhost tidak diklaim domain resmi produksi.
-- [ ] Open Graph konten demo memuat penandaan contoh; konfigurasi base URL tervalidasi.
+- [x] Seluruh rute publik memiliki metadata sesuai isi; draft/404 tidak membocorkan judul/excerpt/aset privat.
+- [x] Canonical mengikuti environment; localhost tidak diklaim domain resmi produksi.
+- [x] Open Graph konten demo memuat penandaan contoh; konfigurasi base URL tervalidasi.
 
 **Verifikasi:** Periksa HTML server dan metadata pada rute terbit/draft/revisi; bandingkan base URL dua lingkungan lokal uji.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 ### T051
 
-- [ ] **Buat sitemap, robots, dan structured data**
+- [x] **Buat sitemap, robots, dan structured data**
 
 **Hasil:** Bangun indeks mesin pencari dari versi publik dan structured data yang sesuai jenis konten.
 
@@ -1224,19 +1224,19 @@ Data demo final, SEO, keamanan, aksesibilitas, dan performa memiliki bukti.
 
 **Kriteria selesai:**
 
-- [ ] Sitemap hanya memuat URL terbit; penarikan menghapus URL/metadata terkait termasuk cache.
-- [ ] CMS/preview tidak diindeks; mode demo/staging tidak mengizinkan indeks publik.
-- [ ] Structured data sesuai isi terbit dan tidak menyatakan organisasi/event contoh sebagai fakta terverifikasi.
+- [x] Sitemap hanya memuat URL terbit; penarikan menghapus URL/metadata terkait termasuk cache.
+- [x] CMS/preview tidak diindeks; mode demo/staging tidak mengizinkan indeks publik.
+- [x] Structured data sesuai isi terbit dan tidak menyatakan organisasi/event contoh sebagai fakta terverifikasi.
 
 **Verifikasi:** Validasi output XML/robots/JSON-LD; uji sesudah publish/withdraw dengan cache hangat dan base URL demo.
 
-**Bukti/status:** Belum dikerjakan; isi hasil tes, URL demo lokal, atau tautan laporan ketika tersedia.
+**Bukti/status:** Selesai; [laporan batch T043–T051](../docs/reports/T051.md). 36 unit, 68 integration dan 35 e2e lulus tanpa retry; lint/TypeScript/build lulus. Seed dan restart diverifikasi pada PostgreSQL/media lokal terisolasi; Supabase hanya menerima migrasi, tanpa seed contoh.
 
 #### CP-18 — setelah T051
 
-- [ ] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
-- [ ] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
-- [ ] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
+- [x] Verifikasi tugas sejak checkpoint sebelumnya lulus; simpan bukti dan catat hambatan.
+- [x] Untuk perubahan aplikasi: pemeriksaan statis/build dan regresi terarah yang relevan lulus; jalur yang sudah bekerja tetap dapat digunakan.
+- [x] Periksa lingkup, dependensi, dan keputusan yang masih terbuka; jangan tandai tugas lanjutan selesai berdasarkan rencana saja.
 
 ### T052
 

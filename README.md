@@ -1,6 +1,7 @@
 # GIBEI UISI
 
-Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T042 / CP-01–CP-15 lulus ulang setelah perbaikan QA:** restart arsip hanya Admin, pengarsipan revisi menjaga versi publik, dan CTA Pages mengikuti waktu/aktivasi rekrutmen. Verifikasi 32 unit, 64 integration, 33 e2e serta empat probe audit lulus. Konten resmi belum diisi; berikutnya T043 / Fase D. Acuan: [bukti perbaikan QA](docs/qa/CP01-CP15-fixes.md), [PRD](docs/PRD-v1.1.md), [backlog](tasks/todo.md).
+Website localhost dengan Next.js App Router, TypeScript dan Payload. **T001–T051 / CP-01–CP-18 selesai:** seluruh modul P0/P1, workflow editorial, seed demo aman serta metadata/sitemap tersedia. Verifikasi 36 unit, 68 integration dan 35 e2e, lint/TypeScript/build lulus. Berikutnya T052; QA menyeluruh dan kelulusan MVP tetap mengikuti backlog. Konten resmi belum diisi dan situs belum dipublikasikan. Acuan: [laporan T051](docs/reports/T051.md), [PRD](docs/PRD-v1.1.md), [backlog](tasks/todo.md).
+
 
 ## Menjalankan
 
@@ -40,3 +41,8 @@ Ikuti [panduan setup](docs/setup.md) untuk database, migration Payload, bootstra
 Jalankan `pnpm db:check`, `pnpm db:verify`, `pnpm test:db-config` dan `pnpm test:auth-policy` untuk pemeriksaan terkait. Jangan menaruh kredensial di `NEXT_PUBLIC_*`; PAYLOAD_SECRET hanya di environment server. File upload, runtime portable, dependency dan output build diabaikan Git. Temuan audit yang tersisa dan batas verifikasi tercatat pada [laporan T006](docs/reports/T006.md).
 
 Fondasi publik memakai Tailwind 4.3.3, font Manrope lokal dan token sementara; lihat [panduan desain](docs/design.md). Menu mobile, keyboard dan reduced motion telah diuji. Logo/foto/kontak resmi serta konten CMS final tetap menunggu tugas berikutnya. Robot metadata disetel noindex/nofollow untuk pratinjau. Situs belum diterbitkan ke internet.
+
+
+## Demo berisi data contoh
+
+`pnpm demo` menyiapkan database/media lokal terpisah dan membuka server production pada port bebas. `pnpm demo --benchmark` memakai dataset tetap 24 artikel. URL dan lokasi berkas kredensial privat ditampilkan pada terminal; tidak ada password default. Ctrl+C membersihkan hanya target sementara milik launcher. Jangan jalankan bersamaan dengan harness tes. [Panduan seed dan demo](docs/demo-data.md) menjelaskan pengulangan tanpa menimpa edit pengguna. Supabase utama tetap tidak diisi seed.

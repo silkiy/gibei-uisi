@@ -55,7 +55,7 @@ Request API Playwright di luar browser harus menyertakan Origin dari baseURL tes
 
 **Hasil T026 setelah review:** `pnpm test:all` lulus dengan 25 unit, 40 integration dan 23 e2e, termasuk paragraf LF/CRLF melalui validasi/API/CMS/preview serta identitas Pages unik. Dalam mode `all`, sesudah assertion persistensi audit/restart, launcher menghentikan server milik run dan melakukan guarded reset database sementara lalu bootstrap ulang tiga akun sebelum e2e. Ini memberi baseline singleton yang sama seperti mode browser terpisah; tidak ada reset database pengembangan atau pelemahan aturan unik. [Bukti T026](reports/T026.md). Ini status historis saat T026; hasil lanjutan dicatat di bawah.
 
-**Hasil terbaru perbaikan QA CP-15:** `pnpm test:all` lulus 32 unit, 64 integration dan 33 e2e tanpa retry. `pages.test.mjs`, `z-archival.test.mjs` dan `zz-qa-workflow.spec.ts` membuktikan arsip/restart untuk Pages serta seluruh enam jenis shared reviewed. `zz-p0-home.spec.ts` menguji CTA Pages dan panel utama pada deadline, disable, pergantian kampanye, kegagalan API dan pemulihan tab. Empat probe audit awal juga lulus; [bukti dan batas](qa/CP01-CP15-fixes.md). Lint/TypeScript/build lulus; checkpoint dipulihkan sampai CP-15, T043 belum dimulai.
+**Hasil historis perbaikan QA CP-15:** `pnpm test:all` lulus 32 unit, 64 integration dan 33 e2e tanpa retry. `pages.test.mjs`, `z-archival.test.mjs` dan `zz-qa-workflow.spec.ts` membuktikan arsip/restart untuk Pages serta seluruh enam jenis shared reviewed. `zz-p0-home.spec.ts` menguji CTA Pages dan panel utama pada deadline, disable, pergantian kampanye, kegagalan API dan pemulihan tab. Empat probe audit awal juga lulus; [bukti dan batas](qa/CP01-CP15-fixes.md). Lint/TypeScript/build lulus; checkpoint dipulihkan sampai CP-15 pada saat perbaikan tersebut.
 
 Untuk mempersempit kegagalan browser tanpa melewati isolasi/guard, launcher menerima satu spec yang berada di `tests/e2e`:
 
@@ -68,3 +68,12 @@ Mode normal tetap menjalankan seluruh spec. Opsi ini hanya berlaku untuk e2e dan
 Ringkasan lulus/gagal muncul di terminal. Log migration/build/test ada di `artifacts/test-run.log`, screenshot yang dibuat eksplisit di `test-results/`; semuanya diabaikan Git. Trace/video/storageState dimatikan agar kredensial/cookie tidak tersimpan dalam rekaman jaringan. Hindari membagikan log mentah sebelum memeriksa isinya. Kegagalan proses menghasilkan exit nonzero; tidak ada tes yang dilewati karena database/browser belum tersedia.
 
 Sumber workflow: [Node test runner](https://nodejs.org/docs/latest-v24.x/api/test.html), [Playwright fixtures](https://playwright.dev/docs/test-fixtures), [isolasi browser](https://playwright.dev/docs/browser-contexts), [initdb](https://www.postgresql.org/docs/17/app-initdb.html), [pg_ctl](https://www.postgresql.org/docs/17/app-pg-ctl.html), serta guide Playwright/distDir Next 16.4.2 yang terpasang.
+
+
+## Verifikasi T043–T051 / CP-18 — 2 November 2026
+
+`pnpm test:all` lulus **36 unit, 68 integration dan 35 e2e** tanpa retry. Lint, TypeScript dan build production normal juga lulus. Regresi P1/SEO ada pada `p1-policy.test.mjs`, `seo.test.mjs`, `p1.test.mjs`, `zz-seed.test.mjs` dan `p1-seo.spec.ts`. Log run gabungan disimpan lokal di `artifacts/t043-t051-full.log`; screenshot galeri mobile di `artifacts/T044-mobile.png`. Log berisi fault injection yang disengaja; nilai kelulusan dilihat dari assertion dan exit code, bukan ketiadaan kata ERROR.
+
+Harness membandingkan seed, pointer terbit, audit dan hash file PNG/PDF setelah restart aplikasi serta PostgreSQL native miliknya. Database direset/reseed antara integration dan browser supaya Pages singleton tetap terisolasi. Target dan media hanya dibersihkan setelah guard role/database/marker lulus. Mode `pnpm demo [--benchmark]` memakai fondasi yang sama dan menahan server sampai Ctrl+C; [panduan demo](demo-data.md). Jangan jalankan dua harness/demo bersamaan karena memakai `.next-test`.
+
+Supabase menerima 17 migrasi, tanpa seed P1. Pemeriksaan TLS/izin schema dijelaskan di [laporan T051](reports/T051.md). Seluruh hasil ini menutup CP-16–CP-18 pada cakupan tugas; audit keamanan, izin lintas semua collection, waktu/race, aksesibilitas menyeluruh dan Lighthouse masih T052–T058.

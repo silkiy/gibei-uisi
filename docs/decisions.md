@@ -1,11 +1,13 @@
 # Register Keputusan GIBEI UISI
 
+**Status terbaru — 2 November 2026:** T043–T051 dan CP-16–CP-18 selesai; [bukti implementasi dan pengujian](reports/T051.md). Baseline tidak berubah. Seed hanya pada target lokal terisolasi; belum ada persetujuan produksi. Berikutnya T052.
+
 **Pembaruan QA — 1 November 2026:** QA-01–QA-03 telah ditutup setelah perbaikan aplikasi dan pengujian ulang. [Bukti penutupan CP-01–CP-15](qa/CP01-CP15-fixes.md). Pernyataan status T010/T025 dan penemuan awal di bawah adalah riwayat; baseline D-01–D-10 tidak diubah.
 
 **Tanggal persetujuan:** 23 Oktober 2026 (Asia/Jakarta)  
 **Pihak penentu:** Pemilik proyek, melalui percakapan proyek ini  
 **Acuan:** [PRD v1.1 §18](PRD-v1.1.md#18-decision-register--open-questions)  
-**Status tugas terbaru — T010:** T001–T010 selesai; CP-01/CP-02/CP-03 ditinjau dan T011 siap dikerjakan berikutnya.
+**Status historis — T010:** T001–T010 selesai; CP-01/CP-02/CP-03 ditinjau dan T011 siap dikerjakan berikutnya.
 
 **Pembaruan T010, 31 Oktober 2026:** draft artikel privat menyimpan isi pada revisi kerja terpisah; form virtual editable menjadi proxy ke hook domain yang sama dengan REST. Ownership, versi dan audit dijaga server dalam satu transaksi, termasuk ketika Local API melewati access control bawaan. Perubahan owner/assignee Admin menggunakan save beraudit; input native Payload memakai status 400. Upload dan approval/publikasi belum dibuka. [Bukti T010](reports/T010.md): 13 unit, 7 integration, pemeriksaan Local API dan 15 e2e lulus; migrasi Supabase dan localhost terverifikasi.
 

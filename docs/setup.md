@@ -119,9 +119,9 @@ Untuk pengujian berikutnya gunakan `pnpm test:unit`, `pnpm test:integration`, da
 
 ## Backend artikel dan media — T011–T020
 
-Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru perbaikan QA adalah `20261101_091210_page_revision_archival`, sesudah `20261101_040307_recruitment_campaigns`. Enam belas migrasi sudah diterapkan ke Supabase pengembangan. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T059.
+Jalankan `pnpm payload migrate` menggunakan MIGRATION_DATABASE_URL sebelum menjalankan kode baru. Schema push tetap nonaktif. Urutan migration ada pada `src/migrations/index.ts`; migration terbaru adalah `20261102_034955_p1_modules`, sesudah `20261101_091210_page_revision_archival`. Tujuh belas migrasi sudah diterapkan ke Supabase pengembangan. Backup database dan `storage/private` perlu diperlakukan sebagai satu pasangan sebelum pemindahan lingkungan; latihan restore menyeluruh tetap T060.
 
-Pages T026 tersedia di `/admin/collections/pages`. Admin membuat identitas `homepage` atau `about` (masing-masing satu) dan menentukan owner/assignee. Media yang ditugaskan menyimpan blok hero/profil/program/CTA dan SEO lalu mengajukan review; Admin memberi catatan revisi atau menerbitkan melalui panel editorial. Preview privat berada di `/editorial/pages/[id]`. Teks textarea mendukung paragraf LF/CRLF; URL CTA hanya rute yang didukung atau HTTPS. About terbit dibaca di `/tentang`; homepage agregasi tetap T042.
+Pages T026 tersedia di `/admin/collections/pages`. Admin membuat identitas `homepage` atau `about` (masing-masing satu) dan menentukan owner/assignee. Media yang ditugaskan menyimpan blok hero/profil/program/CTA dan SEO lalu mengajukan review; Admin memberi catatan revisi atau menerbitkan melalui panel editorial. Preview privat berada di `/editorial/pages/[id]`. Teks textarea mendukung paragraf LF/CRLF; URL CTA hanya rute yang didukung atau HTTPS. About terbit dibaca di `/tentang`; homepage agregasi sudah tersedia sejak T042 dan dilengkapi pada T048.
 
 Site Settings tersedia di `/admin/globals/site-settings`, hanya Admin. Isi nama/logo/favicon, kontak/sosial terkonfirmasi, navigasi dan footer lalu Save; simpan langsung berlaku dan diaudit. Field kontak kosong/belum dikonfirmasi tidak menjadi kanal resmi. Header/footer memakai konfigurasi yang sama. Isi profil homepage/About tetap pada Pages.
 
@@ -165,9 +165,18 @@ CMS rekrutmen berada di `/admin/collections/recruitment-periods`: pilih periode 
 
 Pada `/admin/globals/recruitment-state` (Aktivasi rekrutmen), pilih kampanye terbit lalu Save. Untuk pindah, kosongkan/nonaktifkan pilihan lama lalu Save dahulu, kemudian pilih target baru. Maksimum satu enabled juga berlaku untuk kampanye mendatang/selesai. Penarikan menonaktifkan otomatis; berakhirnya waktu menutup CTA tanpa mengubah pilihan Admin. `/rekrutmen?kampanye=slug` menyediakan riwayat terbit.
 
-`/kontak` dan footer memakai kontak terkonfirmasi yang sama. `/publikasi` menampilkan tiga artikel dan tiga riset terbaru. Homepage mengambil hero/blok Pages homepage, profil About, publikasi dan agenda mendatang dari snapshot approved. Panel rekrutmen memakai konfigurasi operasional dan waktu server. Galeri/prestasi/mitra dan tugas setelah T042 tetap mengikuti backlog. Tidak ada konten resmi yang diisi otomatis.
+`/kontak` dan footer memakai kontak terkonfirmasi yang sama. `/publikasi` menampilkan tiga artikel dan tiga riset terbaru. Homepage mengambil hero/blok Pages homepage, profil About, publikasi dan agenda mendatang dari snapshot approved. Panel rekrutmen memakai konfigurasi operasional dan waktu server. Galeri, prestasi dan mitra tersedia sejak T043–T048. T052 dan sesudahnya tetap mengikuti backlog. Tidak ada konten resmi yang diisi otomatis.
 
 
 ## Arsip dan restart setelah QA CP-15
 
 Pada panel editorial Pages dan reviewed content, Admin dapat mengisi alasan lalu memilih **Arsipkan revisi** untuk draft/revision_required setelah review tertunda dibatalkan. Hanya working revision yang diarsipkan; publikasi tetap tampil. **Mulai ulang dari arsip** hanya tersedia bagi Admin saat tidak ada publikasi/revisi kerja. Media tetap dapat memilih **Buat revisi baru** dari konten terbit yang berizin. Semua operasi ini memakai versi, transaksi dan audit; jalankan migration terbaru dahulu. CTA Pages yang menuju `/rekrutmen` memakai pemeriksaan API/deadline yang sama dengan panel rekrutmen.
+
+
+## Modul P1, seed dan SEO — T043–T051
+
+Collections Galleries, Partners dan Achievements memakai panel editorial yang sama. Album berisi tanggal kalender, event opsional, foto berurutan (alt wajib, caption opsional), dan video HTTPS berupa tautan. Achievement memakai tanggal kalender/filter tahun dan gambar dokumentasi opsional. Preview privat menampilkan foto/caption versi kerja.
+
+Partner memakai nama/deskripsi/kolaborasi, website, logo opsional dan pilihan homepage. Admin mengisi alasan pada panel lalu memilih **Catat izin logo** atau **Cabut izin logo**. Pemberian izin memakai logo revisi kerja jika tersedia; pencabutan memprioritaskan logo publik. Izin terikat versi/checksum file dan dicatat dengan actor/waktu privat; isi mitra tetap harus melalui review. Logo baru tidak mewarisi izin file lama. Tanpa izin, hanya nama/deskripsi yang telah disetujui tampil. API izin adalah POST `/api/editorial/partners/:id/logo-permission` dengan `expectedLockVersion`, `allowed` dan `note`; Media ditolak.
+
+Rute publik `/galeri`, `/galeri/[slug]`, `/partnership` dan `/prestasi` membaca versi approved. Pencabutan aset memberi fallback; menghapus file yang masih dirujuk ditolak. [Seed/demo](demo-data.md) memakai target sementara terisolasi, tidak memuat `.env.local` atau mengisi Supabase otomatis. [SEO](technical/seo.md) tetap noindex, termasuk pada tunnel/staging. Periksa [laporan T051](reports/T051.md) sebelum melanjutkan T052.
