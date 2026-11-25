@@ -1,4 +1,5 @@
-@import 'tailwindcss' source('../');
+@import 'tailwindcss';
+@source '../';
 
 :root {
   --brand: #006194;
@@ -87,6 +88,16 @@ button:disabled { cursor: not-allowed; }
 .division-card p { font-size: 13px; line-height: 1.8; color: var(--muted); }
 .division-highlight { border-color: var(--brand-border); }
 .division-highlight .icon-box { color: var(--brand); background: var(--brand-soft); }
+.members-section { background: white; }
+.members-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 20px; list-style: none; padding: 0; margin: 28px 0 0; }
+.members-grid li { min-width: 0; }
+.member-card { height: 100%; overflow: hidden; border: 1px solid var(--line); border-radius: 16px; background: white; }
+.member-photo { position: relative; aspect-ratio: 4 / 5; display: grid; place-items: center; overflow: hidden; background: var(--brand-soft); }
+.member-photo img { width: 82%; height: 82%; object-fit: contain; }
+.member-photo-label { position: absolute; right: 12px; bottom: 12px; padding: 5px 9px; border: 1px solid rgb(255 255 255 / 80%); border-radius: 20px; background: rgb(255 255 255 / 92%); color: var(--muted); font-size: 10px; font-weight: 700; }
+.member-info { padding: 20px; border-top: 1px solid var(--line); }
+.member-info h3 { font-size: 16px; font-weight: 750; line-height: 1.45; letter-spacing: -.35px; }
+.member-info p { margin-top: 4px; color: var(--brand); font-size: 13px; font-weight: 650; }
 .section-heading-row { display: flex; justify-content: space-between; align-items: start; gap: 20px; flex-wrap: wrap; max-width: none; text-align: left; margin-bottom: 16px; }
 .preview-label { flex-shrink: 0; background: var(--brand-soft); color: var(--brand); padding: 6px 12px; border-radius: 8px; font-size: 11px; font-weight: 600; }
 .section-note { font-size: 12px; color: var(--muted); margin-bottom: 28px; max-width: 640px; }
@@ -158,6 +169,7 @@ button:disabled { cursor: not-allowed; }
   .hero-actions { flex-direction: row; margin-top: 36px; }
   .hero-eyebrow { font-size: 12px; }
   .divisions-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .members-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .recruitment-actions { flex-direction: row; }
   .event-details { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .recruitment-card { padding: 48px 36px; }
@@ -182,6 +194,7 @@ button:disabled { cursor: not-allowed; }
   .contact-layout { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); align-items: center; gap: 64px; }
   .contact-panel { padding: 32px; }
   .pillars-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .members-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
   .events-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .footer-grid { grid-template-columns: 2fr 1fr 1fr; gap: 64px; }
   .footer-about { grid-column: auto; }
@@ -189,6 +202,7 @@ button:disabled { cursor: not-allowed; }
 @media (min-width: 1100px) {
   .divisions-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
   .publications-grid { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+  .members-grid { grid-template-columns: repeat(5, minmax(0, 1fr)); }
   .pillar-card, .publication-card, .event-card { padding: 32px; }
 }
 @media (min-width: 1200px) {

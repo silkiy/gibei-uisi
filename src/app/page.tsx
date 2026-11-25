@@ -1,6 +1,7 @@
 import { HeroSection } from "@/components/home/HeroSection";
 import { AboutSection } from "@/components/home/AboutSection";
 import { DivisionsSection } from "@/components/home/DivisionsSection";
+import { MembersSection } from "@/components/home/MembersSection";
 import { PublicationSection } from "@/components/home/PublicationSection";
 import { EventsSection } from "@/components/home/EventsSection";
 import { RecruitmentSection } from "@/components/home/RecruitmentSection";
@@ -20,6 +21,7 @@ export default function Home() {
         <HeroSection />
         <AboutSection />
         <DivisionsSection />
+        <MembersSection />
         <PublicationSection />
         <EventsSection />
         <RecruitmentSection />
